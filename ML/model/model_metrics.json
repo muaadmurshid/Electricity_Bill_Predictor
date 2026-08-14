@@ -1,0 +1,7 @@
+{
+    "mae": 7.94,
+    "rmse": 9.367,
+    "r2": 0.922,
+    "training_rows": 576,
+    "testing_rows": 144
+}
