@@ -1,9 +1,10 @@
 package com.example.electricity_bill_predictor.Controller;
 
-import jakarta.validation.Valid;
-
 import com.example.electricity_bill_predictor.Entity.Recommendation;
 import com.example.electricity_bill_predictor.Service.RecommendationService;
+
+import jakarta.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,74 +12,99 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/recommendations")
-@CrossOrigin(origins = "*")
 public class RecommendationController {
 
     private final RecommendationService recommendationService;
 
     public RecommendationController(
             RecommendationService recommendationService) {
-        this.recommendationService = recommendationService;
+
+        this.recommendationService =
+                recommendationService;
     }
 
-    // GET /api/recommendations
+    // GET current user's recommendations
     @GetMapping
-    public List<Recommendation> getAllRecommendations() {
-        return recommendationService.getAllRecommendations();
+    public ResponseEntity<List<Recommendation>>
+    getAllRecommendations() {
+
+        return ResponseEntity.ok(
+                recommendationService
+                        .getAllRecommendations()
+        );
     }
 
-    // GET /api/recommendations/{id}
+    // GET recommendation by ID
     @GetMapping("/{id}")
-    public ResponseEntity<Recommendation> getRecommendationById(
+    public ResponseEntity<Recommendation>
+    getRecommendationById(
             @PathVariable Long id) {
 
-        Recommendation recommendation =
-                recommendationService.getRecommendationById(id);
-
-        return ResponseEntity.ok(recommendation);
+        return ResponseEntity.ok(
+                recommendationService
+                        .getRecommendationById(id)
+        );
     }
 
-    // POST /api/recommendations
+    // GET recommendation history for household
+    @GetMapping("/household/{householdId}")
+    public ResponseEntity<List<Recommendation>>
+    getRecommendationsByHousehold(
+            @PathVariable Long householdId) {
+
+        return ResponseEntity.ok(
+                recommendationService
+                        .getRecommendationsByHousehold(
+                                householdId
+                        )
+        );
+    }
+
+    // CREATE recommendation
     @PostMapping
-    public ResponseEntity<Recommendation> createRecommendation(
-            @Valid @RequestBody Recommendation recommendation) {
+    public ResponseEntity<Recommendation>
+    createRecommendation(
+            @Valid
+            @RequestBody
+            Recommendation recommendation) {
 
-        Recommendation createdRecommendation =
-                recommendationService.createRecommendation(recommendation);
-
-        return ResponseEntity.ok(createdRecommendation);
+        return ResponseEntity.ok(
+                recommendationService
+                        .createRecommendation(
+                                recommendation
+                        )
+        );
     }
 
-    // PUT /api/recommendations/{id}
+    // UPDATE recommendation
     @PutMapping("/{id}")
-    public ResponseEntity<Recommendation> updateRecommendation(
+    public ResponseEntity<Recommendation>
+    updateRecommendation(
             @PathVariable Long id,
-            @Valid @RequestBody Recommendation recommendation) {
+            @Valid
+            @RequestBody
+            Recommendation recommendation) {
 
-        try {
-            Recommendation updatedRecommendation =
-                    recommendationService.updateRecommendation(
-                            id, recommendation);
-
-            return ResponseEntity.ok(updatedRecommendation);
-
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok(
+                recommendationService
+                        .updateRecommendation(
+                                id,
+                                recommendation
+                        )
+        );
     }
 
-    // DELETE /api/recommendations/{id}
+    // DELETE recommendation
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteRecommendation(
+    public ResponseEntity<Void>
+    deleteRecommendation(
             @PathVariable Long id) {
 
-        try {
-            recommendationService.deleteRecommendation(id);
+        recommendationService
+                .deleteRecommendation(id);
 
-            return ResponseEntity.noContent().build();
-
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity
+                .noContent()
+                .build();
     }
 }

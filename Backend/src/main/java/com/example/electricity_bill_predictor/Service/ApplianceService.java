@@ -3,9 +3,11 @@ package com.example.electricity_bill_predictor.Service;
 import com.example.electricity_bill_predictor.Entity.Appliance;
 import com.example.electricity_bill_predictor.Entity.ApplianceCategory;
 import com.example.electricity_bill_predictor.Entity.Room;
+
 import com.example.electricity_bill_predictor.Repository.ApplianceCategoryRepository;
 import com.example.electricity_bill_predictor.Repository.ApplianceRepository;
 import com.example.electricity_bill_predictor.Repository.RoomRepository;
+
 import com.example.electricity_bill_predictor.exception.ResourceNotFoundException;
 
 import org.springframework.stereotype.Service;
@@ -18,70 +20,71 @@ public class ApplianceService {
     private final ApplianceRepository applianceRepository;
     private final RoomRepository roomRepository;
     private final ApplianceCategoryRepository applianceCategoryRepository;
+    private final CurrentUserService currentUserService;
 
     public ApplianceService(
             ApplianceRepository applianceRepository,
             RoomRepository roomRepository,
-            ApplianceCategoryRepository applianceCategoryRepository) {
+            ApplianceCategoryRepository applianceCategoryRepository,
+            CurrentUserService currentUserService) {
 
         this.applianceRepository = applianceRepository;
         this.roomRepository = roomRepository;
-        this.applianceCategoryRepository = applianceCategoryRepository;
+        this.applianceCategoryRepository =
+                applianceCategoryRepository;
+        this.currentUserService = currentUserService;
     }
 
-    // Get all appliances
+    // =========================================================
+    // GET ALL APPLIANCES FOR CURRENT LOGGED-IN USER
+    // =========================================================
     public List<Appliance> getAllAppliances() {
-        return applianceRepository.findAll();
-    }
 
-    // Get appliance by ID
-    public Appliance getApplianceById(Long id) {
-        return applianceRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                "Appliance not found with id: " + id
-                        )
+        Long currentUserId =
+                currentUserService.getCurrentUserId();
+
+        return applianceRepository
+                .findByRoomHouseholdUserUserId(
+                        currentUserId
                 );
     }
 
-    // Create appliance
-    public Appliance createAppliance(Appliance appliance) {
+    // =========================================================
+    // GET APPLIANCES FOR ONE ROOM
+    // Room must belong to current user
+    // =========================================================
+    public List<Appliance> getAppliancesByRoomId(
+            Long roomId) {
 
-        Long roomId =
-                appliance.getRoom().getRoomId();
+        Long currentUserId =
+                currentUserService.getCurrentUserId();
 
-        Room room = roomRepository.findById(roomId)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                "Room not found with id: " + roomId
-                        )
+        Room room =
+                getOwnedRoom(
+                        roomId,
+                        currentUserId
                 );
 
-        Long categoryId =
-                appliance.getCategory().getCategoryId();
-
-        ApplianceCategory category =
-                applianceCategoryRepository.findById(categoryId)
-                        .orElseThrow(() ->
-                                new ResourceNotFoundException(
-                                        "Appliance category not found with id: "
-                                                + categoryId
-                                )
-                        );
-
-        appliance.setRoom(room);
-        appliance.setCategory(category);
-
-        return applianceRepository.save(appliance);
+        return applianceRepository
+                .findByRoomRoomIdAndRoomHouseholdUserUserId(
+                        room.getRoomId(),
+                        currentUserId
+                );
     }
 
-    // Update appliance
-    public Appliance updateAppliance(
-            Long applianceId,
-            Appliance applianceDetails) {
+    // =========================================================
+    // GET APPLIANCE BY ID
+    // Only owner can access
+    // =========================================================
+    public Appliance getApplianceById(
+            Long applianceId) {
 
-        Appliance existingAppliance =
-                applianceRepository.findById(applianceId)
+        Long currentUserId =
+                currentUserService.getCurrentUserId();
+
+        Appliance appliance =
+                applianceRepository
+                        .findById(applianceId)
                         .orElseThrow(() ->
                                 new ResourceNotFoundException(
                                         "Appliance not found with id: "
@@ -89,30 +92,141 @@ public class ApplianceService {
                                 )
                         );
 
-        Long roomId =
-                applianceDetails.getRoom().getRoomId();
+        validateApplianceOwnership(
+                appliance,
+                currentUserId
+        );
 
-        Room room = roomRepository.findById(roomId)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                "Room not found with id: " + roomId
-                        )
+        return appliance;
+    }
+
+    // =========================================================
+    // CREATE APPLIANCE
+    // Appliance can only be added to current user's room
+    // =========================================================
+    public Appliance createAppliance(
+            Appliance appliance) {
+
+        Long currentUserId =
+                currentUserService.getCurrentUserId();
+
+        if (appliance.getRoom() == null ||
+                appliance.getRoom().getRoomId() == null) {
+
+            throw new IllegalArgumentException(
+                    "Room is required"
+            );
+        }
+
+        if (appliance.getCategory() == null ||
+                appliance.getCategory().getCategoryId() == null) {
+
+            throw new IllegalArgumentException(
+                    "Appliance category is required"
+            );
+        }
+
+        Long roomId =
+                appliance.getRoom().getRoomId();
+
+        Room room =
+                getOwnedRoom(
+                        roomId,
+                        currentUserId
                 );
 
         Long categoryId =
-                applianceDetails.getCategory().getCategoryId();
+                appliance
+                        .getCategory()
+                        .getCategoryId();
 
         ApplianceCategory category =
-                applianceCategoryRepository.findById(categoryId)
+                getCategory(categoryId);
+
+        appliance.setRoom(room);
+        appliance.setCategory(category);
+
+        return applianceRepository.save(
+                appliance
+        );
+    }
+
+    // =========================================================
+    // UPDATE APPLIANCE
+    // Only owner can update
+    // Cannot move appliance into another user's room
+    // =========================================================
+    public Appliance updateAppliance(
+            Long applianceId,
+            Appliance applianceDetails) {
+
+        Long currentUserId =
+                currentUserService.getCurrentUserId();
+
+        Appliance existingAppliance =
+                applianceRepository
+                        .findById(applianceId)
                         .orElseThrow(() ->
                                 new ResourceNotFoundException(
-                                        "Appliance category not found with id: "
-                                                + categoryId
+                                        "Appliance not found with id: "
+                                                + applianceId
                                 )
                         );
 
-        existingAppliance.setRoom(room);
-        existingAppliance.setCategory(category);
+        // Confirm logged-in user owns appliance
+        validateApplianceOwnership(
+                existingAppliance,
+                currentUserId
+        );
+
+        /*
+         * If the request contains another room,
+         * verify that the new room also belongs
+         * to the current user.
+         */
+        if (applianceDetails.getRoom() != null &&
+                applianceDetails
+                        .getRoom()
+                        .getRoomId() != null) {
+
+            Long newRoomId =
+                    applianceDetails
+                            .getRoom()
+                            .getRoomId();
+
+            Room ownedRoom =
+                    getOwnedRoom(
+                            newRoomId,
+                            currentUserId
+                    );
+
+            existingAppliance.setRoom(
+                    ownedRoom
+            );
+        }
+
+        /*
+         * Category is system-level/shared data.
+         * User may change the appliance category
+         * only to an existing category.
+         */
+        if (applianceDetails.getCategory() != null &&
+                applianceDetails
+                        .getCategory()
+                        .getCategoryId() != null) {
+
+            Long categoryId =
+                    applianceDetails
+                            .getCategory()
+                            .getCategoryId();
+
+            ApplianceCategory category =
+                    getCategory(categoryId);
+
+            existingAppliance.setCategory(
+                    category
+            );
+        }
 
         existingAppliance.setApplianceName(
                 applianceDetails.getApplianceName()
@@ -146,14 +260,24 @@ public class ApplianceService {
                 applianceDetails.getStatus()
         );
 
-        return applianceRepository.save(existingAppliance);
+        return applianceRepository.save(
+                existingAppliance
+        );
     }
 
-    // Delete appliance
-    public void deleteAppliance(Long applianceId) {
+    // =========================================================
+    // DELETE APPLIANCE
+    // Only owner can delete
+    // =========================================================
+    public void deleteAppliance(
+            Long applianceId) {
+
+        Long currentUserId =
+                currentUserService.getCurrentUserId();
 
         Appliance existingAppliance =
-                applianceRepository.findById(applianceId)
+                applianceRepository
+                        .findById(applianceId)
                         .orElseThrow(() ->
                                 new ResourceNotFoundException(
                                         "Appliance not found with id: "
@@ -161,6 +285,95 @@ public class ApplianceService {
                                 )
                         );
 
-        applianceRepository.delete(existingAppliance);
+        validateApplianceOwnership(
+                existingAppliance,
+                currentUserId
+        );
+
+        applianceRepository.delete(
+                existingAppliance
+        );
+    }
+
+    // =========================================================
+    // ROOM OWNERSHIP CHECK
+    // =========================================================
+    private Room getOwnedRoom(
+            Long roomId,
+            Long currentUserId) {
+
+        Room room =
+                roomRepository
+                        .findById(roomId)
+                        .orElseThrow(() ->
+                                new ResourceNotFoundException(
+                                        "Room not found with id: "
+                                                + roomId
+                                )
+                        );
+
+        if (room.getHousehold() == null ||
+                room.getHousehold().getUser() == null ||
+                room.getHousehold()
+                        .getUser()
+                        .getUserId() == null ||
+                !room.getHousehold()
+                        .getUser()
+                        .getUserId()
+                        .equals(currentUserId)) {
+
+            throw new ResourceNotFoundException(
+                    "Room not found with id: "
+                            + roomId
+            );
+        }
+
+        return room;
+    }
+
+    // =========================================================
+    // APPLIANCE OWNERSHIP CHECK
+    // =========================================================
+    private void validateApplianceOwnership(
+            Appliance appliance,
+            Long currentUserId) {
+
+        if (appliance.getRoom() == null ||
+                appliance.getRoom()
+                        .getHousehold() == null ||
+                appliance.getRoom()
+                        .getHousehold()
+                        .getUser() == null ||
+                appliance.getRoom()
+                        .getHousehold()
+                        .getUser()
+                        .getUserId() == null ||
+                !appliance.getRoom()
+                        .getHousehold()
+                        .getUser()
+                        .getUserId()
+                        .equals(currentUserId)) {
+
+            throw new ResourceNotFoundException(
+                    "Appliance not found with id: "
+                            + appliance.getApplianceId()
+            );
+        }
+    }
+
+    // =========================================================
+    // CATEGORY VALIDATION
+    // =========================================================
+    private ApplianceCategory getCategory(
+            Long categoryId) {
+
+        return applianceCategoryRepository
+                .findById(categoryId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Appliance category not found with id: "
+                                        + categoryId
+                        )
+                );
     }
 }

@@ -9,7 +9,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/households")
-@CrossOrigin(origins = "*")
 public class HouseholdController {
 
     private final HouseholdService householdService;

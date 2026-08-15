@@ -1,9 +1,13 @@
 package com.example.electricity_bill_predictor.Service;
 
+import com.example.electricity_bill_predictor.DTO.AiRecommendationResponse;
+
 import com.example.electricity_bill_predictor.Entity.Household;
 import com.example.electricity_bill_predictor.Entity.Recommendation;
+
 import com.example.electricity_bill_predictor.Repository.HouseholdRepository;
 import com.example.electricity_bill_predictor.Repository.RecommendationRepository;
+
 import com.example.electricity_bill_predictor.exception.ResourceNotFoundException;
 
 import org.springframework.stereotype.Service;
@@ -15,58 +19,126 @@ public class RecommendationService {
 
     private final RecommendationRepository recommendationRepository;
     private final HouseholdRepository householdRepository;
+    private final CurrentUserService currentUserService;
 
     public RecommendationService(
             RecommendationRepository recommendationRepository,
-            HouseholdRepository householdRepository) {
+            HouseholdRepository householdRepository,
+            CurrentUserService currentUserService) {
 
-        this.recommendationRepository = recommendationRepository;
-        this.householdRepository = householdRepository;
+        this.recommendationRepository =
+                recommendationRepository;
+
+        this.householdRepository =
+                householdRepository;
+
+        this.currentUserService =
+                currentUserService;
     }
 
-    // Get all recommendations
+    // GET ALL RECOMMENDATIONS FOR CURRENT USER
     public List<Recommendation> getAllRecommendations() {
-        return recommendationRepository.findAll();
-    }
 
-    // Get recommendation by ID
-    public Recommendation getRecommendationById(Long id) {
-        return recommendationRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                "Recommendation not found with id: " + id
-                        )
+        Long currentUserId =
+                currentUserService.getCurrentUserId();
+
+        return recommendationRepository
+                .findByHouseholdUserUserIdOrderByCreatedDateDesc(
+                        currentUserId
                 );
     }
 
-    // Create recommendation
-    public Recommendation createRecommendation(
-            Recommendation recommendation) {
+    // GET RECOMMENDATION BY ID
+    public Recommendation getRecommendationById(
+            Long id) {
 
-        Long householdId =
-                recommendation.getHousehold().getHouseholdId();
+        Long currentUserId =
+                currentUserService.getCurrentUserId();
 
-        Household household =
-                householdRepository.findById(householdId)
+        Recommendation recommendation =
+                recommendationRepository
+                        .findById(id)
                         .orElseThrow(() ->
                                 new ResourceNotFoundException(
-                                        "Household not found with id: "
-                                                + householdId
+                                        "Recommendation not found with id: "
+                                                + id
                                 )
                         );
 
-        recommendation.setHousehold(household);
+        validateRecommendationOwnership(
+                recommendation,
+                currentUserId
+        );
 
-        return recommendationRepository.save(recommendation);
+        return recommendation;
     }
 
-    // Update recommendation
+    // GET RECOMMENDATIONS FOR HOUSEHOLD
+    public List<Recommendation> getRecommendationsByHousehold(
+            Long householdId) {
+
+        Long currentUserId =
+                currentUserService.getCurrentUserId();
+
+        getOwnedHousehold(
+                householdId,
+                currentUserId
+        );
+
+        return recommendationRepository
+                .findByHouseholdHouseholdIdOrderByCreatedDateDesc(
+                        householdId
+                );
+    }
+
+    // CREATE RECOMMENDATION
+    public Recommendation createRecommendation(
+            Recommendation recommendation) {
+
+        Long currentUserId =
+                currentUserService.getCurrentUserId();
+
+        if (recommendation.getHousehold() == null ||
+                recommendation
+                        .getHousehold()
+                        .getHouseholdId() == null) {
+
+            throw new IllegalArgumentException(
+                    "Household is required"
+            );
+        }
+
+        Long householdId =
+                recommendation
+                        .getHousehold()
+                        .getHouseholdId();
+
+        Household household =
+                getOwnedHousehold(
+                        householdId,
+                        currentUserId
+                );
+
+        recommendation.setHousehold(
+                household
+        );
+
+        return recommendationRepository.save(
+                recommendation
+        );
+    }
+
+    // UPDATE RECOMMENDATION
     public Recommendation updateRecommendation(
             Long recommendationId,
             Recommendation recommendationDetails) {
 
+        Long currentUserId =
+                currentUserService.getCurrentUserId();
+
         Recommendation existingRecommendation =
-                recommendationRepository.findById(recommendationId)
+                recommendationRepository
+                        .findById(recommendationId)
                         .orElseThrow(() ->
                                 new ResourceNotFoundException(
                                         "Recommendation not found with id: "
@@ -74,19 +146,35 @@ public class RecommendationService {
                                 )
                         );
 
+        validateRecommendationOwnership(
+                existingRecommendation,
+                currentUserId
+        );
+
+        if (recommendationDetails.getHousehold() == null ||
+                recommendationDetails
+                        .getHousehold()
+                        .getHouseholdId() == null) {
+
+            throw new IllegalArgumentException(
+                    "Household is required"
+            );
+        }
+
         Long householdId =
-                recommendationDetails.getHousehold().getHouseholdId();
+                recommendationDetails
+                        .getHousehold()
+                        .getHouseholdId();
 
         Household household =
-                householdRepository.findById(householdId)
-                        .orElseThrow(() ->
-                                new ResourceNotFoundException(
-                                        "Household not found with id: "
-                                                + householdId
-                                )
-                        );
+                getOwnedHousehold(
+                        householdId,
+                        currentUserId
+                );
 
-        existingRecommendation.setHousehold(household);
+        existingRecommendation.setHousehold(
+                household
+        );
 
         existingRecommendation.setRecommendationTitle(
                 recommendationDetails.getRecommendationTitle()
@@ -116,14 +204,21 @@ public class RecommendationService {
                 recommendationDetails.getStatus()
         );
 
-        return recommendationRepository.save(existingRecommendation);
+        return recommendationRepository.save(
+                existingRecommendation
+        );
     }
 
-    // Delete recommendation
-    public void deleteRecommendation(Long recommendationId) {
+    // DELETE RECOMMENDATION
+    public void deleteRecommendation(
+            Long recommendationId) {
+
+        Long currentUserId =
+                currentUserService.getCurrentUserId();
 
         Recommendation existingRecommendation =
-                recommendationRepository.findById(recommendationId)
+                recommendationRepository
+                        .findById(recommendationId)
                         .orElseThrow(() ->
                                 new ResourceNotFoundException(
                                         "Recommendation not found with id: "
@@ -131,6 +226,133 @@ public class RecommendationService {
                                 )
                         );
 
-        recommendationRepository.delete(existingRecommendation);
+        validateRecommendationOwnership(
+                existingRecommendation,
+                currentUserId
+        );
+
+        recommendationRepository.delete(
+                existingRecommendation
+        );
+    }
+
+    // SAVE AI GENERATED RECOMMENDATION
+    public Recommendation saveAiRecommendation(
+            Long householdId,
+            AiRecommendationResponse aiResponse) {
+
+        Long currentUserId =
+                currentUserService.getCurrentUserId();
+
+        Household household =
+                getOwnedHousehold(
+                        householdId,
+                        currentUserId
+                );
+
+        if (aiResponse == null) {
+
+            throw new IllegalArgumentException(
+                    "AI recommendation response cannot be null"
+            );
+        }
+
+        Recommendation recommendation =
+                new Recommendation();
+
+        recommendation.setHousehold(
+                household
+        );
+
+        recommendation.setRecommendationTitle(
+                aiResponse.getRecommendationTitle()
+        );
+
+        recommendation.setRecommendationDescription(
+                aiResponse.getRecommendationDescription()
+        );
+
+        recommendation.setRecommendationType(
+                aiResponse.getRecommendationType()
+        );
+
+        recommendation.setPriority(
+                aiResponse.getPriority()
+        );
+
+        recommendation.setEstimatedSavingKwh(
+                aiResponse.getEstimatedSavingKwh()
+        );
+
+        recommendation.setEstimatedSavingAmount(
+                aiResponse.getEstimatedSavingAmount()
+        );
+
+        recommendation.setStatus(
+                "ACTIVE"
+        );
+
+        return recommendationRepository.save(
+                recommendation
+        );
+    }
+
+    // HOUSEHOLD OWNERSHIP
+    private Household getOwnedHousehold(
+            Long householdId,
+            Long currentUserId) {
+
+        Household household =
+                householdRepository
+                        .findById(householdId)
+                        .orElseThrow(() ->
+                                new ResourceNotFoundException(
+                                        "Household not found with id: "
+                                                + householdId
+                                )
+                        );
+
+        if (household.getUser() == null ||
+                household
+                        .getUser()
+                        .getUserId() == null ||
+                !household
+                        .getUser()
+                        .getUserId()
+                        .equals(currentUserId)) {
+
+            throw new ResourceNotFoundException(
+                    "Household not found with id: "
+                            + householdId
+            );
+        }
+
+        return household;
+    }
+
+    // RECOMMENDATION OWNERSHIP
+    private void validateRecommendationOwnership(
+            Recommendation recommendation,
+            Long currentUserId) {
+
+        if (recommendation.getHousehold() == null ||
+                recommendation
+                        .getHousehold()
+                        .getUser() == null ||
+                recommendation
+                        .getHousehold()
+                        .getUser()
+                        .getUserId() == null ||
+                !recommendation
+                        .getHousehold()
+                        .getUser()
+                        .getUserId()
+                        .equals(currentUserId)) {
+
+            throw new ResourceNotFoundException(
+                    "Recommendation not found with id: "
+                            + recommendation.getRecommendationId()
+            );
+        }
     }
 }

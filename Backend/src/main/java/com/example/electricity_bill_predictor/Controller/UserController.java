@@ -1,5 +1,6 @@
 package com.example.electricity_bill_predictor.Controller;
 
+import com.example.electricity_bill_predictor.DTO.UserStatusRequest;
 import jakarta.validation.Valid;
 import com.example.electricity_bill_predictor.Entity.User;
 import com.example.electricity_bill_predictor.Service.UserService;
@@ -10,7 +11,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
-@CrossOrigin(origins = "*")
 public class UserController {
 
     private final UserService userService;
@@ -56,6 +56,22 @@ public class UserController {
 
             return ResponseEntity.notFound().build();
         }
+    }
+    @PutMapping("/{id}/status")
+    public ResponseEntity<User> updateUserStatus(
+            @PathVariable Long id,
+            @Valid @RequestBody
+            UserStatusRequest request) {
+
+        User updatedUser =
+                userService.updateAccountStatus(
+                        id,
+                        request.getAccountStatus()
+                );
+
+        return ResponseEntity.ok(
+                updatedUser
+        );
     }
 
     // DELETE /api/users/{id}

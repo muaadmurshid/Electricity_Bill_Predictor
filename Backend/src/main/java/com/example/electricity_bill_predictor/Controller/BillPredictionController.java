@@ -1,9 +1,10 @@
 package com.example.electricity_bill_predictor.Controller;
 
-import jakarta.validation.Valid;
-
 import com.example.electricity_bill_predictor.Entity.BillPrediction;
 import com.example.electricity_bill_predictor.Service.BillPredictionService;
+
+import jakarta.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,73 +12,113 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/bill-predictions")
-@CrossOrigin(origins = "*")
 public class BillPredictionController {
 
     private final BillPredictionService billPredictionService;
 
     public BillPredictionController(
             BillPredictionService billPredictionService) {
-        this.billPredictionService = billPredictionService;
+
+        this.billPredictionService =
+                billPredictionService;
     }
 
-    // GET /api/bill-predictions
+    // GET current user's predictions
     @GetMapping
-    public List<BillPrediction> getAllPredictions() {
-        return billPredictionService.getAllBillPredictions();
+    public ResponseEntity<List<BillPrediction>>
+    getAllPredictions() {
+
+        return ResponseEntity.ok(
+                billPredictionService
+                        .getAllBillPredictions()
+        );
     }
 
-    // GET /api/bill-predictions/{id}
+    // GET prediction by ID
     @GetMapping("/{id}")
-    public ResponseEntity<BillPrediction> getBillPredictionById(
+    public ResponseEntity<BillPrediction>
+    getBillPredictionById(
             @PathVariable Long id) {
 
-        BillPrediction billPrediction =
-                billPredictionService.getBillPredictionById(id);
-
-        return ResponseEntity.ok(billPrediction);
+        return ResponseEntity.ok(
+                billPredictionService
+                        .getBillPredictionById(id)
+        );
     }
 
-    // POST /api/bill-predictions
+    // GET household prediction history
+    @GetMapping("/household/{householdId}")
+    public ResponseEntity<List<BillPrediction>>
+    getPredictionHistoryByHousehold(
+            @PathVariable Long householdId) {
+
+        return ResponseEntity.ok(
+                billPredictionService
+                        .getPredictionHistoryByHousehold(
+                                householdId
+                        )
+        );
+    }
+
+    // GET latest household prediction
+    @GetMapping("/household/{householdId}/latest")
+    public ResponseEntity<BillPrediction>
+    getLatestPredictionByHousehold(
+            @PathVariable Long householdId) {
+
+        return ResponseEntity.ok(
+                billPredictionService
+                        .getLatestPredictionByHousehold(
+                                householdId
+                        )
+        );
+    }
+
+    // CREATE manual prediction
     @PostMapping
-    public ResponseEntity<BillPrediction> createPrediction(
-           @Valid @RequestBody BillPrediction prediction) {
+    public ResponseEntity<BillPrediction>
+    createPrediction(
+            @Valid
+            @RequestBody
+            BillPrediction prediction) {
 
-        BillPrediction createdPrediction =
-                billPredictionService.createBillPrediction(prediction);
-
-        return ResponseEntity.ok(createdPrediction);
+        return ResponseEntity.ok(
+                billPredictionService
+                        .createBillPrediction(
+                                prediction
+                        )
+        );
     }
 
-    // PUT /api/bill-predictions/{id}
+    // UPDATE prediction
     @PutMapping("/{id}")
-    public ResponseEntity<BillPrediction> updatePrediction(
+    public ResponseEntity<BillPrediction>
+    updatePrediction(
             @PathVariable Long id,
-            @Valid @RequestBody BillPrediction prediction) {
+            @Valid
+            @RequestBody
+            BillPrediction prediction) {
 
-        try {
-            BillPrediction updatedPrediction =
-                    billPredictionService.updateBillPrediction(id, prediction);
-
-            return ResponseEntity.ok(updatedPrediction);
-
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok(
+                billPredictionService
+                        .updateBillPrediction(
+                                id,
+                                prediction
+                        )
+        );
     }
 
-    // DELETE /api/bill-predictions/{id}
+    // DELETE prediction
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePrediction(
+    public ResponseEntity<Void>
+    deletePrediction(
             @PathVariable Long id) {
 
-        try {
-            billPredictionService.deleteBillPrediction(id);
+        billPredictionService
+                .deleteBillPrediction(id);
 
-            return ResponseEntity.noContent().build();
-
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity
+                .noContent()
+                .build();
     }
 }

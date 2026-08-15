@@ -15,53 +15,97 @@ public class HouseholdService {
 
     private final HouseholdRepository householdRepository;
     private final UserRepository userRepository;
+    private final CurrentUserService currentUserService;
 
     public HouseholdService(
             HouseholdRepository householdRepository,
-            UserRepository userRepository) {
+            UserRepository userRepository,
+            CurrentUserService currentUserService) {
 
         this.householdRepository = householdRepository;
         this.userRepository = userRepository;
+        this.currentUserService = currentUserService;
     }
 
-    // Get all households
+    // =========================================================
+    // GET ALL HOUSEHOLDS FOR CURRENT LOGGED-IN USER
+    // =========================================================
     public List<Household> getAllHouseholds() {
-        return householdRepository.findAll();
+
+        Long currentUserId =
+                currentUserService.getCurrentUserId();
+
+        return householdRepository
+                .findByUserUserId(currentUserId);
     }
 
-    // Get household by ID
-    public Household getHouseholdById(Long id) {
+    // =========================================================
+    // GET HOUSEHOLD BY ID
+    // Only owner can access it
+    // =========================================================
+    public Household getHouseholdById(Long householdId) {
 
-        return householdRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                "Household not found with id: " + id
-                        )
-                );
+        Long currentUserId =
+                currentUserService.getCurrentUserId();
+
+        Household household =
+                householdRepository.findById(householdId)
+                        .orElseThrow(() ->
+                                new ResourceNotFoundException(
+                                        "Household not found with id: "
+                                                + householdId
+                                )
+                        );
+
+        validateOwnership(
+                household,
+                currentUserId
+        );
+
+        return household;
     }
 
-    // Create household
-    public Household createHousehold(Household household) {
+    // =========================================================
+    // CREATE HOUSEHOLD
+    // Household automatically belongs to logged-in user
+    // =========================================================
+    public Household createHousehold(
+            Household household) {
 
-        Long userId = household.getUser().getUserId();
+        Long currentUserId =
+                currentUserService.getCurrentUserId();
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                "User not found with id: " + userId
-                        )
-                );
+        User currentUser =
+                userRepository.findById(currentUserId)
+                        .orElseThrow(() ->
+                                new ResourceNotFoundException(
+                                        "User not found with id: "
+                                                + currentUserId
+                                )
+                        );
 
-        // Use the actual User entity from the database
-        household.setUser(user);
+        /*
+         * IMPORTANT:
+         * Ignore any user sent from frontend.
+         * The household always belongs to the
+         * currently authenticated user.
+         */
+        household.setUser(currentUser);
 
         return householdRepository.save(household);
     }
 
-    // Update household
+    // =========================================================
+    // UPDATE HOUSEHOLD
+    // Only owner can update
+    // User ownership cannot be changed
+    // =========================================================
     public Household updateHousehold(
             Long householdId,
             Household householdDetails) {
+
+        Long currentUserId =
+                currentUserService.getCurrentUserId();
 
         Household existingHousehold =
                 householdRepository.findById(householdId)
@@ -72,17 +116,18 @@ public class HouseholdService {
                                 )
                         );
 
-        Long userId =
-                householdDetails.getUser().getUserId();
+        validateOwnership(
+                existingHousehold,
+                currentUserId
+        );
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                "User not found with id: " + userId
-                        )
-                );
-
-        existingHousehold.setUser(user);
+        /*
+         * Do NOT update the User.
+         *
+         * This prevents a household from being
+         * transferred to another user by changing
+         * userId in the request.
+         */
 
         existingHousehold.setHouseholdName(
                 householdDetails.getHouseholdName()
@@ -100,11 +145,20 @@ public class HouseholdService {
                 householdDetails.getNumberOfResidents()
         );
 
-        return householdRepository.save(existingHousehold);
+        return householdRepository.save(
+                existingHousehold
+        );
     }
 
-    // Delete household
-    public void deleteHousehold(Long householdId) {
+    // =========================================================
+    // DELETE HOUSEHOLD
+    // Only owner can delete
+    // =========================================================
+    public void deleteHousehold(
+            Long householdId) {
+
+        Long currentUserId =
+                currentUserService.getCurrentUserId();
 
         Household existingHousehold =
                 householdRepository.findById(householdId)
@@ -115,6 +169,33 @@ public class HouseholdService {
                                 )
                         );
 
-        householdRepository.delete(existingHousehold);
+        validateOwnership(
+                existingHousehold,
+                currentUserId
+        );
+
+        householdRepository.delete(
+                existingHousehold
+        );
+    }
+
+    // =========================================================
+    // OWNERSHIP CHECK
+    // =========================================================
+    private void validateOwnership(
+            Household household,
+            Long currentUserId) {
+
+        if (household.getUser() == null ||
+                household.getUser().getUserId() == null ||
+                !household.getUser()
+                        .getUserId()
+                        .equals(currentUserId)) {
+
+            throw new ResourceNotFoundException(
+                    "Household not found with id: "
+                            + household.getHouseholdId()
+            );
+        }
     }
 }

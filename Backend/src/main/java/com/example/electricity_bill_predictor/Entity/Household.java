@@ -1,6 +1,6 @@
 package com.example.electricity_bill_predictor.Entity;
 
-import jakarta.validation.constraints.Min;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.persistence.*;
@@ -15,7 +15,7 @@ public class Household {
     @Column(name = "household_id")
     private Long householdId;
 
-    @NotNull(message = "User is required")
+
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;

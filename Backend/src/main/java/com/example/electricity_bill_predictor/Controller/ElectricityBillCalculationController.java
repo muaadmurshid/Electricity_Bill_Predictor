@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/bill-calculation")
-@CrossOrigin(origins = "*")
 public class ElectricityBillCalculationController {
 
     private final ElectricityBillCalculationService

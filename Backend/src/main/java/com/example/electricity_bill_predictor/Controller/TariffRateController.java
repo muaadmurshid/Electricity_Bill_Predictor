@@ -12,7 +12,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/tariff-rates")
-@CrossOrigin(origins = "*")
 public class TariffRateController {
 
     private final TariffRateService tariffRateService;

@@ -1,8 +1,10 @@
 package com.example.electricity_bill_predictor.Controller;
 
-import jakarta.validation.Valid;
 import com.example.electricity_bill_predictor.Entity.EnergyGoal;
 import com.example.electricity_bill_predictor.Service.EnergyGoalService;
+
+import jakarta.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,62 +12,95 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/energy-goals")
-@CrossOrigin(origins = "*")
 public class EnergyGoalController {
 
     private final EnergyGoalService energyGoalService;
 
-    public EnergyGoalController(EnergyGoalService energyGoalService) {
-        this.energyGoalService = energyGoalService;
+    public EnergyGoalController(
+            EnergyGoalService energyGoalService) {
+
+        this.energyGoalService =
+                energyGoalService;
     }
 
-    // GET /api/energy-goals
+    // GET current user's goals
     @GetMapping
-    public List<EnergyGoal> getAllGoals() {
-        return energyGoalService.getAllGoals();
+    public ResponseEntity<List<EnergyGoal>>
+    getAllGoals() {
+
+        return ResponseEntity.ok(
+                energyGoalService.getAllGoals()
+        );
     }
 
-    // GET /api/energy-goals/{id}
+    // GET goal by ID
     @GetMapping("/{id}")
-    public ResponseEntity<EnergyGoal> getEnergyGoalById(
+    public ResponseEntity<EnergyGoal>
+    getEnergyGoalById(
             @PathVariable Long id) {
 
-        EnergyGoal energyGoal =
-                energyGoalService.getEnergyGoalById(id);
-
-        return ResponseEntity.ok(energyGoal);
+        return ResponseEntity.ok(
+                energyGoalService
+                        .getEnergyGoalById(id)
+        );
     }
 
-    // POST /api/energy-goals
+    // GET goals for household
+    @GetMapping("/household/{householdId}")
+    public ResponseEntity<List<EnergyGoal>>
+    getGoalsByHousehold(
+            @PathVariable Long householdId) {
+
+        return ResponseEntity.ok(
+                energyGoalService
+                        .getGoalsByHousehold(
+                                householdId
+                        )
+        );
+    }
+
+    // CREATE goal
     @PostMapping
-    public ResponseEntity<EnergyGoal> createGoal(
-            @Valid @RequestBody EnergyGoal goal) {
+    public ResponseEntity<EnergyGoal>
+    createGoal(
+            @Valid
+            @RequestBody
+            EnergyGoal goal) {
 
-        EnergyGoal createdGoal =
-                energyGoalService.createGoal(goal);
-
-        return ResponseEntity.ok(createdGoal);
+        return ResponseEntity.ok(
+                energyGoalService.createGoal(
+                        goal
+                )
+        );
     }
 
-    // PUT /api/energy-goals/{id}
+    // UPDATE goal
     @PutMapping("/{id}")
-    public ResponseEntity<EnergyGoal> updateGoal(
+    public ResponseEntity<EnergyGoal>
+    updateGoal(
             @PathVariable Long id,
-            @Valid @RequestBody EnergyGoal goal) {
+            @Valid
+            @RequestBody
+            EnergyGoal goal) {
 
-        EnergyGoal updatedGoal =
-                energyGoalService.updateGoal(id, goal);
-
-        return ResponseEntity.ok(updatedGoal);
+        return ResponseEntity.ok(
+                energyGoalService.updateGoal(
+                        id,
+                        goal
+                )
+        );
     }
 
-    // DELETE /api/energy-goals/{id}
+    // DELETE goal
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteGoal(
+    public ResponseEntity<Void>
+    deleteGoal(
             @PathVariable Long id) {
 
         energyGoalService.deleteGoal(id);
 
-        return ResponseEntity.noContent().build();
+        return ResponseEntity
+                .noContent()
+                .build();
     }
 }

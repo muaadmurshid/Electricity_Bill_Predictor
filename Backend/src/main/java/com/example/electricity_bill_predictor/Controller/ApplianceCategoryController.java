@@ -10,7 +10,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/appliance-categories")
-@CrossOrigin(origins = "*")
 public class ApplianceCategoryController {
 
     private final ApplianceCategoryService applianceCategoryService;

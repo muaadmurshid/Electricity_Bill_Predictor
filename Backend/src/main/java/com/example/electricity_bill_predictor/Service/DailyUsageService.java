@@ -4,22 +4,29 @@ import com.example.electricity_bill_predictor.DTO.HouseholdAnalyticsSummary;
 import com.example.electricity_bill_predictor.DTO.CategoryConsumptionSummary;
 import com.example.electricity_bill_predictor.DTO.ApplianceConsumptionSummary;
 import com.example.electricity_bill_predictor.DTO.MonthlyConsumptionSummary;
+
 import com.example.electricity_bill_predictor.Entity.Appliance;
 import com.example.electricity_bill_predictor.Entity.DailyUsage;
+import com.example.electricity_bill_predictor.Entity.Household;
+
 import com.example.electricity_bill_predictor.Repository.ApplianceRepository;
 import com.example.electricity_bill_predictor.Repository.DailyUsageRepository;
 import com.example.electricity_bill_predictor.Repository.HouseholdRepository;
+
 import com.example.electricity_bill_predictor.exception.ResourceNotFoundException;
 
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+
 import java.time.LocalDate;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+
 import java.util.stream.Collectors;
 
 @Service
@@ -28,49 +35,104 @@ public class DailyUsageService {
     private final DailyUsageRepository dailyUsageRepository;
     private final ApplianceRepository applianceRepository;
     private final HouseholdRepository householdRepository;
+    private final CurrentUserService currentUserService;
 
     public DailyUsageService(
             DailyUsageRepository dailyUsageRepository,
             ApplianceRepository applianceRepository,
-            HouseholdRepository householdRepository) {
+            HouseholdRepository householdRepository,
+            CurrentUserService currentUserService) {
 
-        this.dailyUsageRepository = dailyUsageRepository;
-        this.applianceRepository = applianceRepository;
-        this.householdRepository = householdRepository;
+        this.dailyUsageRepository =
+                dailyUsageRepository;
+
+        this.applianceRepository =
+                applianceRepository;
+
+        this.householdRepository =
+                householdRepository;
+
+        this.currentUserService =
+                currentUserService;
     }
 
-    // Get all daily usage records
+    // =========================================================
+    // GET ALL DAILY USAGE
+    // Only records belonging to logged-in user
+    // =========================================================
     public List<DailyUsage> getAllDailyUsage() {
-        return dailyUsageRepository.findAll();
-    }
 
-    // Get daily usage by ID
-    public DailyUsage getDailyUsageById(Long id) {
+        Long currentUserId =
+                currentUserService.getCurrentUserId();
 
-        return dailyUsageRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                "Daily usage not found with id: " + id
-                        )
+        return dailyUsageRepository
+                .findByApplianceRoomHouseholdUserUserId(
+                        currentUserId
                 );
     }
 
-    // Create daily usage
-    public DailyUsage createDailyUsage(DailyUsage dailyUsage) {
+    // =========================================================
+    // GET DAILY USAGE BY ID
+    // Only owner can access
+    // =========================================================
+    public DailyUsage getDailyUsageById(
+            Long usageId) {
 
-        Long applianceId =
-                dailyUsage.getAppliance().getApplianceId();
+        Long currentUserId =
+                currentUserService.getCurrentUserId();
 
-        Appliance appliance =
-                applianceRepository.findById(applianceId)
+        DailyUsage dailyUsage =
+                dailyUsageRepository
+                        .findById(usageId)
                         .orElseThrow(() ->
                                 new ResourceNotFoundException(
-                                        "Appliance not found with id: "
-                                                + applianceId
+                                        "Daily usage not found with id: "
+                                                + usageId
                                 )
                         );
 
-        dailyUsage.setAppliance(appliance);
+        validateDailyUsageOwnership(
+                dailyUsage,
+                currentUserId
+        );
+
+        return dailyUsage;
+    }
+
+    // =========================================================
+    // CREATE DAILY USAGE
+    // Appliance must belong to logged-in user
+    // =========================================================
+    public DailyUsage createDailyUsage(
+            DailyUsage dailyUsage) {
+
+        Long currentUserId =
+                currentUserService.getCurrentUserId();
+
+        if (dailyUsage.getAppliance() == null ||
+                dailyUsage
+                        .getAppliance()
+                        .getApplianceId() == null) {
+
+            throw new IllegalArgumentException(
+                    "Appliance is required"
+            );
+        }
+
+        Long applianceId =
+                dailyUsage
+                        .getAppliance()
+                        .getApplianceId();
+
+        Appliance appliance =
+                getOwnedAppliance(
+                        applianceId,
+                        currentUserId
+                );
+
+        dailyUsage.setAppliance(
+                appliance
+        );
 
         // Automatically calculate electricity consumption
         BigDecimal estimatedConsumptionKwh =
@@ -83,16 +145,26 @@ public class DailyUsageService {
                 estimatedConsumptionKwh
         );
 
-        return dailyUsageRepository.save(dailyUsage);
+        return dailyUsageRepository.save(
+                dailyUsage
+        );
     }
 
-    // Update daily usage
+    // =========================================================
+    // UPDATE DAILY USAGE
+    // Existing record must belong to current user
+    // New appliance must also belong to current user
+    // =========================================================
     public DailyUsage updateDailyUsage(
             Long usageId,
             DailyUsage dailyUsageDetails) {
 
+        Long currentUserId =
+                currentUserService.getCurrentUserId();
+
         DailyUsage existingDailyUsage =
-                dailyUsageRepository.findById(usageId)
+                dailyUsageRepository
+                        .findById(usageId)
                         .orElseThrow(() ->
                                 new ResourceNotFoundException(
                                         "Daily usage not found with id: "
@@ -100,21 +172,38 @@ public class DailyUsageService {
                                 )
                         );
 
+        // Verify ownership of existing record
+        validateDailyUsageOwnership(
+                existingDailyUsage,
+                currentUserId
+        );
+
+        if (dailyUsageDetails.getAppliance() == null ||
+                dailyUsageDetails
+                        .getAppliance()
+                        .getApplianceId() == null) {
+
+            throw new IllegalArgumentException(
+                    "Appliance is required"
+            );
+        }
+
         Long applianceId =
                 dailyUsageDetails
                         .getAppliance()
                         .getApplianceId();
 
+        // Verify that the requested appliance
+        // also belongs to current user
         Appliance appliance =
-                applianceRepository.findById(applianceId)
-                        .orElseThrow(() ->
-                                new ResourceNotFoundException(
-                                        "Appliance not found with id: "
-                                                + applianceId
-                                )
-                        );
+                getOwnedAppliance(
+                        applianceId,
+                        currentUserId
+                );
 
-        existingDailyUsage.setAppliance(appliance);
+        existingDailyUsage.setAppliance(
+                appliance
+        );
 
         existingDailyUsage.setUsageDate(
                 dailyUsageDetails.getUsageDate()
@@ -131,22 +220,33 @@ public class DailyUsageService {
                         dailyUsageDetails.getHoursUsed()
                 );
 
-        existingDailyUsage.setEstimatedConsumptionKwh(
-                estimatedConsumptionKwh
-        );
+        existingDailyUsage
+                .setEstimatedConsumptionKwh(
+                        estimatedConsumptionKwh
+                );
 
         existingDailyUsage.setUsageNotes(
                 dailyUsageDetails.getUsageNotes()
         );
 
-        return dailyUsageRepository.save(existingDailyUsage);
+        return dailyUsageRepository.save(
+                existingDailyUsage
+        );
     }
 
-    // Delete daily usage
-    public void deleteDailyUsage(Long usageId) {
+    // =========================================================
+    // DELETE DAILY USAGE
+    // Only owner can delete
+    // =========================================================
+    public void deleteDailyUsage(
+            Long usageId) {
+
+        Long currentUserId =
+                currentUserService.getCurrentUserId();
 
         DailyUsage existingDailyUsage =
-                dailyUsageRepository.findById(usageId)
+                dailyUsageRepository
+                        .findById(usageId)
                         .orElseThrow(() ->
                                 new ResourceNotFoundException(
                                         "Daily usage not found with id: "
@@ -154,10 +254,20 @@ public class DailyUsageService {
                                 )
                         );
 
-        dailyUsageRepository.delete(existingDailyUsage);
+        validateDailyUsageOwnership(
+                existingDailyUsage,
+                currentUserId
+        );
+
+        dailyUsageRepository.delete(
+                existingDailyUsage
+        );
     }
 
-    // Calculate appliance electricity consumption in kWh
+    // =========================================================
+    // CALCULATE APPLIANCE CONSUMPTION
+    // kWh = watts × hours × quantity / 1000
+    // =========================================================
     private BigDecimal calculateConsumption(
             Appliance appliance,
             BigDecimal hoursUsed) {
@@ -180,34 +290,27 @@ public class DailyUsageService {
                 );
     }
 
-    // Calculate total household consumption for a date range
+    // =========================================================
+    // HOUSEHOLD CONSUMPTION
+    // Household must belong to current user
+    // =========================================================
     public BigDecimal getHouseholdConsumption(
             Long householdId,
             LocalDate startDate,
             LocalDate endDate) {
 
-        // Check household exists
-        householdRepository.findById(householdId)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                "Household not found with id: "
-                                        + householdId
-                        )
-                );
+        Long currentUserId =
+                currentUserService.getCurrentUserId();
 
-        // Check dates are provided
-        if (startDate == null || endDate == null) {
-            throw new IllegalArgumentException(
-                    "Start date and end date are required"
-            );
-        }
+        getOwnedHousehold(
+                householdId,
+                currentUserId
+        );
 
-        // Check date range is valid
-        if (endDate.isBefore(startDate)) {
-            throw new IllegalArgumentException(
-                    "End date cannot be before start date"
-            );
-        }
+        validateDateRange(
+                startDate,
+                endDate
+        );
 
         List<DailyUsage> usageRecords =
                 dailyUsageRepository
@@ -218,45 +321,59 @@ public class DailyUsageService {
                         );
 
         return usageRecords.stream()
-                .map(DailyUsage::getEstimatedConsumptionKwh)
-                .filter(consumption -> consumption != null)
+                .map(
+                        DailyUsage::
+                                getEstimatedConsumptionKwh
+                )
+                .filter(
+                        consumption ->
+                                consumption != null
+                )
                 .reduce(
                         BigDecimal.ZERO,
                         BigDecimal::add
                 );
     }
 
-    // Get monthly household consumption summary
-    public MonthlyConsumptionSummary getMonthlyConsumptionSummary(
+    // =========================================================
+    // MONTHLY HOUSEHOLD CONSUMPTION
+    // =========================================================
+    public MonthlyConsumptionSummary
+    getMonthlyConsumptionSummary(
             Long householdId,
             Integer year,
             Integer month) {
 
-        // Check household exists
-        householdRepository.findById(householdId)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                "Household not found with id: "
-                                        + householdId
-                        )
-                );
+        Long currentUserId =
+                currentUserService.getCurrentUserId();
 
-        // Validate year
+        getOwnedHousehold(
+                householdId,
+                currentUserId
+        );
+
         if (year == null || year < 2000) {
+
             throw new IllegalArgumentException(
                     "Invalid year"
             );
         }
 
-        // Validate month
-        if (month == null || month < 1 || month > 12) {
+        if (month == null ||
+                month < 1 ||
+                month > 12) {
+
             throw new IllegalArgumentException(
                     "Month must be between 1 and 12"
             );
         }
 
         LocalDate startDate =
-                LocalDate.of(year, month, 1);
+                LocalDate.of(
+                        year,
+                        month,
+                        1
+                );
 
         LocalDate endDate =
                 startDate.withDayOfMonth(
@@ -280,33 +397,27 @@ public class DailyUsageService {
         );
     }
 
-    // Get appliance-wise consumption breakdown
-    public List<ApplianceConsumptionSummary> getApplianceConsumptionBreakdown(
+    // =========================================================
+    // APPLIANCE CONSUMPTION BREAKDOWN
+    // =========================================================
+    public List<ApplianceConsumptionSummary>
+    getApplianceConsumptionBreakdown(
             Long householdId,
             LocalDate startDate,
             LocalDate endDate) {
 
-        // Check household exists
-        householdRepository.findById(householdId)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                "Household not found with id: "
-                                        + householdId
-                        )
-                );
+        Long currentUserId =
+                currentUserService.getCurrentUserId();
 
-        // Validate dates
-        if (startDate == null || endDate == null) {
-            throw new IllegalArgumentException(
-                    "Start date and end date are required"
-            );
-        }
+        getOwnedHousehold(
+                householdId,
+                currentUserId
+        );
 
-        if (endDate.isBefore(startDate)) {
-            throw new IllegalArgumentException(
-                    "End date cannot be before start date"
-            );
-        }
+        validateDateRange(
+                startDate,
+                endDate
+        );
 
         List<DailyUsage> usageRecords =
                 dailyUsageRepository
@@ -316,28 +427,36 @@ public class DailyUsageService {
                                 endDate
                         );
 
-        // Group consumption by appliance
-        Map<Long, BigDecimal> consumptionByAppliance =
+        Map<Long, BigDecimal>
+                consumptionByAppliance =
                 usageRecords.stream()
+
                         .filter(usage ->
-                                usage.getEstimatedConsumptionKwh() != null
+                                usage
+                                        .getEstimatedConsumptionKwh()
+                                        != null
                         )
+
                         .collect(
                                 Collectors.groupingBy(
+
                                         usage ->
-                                                usage.getAppliance()
+                                                usage
+                                                        .getAppliance()
                                                         .getApplianceId(),
+
                                         Collectors.reducing(
                                                 BigDecimal.ZERO,
-                                                DailyUsage::getEstimatedConsumptionKwh,
+                                                DailyUsage::
+                                                        getEstimatedConsumptionKwh,
                                                 BigDecimal::add
                                         )
                                 )
                         );
 
-        // Calculate total household consumption
         BigDecimal totalHouseholdConsumption =
-                consumptionByAppliance.values()
+                consumptionByAppliance
+                        .values()
                         .stream()
                         .reduce(
                                 BigDecimal.ZERO,
@@ -350,25 +469,25 @@ public class DailyUsageService {
         for (Map.Entry<Long, BigDecimal> entry :
                 consumptionByAppliance.entrySet()) {
 
-            Long applianceId = entry.getKey();
+            Long applianceId =
+                    entry.getKey();
+
             BigDecimal applianceConsumption =
                     entry.getValue();
 
             Appliance appliance =
-                    applianceRepository.findById(applianceId)
-                            .orElseThrow(() ->
-                                    new ResourceNotFoundException(
-                                            "Appliance not found with id: "
-                                                    + applianceId
-                                    )
-                            );
+                    getOwnedAppliance(
+                            applianceId,
+                            currentUserId
+                    );
 
-            // Calculate percentage share
             BigDecimal percentageShare =
                     BigDecimal.ZERO;
 
-            if (totalHouseholdConsumption.compareTo(
-                    BigDecimal.ZERO) > 0) {
+            if (totalHouseholdConsumption
+                    .compareTo(
+                            BigDecimal.ZERO
+                    ) > 0) {
 
                 percentageShare =
                         applianceConsumption
@@ -397,18 +516,21 @@ public class DailyUsageService {
             result.add(summary);
         }
 
-        // Highest consuming appliance first
         result.sort(
                 Comparator.comparing(
-                        ApplianceConsumptionSummary::getTotalConsumptionKwh
+                        ApplianceConsumptionSummary::
+                                getTotalConsumptionKwh
                 ).reversed()
         );
 
         return result;
     }
 
-    // Get highest consuming appliance
-    public ApplianceConsumptionSummary getHighestConsumingAppliance(
+    // =========================================================
+    // HIGHEST CONSUMING APPLIANCE
+    // =========================================================
+    public ApplianceConsumptionSummary
+    getHighestConsumingAppliance(
             Long householdId,
             LocalDate startDate,
             LocalDate endDate) {
@@ -421,6 +543,7 @@ public class DailyUsageService {
                 );
 
         if (breakdown.isEmpty()) {
+
             throw new ResourceNotFoundException(
                     "No appliance consumption data found for the selected period"
             );
@@ -428,32 +551,28 @@ public class DailyUsageService {
 
         return breakdown.get(0);
     }
-    public List<CategoryConsumptionSummary> getCategoryConsumptionBreakdown(
+
+    // =========================================================
+    // CATEGORY CONSUMPTION BREAKDOWN
+    // =========================================================
+    public List<CategoryConsumptionSummary>
+    getCategoryConsumptionBreakdown(
             Long householdId,
             LocalDate startDate,
             LocalDate endDate) {
 
-        // Check household exists
-        householdRepository.findById(householdId)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                "Household not found with id: "
-                                        + householdId
-                        )
-                );
+        Long currentUserId =
+                currentUserService.getCurrentUserId();
 
-        // Validate dates
-        if (startDate == null || endDate == null) {
-            throw new IllegalArgumentException(
-                    "Start date and end date are required"
-            );
-        }
+        getOwnedHousehold(
+                householdId,
+                currentUserId
+        );
 
-        if (endDate.isBefore(startDate)) {
-            throw new IllegalArgumentException(
-                    "End date cannot be before start date"
-            );
-        }
+        validateDateRange(
+                startDate,
+                endDate
+        );
 
         List<DailyUsage> usageRecords =
                 dailyUsageRepository
@@ -463,29 +582,37 @@ public class DailyUsageService {
                                 endDate
                         );
 
-        // Group consumption by category
-        Map<Long, BigDecimal> consumptionByCategory =
+        Map<Long, BigDecimal>
+                consumptionByCategory =
                 usageRecords.stream()
+
                         .filter(usage ->
-                                usage.getEstimatedConsumptionKwh() != null
+                                usage
+                                        .getEstimatedConsumptionKwh()
+                                        != null
                         )
+
                         .collect(
                                 Collectors.groupingBy(
+
                                         usage ->
-                                                usage.getAppliance()
+                                                usage
+                                                        .getAppliance()
                                                         .getCategory()
                                                         .getCategoryId(),
+
                                         Collectors.reducing(
                                                 BigDecimal.ZERO,
-                                                DailyUsage::getEstimatedConsumptionKwh,
+                                                DailyUsage::
+                                                        getEstimatedConsumptionKwh,
                                                 BigDecimal::add
                                         )
                                 )
                         );
 
-        // Calculate total household consumption
         BigDecimal totalHouseholdConsumption =
-                consumptionByCategory.values()
+                consumptionByCategory
+                        .values()
                         .stream()
                         .reduce(
                                 BigDecimal.ZERO,
@@ -498,30 +625,48 @@ public class DailyUsageService {
         for (Map.Entry<Long, BigDecimal> entry :
                 consumptionByCategory.entrySet()) {
 
-            Long categoryId = entry.getKey();
+            Long categoryId =
+                    entry.getKey();
+
             BigDecimal categoryConsumption =
                     entry.getValue();
 
             String categoryName =
                     usageRecords.stream()
-                            .map(DailyUsage::getAppliance)
-                            .filter(appliance ->
-                                    appliance.getCategory()
-                                            .getCategoryId()
-                                            .equals(categoryId)
+
+                            .map(
+                                    DailyUsage::
+                                            getAppliance
                             )
+
+                            .filter(appliance ->
+                                    appliance
+                                            .getCategory()
+                                            .getCategoryId()
+                                            .equals(
+                                                    categoryId
+                                            )
+                            )
+
                             .findFirst()
+
                             .map(appliance ->
-                                    appliance.getCategory()
+                                    appliance
+                                            .getCategory()
                                             .getCategoryName()
                             )
-                            .orElse("Unknown");
+
+                            .orElse(
+                                    "Unknown"
+                            );
 
             BigDecimal percentageShare =
                     BigDecimal.ZERO;
 
-            if (totalHouseholdConsumption.compareTo(
-                    BigDecimal.ZERO) > 0) {
+            if (totalHouseholdConsumption
+                    .compareTo(
+                            BigDecimal.ZERO
+                    ) > 0) {
 
                 percentageShare =
                         categoryConsumption
@@ -550,41 +695,37 @@ public class DailyUsageService {
             result.add(summary);
         }
 
-        // Highest consuming category first
         result.sort(
                 Comparator.comparing(
-                        CategoryConsumptionSummary::getTotalConsumptionKwh
+                        CategoryConsumptionSummary::
+                                getTotalConsumptionKwh
                 ).reversed()
         );
 
         return result;
     }
-    public HouseholdAnalyticsSummary getHouseholdAnalyticsSummary(
+
+    // =========================================================
+    // COMPLETE HOUSEHOLD ANALYTICS
+    // =========================================================
+    public HouseholdAnalyticsSummary
+    getHouseholdAnalyticsSummary(
             Long householdId,
             LocalDate startDate,
             LocalDate endDate) {
 
-        // Check household exists
-        householdRepository.findById(householdId)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                "Household not found with id: "
-                                        + householdId
-                        )
-                );
+        Long currentUserId =
+                currentUserService.getCurrentUserId();
 
-        // Validate dates
-        if (startDate == null || endDate == null) {
-            throw new IllegalArgumentException(
-                    "Start date and end date are required"
-            );
-        }
+        getOwnedHousehold(
+                householdId,
+                currentUserId
+        );
 
-        if (endDate.isBefore(startDate)) {
-            throw new IllegalArgumentException(
-                    "End date cannot be before start date"
-            );
-        }
+        validateDateRange(
+                startDate,
+                endDate
+        );
 
         BigDecimal totalConsumption =
                 getHouseholdConsumption(
@@ -593,23 +734,27 @@ public class DailyUsageService {
                         endDate
                 );
 
-        List<ApplianceConsumptionSummary> applianceBreakdown =
+        List<ApplianceConsumptionSummary>
+                applianceBreakdown =
                 getApplianceConsumptionBreakdown(
                         householdId,
                         startDate,
                         endDate
                 );
 
-        List<CategoryConsumptionSummary> categoryBreakdown =
+        List<CategoryConsumptionSummary>
+                categoryBreakdown =
                 getCategoryConsumptionBreakdown(
                         householdId,
                         startDate,
                         endDate
                 );
 
-        ApplianceConsumptionSummary highestConsumingAppliance = null;
+        ApplianceConsumptionSummary
+                highestConsumingAppliance = null;
 
         if (!applianceBreakdown.isEmpty()) {
+
             highestConsumingAppliance =
                     applianceBreakdown.get(0);
         }
@@ -623,5 +768,150 @@ public class DailyUsageService {
                 applianceBreakdown,
                 categoryBreakdown
         );
+    }
+
+    // =========================================================
+    // VERIFY HOUSEHOLD OWNERSHIP
+    // =========================================================
+    private Household getOwnedHousehold(
+            Long householdId,
+            Long currentUserId) {
+
+        Household household =
+                householdRepository
+                        .findById(householdId)
+                        .orElseThrow(() ->
+                                new ResourceNotFoundException(
+                                        "Household not found with id: "
+                                                + householdId
+                                )
+                        );
+
+        if (household.getUser() == null ||
+                household
+                        .getUser()
+                        .getUserId() == null ||
+                !household
+                        .getUser()
+                        .getUserId()
+                        .equals(currentUserId)) {
+
+            throw new ResourceNotFoundException(
+                    "Household not found with id: "
+                            + householdId
+            );
+        }
+
+        return household;
+    }
+
+    // =========================================================
+    // VERIFY APPLIANCE OWNERSHIP
+    // =========================================================
+    private Appliance getOwnedAppliance(
+            Long applianceId,
+            Long currentUserId) {
+
+        Appliance appliance =
+                applianceRepository
+                        .findById(applianceId)
+                        .orElseThrow(() ->
+                                new ResourceNotFoundException(
+                                        "Appliance not found with id: "
+                                                + applianceId
+                                )
+                        );
+
+        if (appliance.getRoom() == null ||
+                appliance
+                        .getRoom()
+                        .getHousehold() == null ||
+                appliance
+                        .getRoom()
+                        .getHousehold()
+                        .getUser() == null ||
+                appliance
+                        .getRoom()
+                        .getHousehold()
+                        .getUser()
+                        .getUserId() == null ||
+                !appliance
+                        .getRoom()
+                        .getHousehold()
+                        .getUser()
+                        .getUserId()
+                        .equals(currentUserId)) {
+
+            throw new ResourceNotFoundException(
+                    "Appliance not found with id: "
+                            + applianceId
+            );
+        }
+
+        return appliance;
+    }
+
+    // =========================================================
+    // VERIFY DAILY USAGE OWNERSHIP
+    // =========================================================
+    private void validateDailyUsageOwnership(
+            DailyUsage dailyUsage,
+            Long currentUserId) {
+
+        if (dailyUsage.getAppliance() == null ||
+                dailyUsage
+                        .getAppliance()
+                        .getRoom() == null ||
+                dailyUsage
+                        .getAppliance()
+                        .getRoom()
+                        .getHousehold() == null ||
+                dailyUsage
+                        .getAppliance()
+                        .getRoom()
+                        .getHousehold()
+                        .getUser() == null ||
+                dailyUsage
+                        .getAppliance()
+                        .getRoom()
+                        .getHousehold()
+                        .getUser()
+                        .getUserId() == null ||
+                !dailyUsage
+                        .getAppliance()
+                        .getRoom()
+                        .getHousehold()
+                        .getUser()
+                        .getUserId()
+                        .equals(currentUserId)) {
+
+            throw new ResourceNotFoundException(
+                    "Daily usage not found with id: "
+                            + dailyUsage.getUsageId()
+            );
+        }
+    }
+
+    // =========================================================
+    // DATE RANGE VALIDATION
+    // =========================================================
+    private void validateDateRange(
+            LocalDate startDate,
+            LocalDate endDate) {
+
+        if (startDate == null ||
+                endDate == null) {
+
+            throw new IllegalArgumentException(
+                    "Start date and end date are required"
+            );
+        }
+
+        if (endDate.isBefore(startDate)) {
+
+            throw new IllegalArgumentException(
+                    "End date cannot be before start date"
+            );
+        }
     }
 }

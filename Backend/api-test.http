@@ -1,0 +1,3297 @@
+### Create Appliance Category
+POST http://localhost:8080/api/appliance-categories
+Content-Type: application/json
+
+{
+  "categoryName": "Testing Category",
+  "description": "Created for API testing"
+}
+
+### Update Appliance Category
+PUT http://localhost:8080/api/appliance-categories/7
+Content-Type: application/json
+
+{
+  "categoryName": "Updated Testing Category",
+  "description": "Updated successfully through REST API"
+}
+
+### Delete Appliance Category
+DELETE http://localhost:8080/api/appliance-categories/9
+
+### Create Test Room
+POST http://localhost:8080/api/rooms
+Content-Type: application/json
+
+{
+  "household": {
+    "householdId": 1
+  },
+  "roomName": "Test Room",
+  "roomType": "Testing",
+  "description": "Temporary room for API testing"
+}
+
+### Create Test Household
+POST http://localhost:8080/api/households
+Content-Type: application/json
+
+{
+  "user": {
+    "userId": 1
+  },
+  "householdName": "API Test Household",
+  "location": "Negombo",
+  "houseType": "Single Family",
+  "numberOfResidents": 2
+}
+
+### Create Test User
+POST http://localhost:8080/api/users
+Content-Type: application/json
+
+{
+  "firstName": "API",
+  "lastName": "Tester",
+  "email": "apitest@example.com",
+  "password": "Test1234",
+  "phoneNumber": "0771234567",
+  "accountStatus": "ACTIVE"
+}
+
+### Create Test Household
+POST http://localhost:8080/api/households
+Content-Type: application/json
+
+{
+  "user": {
+    "userId": 1
+  },
+  "householdName": "API Test Household",
+  "location": "Negombo",
+  "houseType": "Single Family",
+  "numberOfResidents": 2
+}
+
+
+### Create Daily Usage
+POST http://localhost:8080/api/daily-usage
+Content-Type: application/json
+
+{
+  "appliance": {
+    "applianceId": 5
+  },
+  "usageDate": "2026-08-12",
+  "hoursUsed": 6.00,
+  "estimatedConsumptionKwh": 7.20,
+  "usageNotes": "Used during evening hours"
+}
+
+### Get All Electricity Bills
+GET http://localhost:8080/api/electricity-bills
+
+
+### Get All Bill Predictions
+GET http://localhost:8080/api/bill-predictions
+
+
+### Create Bill Prediction
+POST http://localhost:8080/api/bill-predictions
+Content-Type: application/json
+
+{
+  "household": {
+    "householdId": 1
+  },
+  "tariff": {
+    "tariffId": 1
+  },
+  "predictionDate": "2026-08-14",
+  "targetMonth": "2026-09-01",
+  "predictedConsumptionKwh": 150.500,
+  "predictedBillAmount": 4500.00,
+  "lowerEstimate": 4000.00,
+  "upperEstimate": 5000.00,
+  "predictionStatus": "TEST"
+}
+
+### Get All Recommendations
+GET http://localhost:8080/api/recommendations
+
+### Create Recommendation
+POST http://localhost:8080/api/recommendations
+Content-Type: application/json
+
+{
+  "household": {
+    "householdId": 1
+  },
+  "recommendationTitle": "Reduce Air Conditioner Usage",
+  "recommendationDescription": "Reduce daily air conditioner usage by one hour to lower electricity consumption.",
+  "recommendationType": "ENERGY_SAVING",
+  "priority": "HIGH",
+  "estimatedSavingKwh": 3.600,
+  "estimatedSavingAmount": 108.00,
+  "createdDate": "2026-08-14T00:00:00",
+  "status": "ACTIVE"
+}
+
+### Get All Recommendations
+GET http://localhost:8080/api/recommendations
+
+
+### Get All Budgets
+GET http://localhost:8080/api/budgets
+
+### Create Budget
+POST http://localhost:8080/api/budgets
+Content-Type: application/json
+
+{
+  "household": {
+    "householdId": 1
+  },
+  "budgetMonth": 8,
+  "budgetYear": 2026,
+  "budgetAmount": 5000.00,
+  "warningThreshold": 80.00,
+  "currentEstimatedAmount": 0.00,
+  "status": "ACTIVE",
+  "createdDate": "2026-08-14T00:00:00"
+}
+
+### Get All Budgets
+GET http://localhost:8080/api/budgets
+
+### Get energy goals
+GET http://localhost:8080/api/energy-goals
+
+### Create Energy Goal
+POST http://localhost:8080/api/energy-goals
+Content-Type: application/json
+
+{
+  "household": {
+    "householdId": 1
+  },
+  "goalName": "Reduce Monthly Electricity Usage",
+  "goalType": "CONSUMPTION_REDUCTION",
+  "targetValue": 10.00,
+  "startDate": "2026-08-14",
+  "endDate": "2026-09-14",
+  "currentValue": 0.00,
+  "status": "ACTIVE",
+  "createdDate": "2026-08-14T00:00:00"
+}
+
+### Get All Energy Goals
+GET http://localhost:8080/api/energy-goals
+
+### Create Energy Goal
+POST http://localhost:8080/api/energy-goals
+Content-Type: application/json
+
+{
+  "household": {
+    "householdId": 1
+  },
+  "goalName": "Reduce Monthly Electricity Usage",
+  "goalType": "CONSUMPTION_REDUCTION",
+  "targetValue": 10.00,
+  "startDate": "2026-08-14",
+  "endDate": "2026-09-14",
+  "currentValue": 0.00,
+  "status": "ACTIVE",
+  "createdDate": "2026-08-14T00:00:00"
+}
+
+### Get All Energy Goals
+GET http://localhost:8080/api/energy-goals
+
+
+### GET ALL USERS
+GET http://localhost:8080/api/users
+
+
+### CREATE TEST USER
+POST http://localhost:8080/api/users
+Content-Type: application/json
+
+{
+  "firstName": "Muaad",
+  "lastName": "Ahamed",
+  "email": "apiMuaad@example.com",
+  "password": "Muaad1234",
+  "phoneNumber": "0781234567",
+  "accountStatus": "ACTIVE"
+}
+
+### GET USER BY ID
+GET http://localhost:8080/api/users/4
+
+### UPDATE USER
+PUT http://localhost:8080/api/users/4
+Content-Type: application/json
+
+{
+  "firstName": "Muaad",
+  "lastName": "Tester Updated",
+  "email": "Muaad123@example.com",
+  "password": "Muaad1234",
+  "phoneNumber": "0779876543",
+  "accountStatus": "ACTIVE"
+}
+
+### CREATE HOUSEHOLD
+POST http://localhost:8080/api/households
+Content-Type: application/json
+
+{
+  "user": {
+    "userId": 4
+  },
+  "householdName": "API Test Household",
+  "location": "Colombo",
+  "houseType": "Single Family",
+  "numberOfResidents": 2
+}
+
+### Get All
+GET http://localhost:8080/api/households
+
+### Get By Id
+GET http://localhost:8080/api/households/3
+
+###Put
+PUT http://localhost:8080/api/households/2
+Content-Type: application/json
+
+{
+  "user": {
+    "userId": 3
+  },
+  "householdName": "Updated API Test Household",
+  "location": "Negombo",
+  "houseType": "Single Family",
+  "numberOfResidents": 3
+}
+
+### CREATE ROOM
+POST http://localhost:8080/api/rooms
+Content-Type: application/json
+
+{
+  "household": {
+    "householdId": 3
+  },
+  "roomName": "Test Room",
+  "roomType": "Testing",
+  "description": "Temporary room for API testing"
+}
+
+###
+GET http://localhost:8080/api/rooms
+
+###
+GET http://localhost:8080/api/rooms/5
+
+###
+PUT http://localhost:8080/api/rooms/5
+Content-Type: application/json
+
+{
+  "household": {
+    "householdId": 2
+  },
+  "roomName": "Updated Test Room",
+  "roomType": "Bedroom",
+  "description": "Updated through API testing"
+}
+
+###
+GET http://localhost:8080/api/appliance-categories
+
+###
+### CREATE APPLIANCE
+POST http://localhost:8080/api/appliances
+Content-Type: application/json
+
+{
+  "room": {
+    "roomId": 5
+  },
+  "category": {
+    "categoryId": 1
+  },
+  "applianceName": "Test Fan",
+  "brand": "Test Brand",
+  "model": "TEST-001",
+  "ratedPower": 75.00,
+  "quantity": 1,
+  "energyRating": "A",
+  "typicalDailyHours": 5.00,
+  "status": "ACTIVE"
+}
+
+###ERROR
+POST http://localhost:8080/api/daily-usage
+Content-Type: application/json
+
+{
+  "appliance": {
+    "applianceId": 5
+  },
+  "usageDate": "2026-08-14",
+  "hoursUsed": 5.0,
+  "estimatedConsumptionKwh": 0.375,
+  "usageNotes": "Temporary API test"
+}
+
+###
+POST http://localhost:8080/api/electricity-bills
+Content-Type: application/json
+
+{
+  "household": {
+    "householdId": 2
+  },
+  "billingPeriod": "2026-07",
+  "unitsConsumedKwh": 150.0,
+  "billAmount": 5000.00,
+  "billDate": "2026-08-01",
+  "paymentStatus": "PAID"
+}
+
+###
+GET http://localhost:8080/api/tariffs
+
+###
+POST http://localhost:8080/api/bill-predictions
+Content-Type: application/json
+
+{
+  "household": {
+    "householdId": 3
+  },
+  "tariff": {
+    "tariffId": 1
+  },
+  "predictionDate": "2026-08-13",
+  "targetMonth": "2026-09-12",
+  "predictedConsumptionKwh": 180.0,
+  "predictedBillAmount": 6000.00,
+  "lowerEstimate": 5500.00,
+  "upperEstimate": 6500.00,
+  "predictionStatus": "TEST"
+}
+
+###
+POST http://localhost:8080/api/recommendations
+Content-Type: application/json
+
+{
+  "household": {
+    "householdId": 2
+  },
+  "recommendationTitle": "Reduce Fan Usage",
+  "recommendationDescription": "Temporary recommendation for API testing",
+  "recommendationType": "ENERGY_SAVING",
+  "priority": "MEDIUM",
+  "estimatedSavingKwh": 5.0,
+  "estimatedSavingAmount": 100.00,
+  "status": "ACTIVE"
+}
+
+###ERROR DONE
+POST http://localhost:8080/api/budgets
+Content-Type: application/json
+
+{
+  "household": {
+    "householdId": 2
+  },
+  "budgetMonth": 8,
+  "budgetYear": 2026,
+  "budgetAmount": 10000.00,
+  "warningThreshold": 80.0,
+  "currentEstimatedAmount": 0.00,
+  "status": "ACTIVE"
+}
+
+###
+POST http://localhost:8080/api/energy-goals
+Content-Type: application/json
+
+{
+  "household": {
+    "householdId": 2
+  },
+  "goalName": "Reduce Monthly Consumption",
+  "goalType": "CONSUMPTION_REDUCTION",
+  "targetValue": 10.0,
+  "startDate": "2026-08-14",
+  "endDate": "2026-12-31",
+  "currentValue": 0.0,
+  "status": "ACTIVE"
+
+}
+###
+POST http://localhost:8080/api/notifications
+Content-Type: application/json
+
+{
+  "household": {
+    "householdId": 2
+  },
+  "notificationTitle": "Test Notification",
+  "notificationMessage": "Created during backend API testing",
+  "notificationType": "TEST",
+  "isRead": false
+}
+###
+POST http://localhost:8080/api/budgets
+Content-Type: application/json
+
+{
+  "household": {
+    "householdId": 2
+  },
+  "budgetMonth": 9,
+  "budgetYear": 2026,
+  "budgetAmount": 10000.00,
+  "warningThreshold": 80.0,
+  "currentEstimatedAmount": 0.00,
+  "status": "ACTIVE"
+}
+
+###
+POST http://localhost:8080/api/daily-usage
+Content-Type: application/json
+
+{
+  "appliance": {
+    "applianceId": 5
+  },
+  "usageDate": "2026-08-15",
+  "hoursUsed": 5.0,
+  "estimatedConsumptionKwh": 0.375,
+  "usageNotes": "Temporary API test"
+}
+
+###
+POST http://localhost:8080/api/users
+Content-Type: application/json
+
+{
+  "firstName": "",
+  "lastName": "Tester",
+  "email": "wrong-email",
+  "password": "123",
+  "phoneNumber": "0771234567",
+  "accountStatus": "ACTIVE"
+}
+###
+POST http://localhost:8080/api/households
+Content-Type: application/json
+
+{
+  "user": {
+    "userId": 1
+  },
+  "householdName": "",
+  "location": "",
+  "houseType": "",
+  "numberOfResidents": 0
+}
+###
+POST http://localhost:8080/api/rooms
+Content-Type: application/json
+
+{
+  "household": {
+    "householdId": 1
+  },
+  "roomName": "",
+  "roomType": "",
+  "description": "Validation test"
+}
+
+###
+POST http://localhost:8080/api/appliances
+Content-Type: application/json
+
+{
+  "room": {
+    "roomId": 1
+  },
+  "category": {
+    "categoryId": 1
+  },
+  "applianceName": "",
+  "brand": "Test Brand",
+  "model": "TEST-001",
+  "ratedPower": -75.00,
+  "quantity": 0,
+  "energyRating": "A",
+  "typicalDailyHours": -5.00,
+  "status": ""
+}
+
+###
+POST http://localhost:8080/api/daily-usage
+Content-Type: application/json
+
+{
+  "appliance": {
+    "applianceId": 5
+  },
+  "usageDate": "2026-08-15",
+  "hoursUsed": -5.0,
+  "estimatedConsumptionKwh": -1.25,
+  "usageNotes": "Validation test"
+}
+
+###
+POST http://localhost:8080/api/electricity-bills
+Content-Type: application/json
+
+{
+  "household": {
+    "householdId": 2
+  },
+  "billingPeriod": "",
+  "unitsConsumedKwh": -100.0,
+  "billAmount": -5000.00,
+  "billDate": "2026-08-14",
+  "paymentStatus": ""
+}
+###
+POST http://localhost:8080/api/tariffs
+Content-Type: application/json
+
+{
+  "tariffName": "",
+  "effectiveFrom": "2026-08-14",
+  "effectiveTo": null,
+  "ratePerUnit": -1.00,
+  "fixedCharge": -100.00,
+  "status": ""
+}
+###
+POST http://localhost:8080/api/bill-predictions
+Content-Type: application/json
+
+{
+  "household": {
+    "householdId": 2
+  },
+  "tariff": {
+    "tariffId": 1
+  },
+  "predictionDate": "2026-08-14",
+  "targetMonth": "2026-09-01",
+  "predictedConsumptionKwh": -180.0,
+  "predictedBillAmount": -6000.00,
+  "lowerEstimate": -5500.00,
+  "upperEstimate": -6500.00,
+  "predictionStatus": ""
+}
+###
+POST http://localhost:8080/api/recommendations
+Content-Type: application/json
+
+{
+  "household": {
+    "householdId": 2
+  },
+  "recommendationTitle": "",
+  "recommendationDescription": "Validation test",
+  "recommendationType": "",
+  "priority": "",
+  "estimatedSavingKwh": -5.0,
+  "estimatedSavingAmount": -100.00,
+  "status": ""
+}
+
+###
+POST http://localhost:8080/api/budgets
+Content-Type: application/json
+
+{
+  "household": {
+    "householdId": 2
+  },
+  "budgetMonth": 13,
+  "budgetYear": 2026,
+  "budgetAmount": -10000.00,
+  "warningThreshold": -80.0,
+  "currentEstimatedAmount": -500.00,
+  "status": ""
+}
+
+###
+POST http://localhost:8080/api/energy-goals
+Content-Type: application/json
+
+{
+  "household": {
+    "householdId": 2
+  },
+  "goalName": "",
+  "goalType": "",
+  "targetValue": -100.0,
+  "startDate": "2026-09-01",
+  "endDate": "2026-08-01",
+  "currentValue": -20.0,
+  "status": ""
+}
+
+###
+POST http://localhost:8080/api/notifications
+Content-Type: application/json
+
+{
+  "household": {
+    "householdId": 2
+  },
+  "notificationType": "",
+  "title": "",
+  "message": "",
+  "isRead": null
+}
+
+###
+POST http://localhost:8080/api/notifications
+Content-Type: application/json
+
+{
+  "household": {
+    "householdId": 2
+  },
+  "notificationType": "",
+  "notificationTitle": "",
+  "notificationMessage": "",
+  "isRead": null
+}
+
+###
+GET http://localhost:8080/api/users/99999
+
+###
+GET http://localhost:8080/api/households/99999
+
+###
+GET http://localhost:8080/api/rooms/99999
+
+###
+GET http://localhost:8080/api/appliance-categories/99999
+
+###
+GET http://localhost:8080/api/appliances/99999
+
+###
+GET http://localhost:8080/api/daily-usage/99999
+
+###
+GET http://localhost:8080/api/electricity-bills/99999
+
+###
+GET http://localhost:8080/api/tariffs/99999
+
+###
+GET http://localhost:8080/api/bill-predictions/99999
+
+###
+GET http://localhost:8080/api/recommendations/99999
+
+###
+GET http://localhost:8080/api/budgets/99999
+
+###
+GET http://localhost:8080/api/energy-goals/99999
+
+###
+GET http://localhost:8080/api/notifications/99999
+
+###
+GET http://localhost:8080/api/users
+
+###
+POST http://localhost:8080/api/users
+Content-Type: application/json
+
+{
+  "firstName": "Test",
+  "lastName": "User",
+  "email": "murad-final-test-0814@example.com",
+  "password": "password123"
+}
+
+###
+GET http://localhost:8080/api/users
+
+###
+PUT http://localhost:8080/api/users/5
+Content-Type: application/json
+
+{
+  "firstName": "Test Updated",
+  "lastName": "User",
+  "email": "murad-final-test-0814@example.com",
+  "password": "password123",
+  "phoneNumber": "0771234567",
+  "accountStatus": "ACTIVE"
+}
+
+###
+DELETE http://localhost:8080/api/users/5
+
+###
+GET http://localhost:8080/api/users/5
+
+###
+GET http://localhost:8080/api/households
+
+###
+POST http://localhost:8080/api/households
+Content-Type: application/json
+
+{
+  "user": {
+    "userId": 1
+  },
+  "householdName": "Test Household",
+  "location": "Colombo",
+  "houseType": "House",
+  "numberOfResidents": 4
+}
+
+###
+PUT http://localhost:8080/api/households/3
+Content-Type: application/json
+
+{
+  "user": {
+    "userId": 1
+  },
+  "householdName": "Test Household Updated",
+  "location": "Colombo",
+  "houseType": "House",
+  "numberOfResidents": 5
+}
+
+###
+DELETE http://localhost:8080/api/households/3
+
+###
+GET http://localhost:8080/api/households/3
+
+###
+GET http://localhost:8080/api/rooms
+
+###
+POST http://localhost:8080/api/rooms
+Content-Type: application/json
+
+{
+  "household": {
+    "householdId": 2
+  },
+  "roomName": "Test Bedroom",
+  "roomType": "Bedroom",
+  "description": "Room CRUD test"
+}
+
+###
+PUT http://localhost:8080/api/rooms/4
+Content-Type: application/json
+
+{
+  "household": {
+    "householdId": 7
+  },
+  "roomName": "Test Bedroom Updated",
+  "roomType": "Bedroom",
+  "description": "Updated room CRUD test"
+}
+
+###
+PUT http://localhost:8080/api/rooms/7
+Content-Type: application/json
+
+{
+  "household": {
+    "householdId": 2
+  },
+  "roomName": "Test Bedroom Updated",
+  "roomType": "Bedroom",
+  "description": "Updated room CRUD test"
+}
+
+###
+DELETE http://localhost:8080/api/rooms/6
+
+###
+GET http://localhost:8080/api/appliance-categories
+
+###
+POST http://localhost:8080/api/appliance-categories
+Content-Type: application/json
+
+{
+  "categoryName": "Test Category"
+}
+
+###
+PUT http://localhost:8080/api/appliance-categories/6
+Content-Type: application/json
+
+{
+  "categoryName": "Test Category Updated"
+}
+
+###
+DELETE http://localhost:8080/api/appliance-categories/6
+
+###
+GET http://localhost:8080/api/appliance-categories/6
+
+###
+GET http://localhost:8080/api/appliances
+
+###
+POST http://localhost:8080/api/appliances
+Content-Type: application/json
+
+{
+  "room": {
+    "roomId": 2
+  },
+  "category": {
+    "categoryId": 1
+  },
+  "applianceName": "Test Fan",
+  "brand": "Test Brand",
+  "model": "TF-001",
+  "ratedPower": 75.00,
+  "quantity": 1,
+  "energyRating": "A",
+  "typicalDailyHours": 6.0,
+  "status": "ACTIVE"
+}
+
+###
+PUT http://localhost:8080/api/appliances/8
+Content-Type: application/json
+
+{
+  "room": {
+    "roomId": 2
+  },
+  "category": {
+    "categoryId": 1
+  },
+  "applianceName": "Test Fan Updated",
+  "brand": "Test Brand",
+  "model": "TF-001",
+  "ratedPower": 80.00,
+  "quantity": 1,
+  "energyRating": "A",
+  "typicalDailyHours": 5.0,
+  "status": "ACTIVE"
+}
+
+###
+DELETE http://localhost:8080/api/appliances/8
+
+###
+GET http://localhost:8080/api/appliances/8
+
+###
+GET http://localhost:8080/api/daily-usage
+
+###
+PUT http://localhost:8080/api/daily-usage/8
+Content-Type: application/json
+
+{
+  "appliance": {
+    "applianceId": 5
+  },
+  "usageDate": "2026-08-17",
+  "hoursUsed": 5.5,
+  "estimatedConsumptionKwh": 0.92,
+  "usageNotes": "Daily usage CRUD test updated"
+}
+
+###
+DELETE http://localhost:8080/api/daily-usage/8
+
+###
+GET http://localhost:8080/api/daily-usage/8
+
+###
+GET http://localhost:8080/api/electricity-bills
+
+###
+POST http://localhost:8080/api/electricity-bills
+Content-Type: application/json
+
+{
+  "household": {
+    "householdId": 2
+  },
+  "billingPeriod": "2026-08",
+  "unitsConsumedKwh": 180.50,
+  "billAmount": 6500.00,
+  "billDate": "2026-08-14",
+  "paymentStatus": "UNPAID"
+}
+
+###
+PUT http://localhost:8080/api/electricity-bills/2
+Content-Type: application/json
+
+{
+  "household": {
+    "householdId": 2
+  },
+  "billingPeriod": "2026-08",
+  "unitsConsumedKwh": 195.75,
+  "billAmount": 7000.00,
+  "billDate": "2026-08-14",
+  "paymentStatus": "PAID"
+}
+
+###
+DELETE http://localhost:8080/api/electricity-bills/2
+
+###
+GET http://localhost:8080/api/electricity-bills/2
+
+###
+GET http://localhost:8080/api/tariffs
+
+###
+POST http://localhost:8080/api/tariffs
+Content-Type: application/json
+
+{
+  "tariffName": "Test Tariff",
+  "effectiveFrom": "2026-09-01",
+  "effectiveTo": null,
+  "ratePerUnit": 25.00,
+  "fixedCharge": 500.00,
+  "status": "ACTIVE"
+}
+
+###
+PUT http://localhost:8080/api/tariffs/2
+Content-Type: application/json
+
+{
+  "tariffName": "Test Tariff Updated",
+  "effectiveFrom": "2026-09-01",
+  "effectiveTo": null,
+  "ratePerUnit": 30.00,
+  "fixedCharge": 550.00,
+  "status": "ACTIVE"
+}
+
+###
+DELETE http://localhost:8080/api/tariffs/2
+
+###
+GET http://localhost:8080/api/tariffs/2
+
+###
+GET http://localhost:8080/api/bill-predictions
+
+###
+POST http://localhost:8080/api/bill-predictions
+Content-Type: application/json
+
+{
+  "household": {
+    "householdId": 4
+  },
+  "tariff": {
+    "tariffId": 1
+  },
+  "predictionDate": "2026-08-14",
+  "targetMonth": "2026-09-01",
+  "predictedConsumptionKwh": 190.00,
+  "predictedBillAmount": 6800.00,
+  "lowerEstimate": 6200.00,
+  "upperEstimate": 7400.00,
+  "predictionStatus": "COMPLETED"
+}
+
+###
+PUT http://localhost:8080/api/bill-predictions/4
+Content-Type: application/json
+
+{
+  "household": {
+    "householdId": 4
+  },
+  "tariff": {
+    "tariffId": 1
+  },
+  "predictionDate": "2026-08-14",
+  "targetMonth": "2026-09-01",
+  "predictedConsumptionKwh": 205.00,
+  "predictedBillAmount": 7200.00,
+  "lowerEstimate": 6600.00,
+  "upperEstimate": 7800.00,
+  "predictionStatus": "COMPLETED"
+}
+
+###
+DELETE http://localhost:8080/api/bill-predictions/4
+
+###
+GET http://localhost:8080/api/bill-predictions/4
+
+###
+GET http://localhost:8080/api/recommendations
+
+###
+POST http://localhost:8080/api/recommendations
+Content-Type: application/json
+
+{
+  "household": {
+    "householdId": 1
+  },
+  "recommendationTitle": "Reduce Air Conditioner Usage",
+  "recommendationDescription": "Reduce daily air conditioner usage by one hour during peak periods.",
+  "recommendationType": "ENERGY_SAVING",
+  "priority": "HIGH",
+  "estimatedSavingKwh": 15.50,
+  "estimatedSavingAmount": 750.00,
+  "status": "ACTIVE"
+}
+
+###
+PUT http://localhost:8080/api/recommendations/4
+Content-Type: application/json
+
+{
+  "household": {
+    "householdId": 1
+  },
+  "recommendationTitle": "Reduce Air Conditioner Usage Updated",
+  "recommendationDescription": "Reduce daily air conditioner usage by two hours during peak periods.",
+  "recommendationType": "ENERGY_SAVING",
+  "priority": "MEDIUM",
+  "estimatedSavingKwh": 20.00,
+  "estimatedSavingAmount": 950.00,
+  "status": "ACTIVE"
+}
+
+###
+DELETE http://localhost:8080/api/recommendations/4
+
+###
+GET http://localhost:8080/api/recommendations/4
+
+###
+GET http://localhost:8080/api/budgets
+
+###
+POST http://localhost:8080/api/budgets
+Content-Type: application/json
+
+{
+  "household": {
+    "householdId": 1
+  },
+  "budgetMonth": 9,
+  "budgetYear": 2026,
+  "budgetAmount": 10000.00,
+  "warningThreshold": 80.00,
+  "currentEstimatedAmount": 2500.00,
+  "status": "ACTIVE"
+}
+
+###
+PUT http://localhost:8080/api/budgets/8
+Content-Type: application/json
+
+{
+  "household": {
+    "householdId": 1
+  },
+  "budgetMonth": 9,
+  "budgetYear": 2026,
+  "budgetAmount": 12000.00,
+  "warningThreshold": 85.00,
+  "currentEstimatedAmount": 3000.00,
+  "status": "ACTIVE"
+}
+
+###
+DELETE http://localhost:8080/api/budgets/8
+
+###
+GET http://localhost:8080/api/budgets/8
+
+###
+GET http://localhost:8080/api/energy-goals
+
+###
+POST http://localhost:8080/api/energy-goals
+Content-Type: application/json
+
+{
+  "household": {
+    "householdId": 1
+  },
+  "goalName": "Reduce Monthly Consumption",
+  "goalType": "CONSUMPTION_REDUCTION",
+  "targetValue": 150.00,
+  "startDate": "2026-08-14",
+  "endDate": "2026-09-14",
+  "currentValue": 180.00,
+  "status": "ACTIVE"
+}
+
+###
+PUT http://localhost:8080/api/energy-goals/6
+Content-Type: application/json
+
+{
+  "household": {
+    "householdId": 1
+  },
+  "goalName": "Reduce Monthly Consumption Updated",
+  "goalType": "CONSUMPTION_REDUCTION",
+  "targetValue": 140.00,
+  "startDate": "2026-08-14",
+  "endDate": "2026-09-30",
+  "currentValue": 170.00,
+  "status": "ACTIVE"
+}
+
+###
+DELETE http://localhost:8080/api/energy-goals/6
+
+###
+GET http://localhost:8080/api/energy-goals/6
+
+###
+GET http://localhost:8080/api/notifications
+
+###
+POST http://localhost:8080/api/notifications
+Content-Type: application/json
+
+{
+  "household": {
+    "householdId": 2
+  },
+  "notificationType": "BUDGET_ALERT",
+  "notificationTitle": "Budget Warning",
+  "notificationMessage": "Your estimated electricity bill is approaching the monthly budget.",
+  "isRead": false
+}
+
+###
+PUT http://localhost:8080/api/notifications/5
+Content-Type: application/json
+
+{
+  "household": {
+    "householdId": 2
+  },
+  "notificationType": "BUDGET_ALERT",
+  "notificationTitle": "Budget Warning Updated",
+  "notificationMessage": "Your estimated electricity bill has reached the monthly warning threshold.",
+  "isRead": true
+}
+
+###
+DELETE http://localhost:8080/api/notifications/5
+
+###
+GET http://localhost:8080/api/notifications/5
+
+###
+POST http://localhost:8080/api/households
+Content-Type: application/json
+
+{
+  "user": {
+    "userId": 99999
+  },
+  "householdName": "Invalid User Test",
+  "location": "Colombo",
+  "houseType": "House",
+  "numberOfResidents": 4
+}
+
+###
+POST http://localhost:8080/api/rooms
+Content-Type: application/json
+
+{
+  "household": {
+    "householdId": 99999
+  },
+  "roomName": "Invalid Household Room",
+  "roomType": "Bedroom",
+  "description": "Relationship validation test"
+}
+
+###
+POST http://localhost:8080/api/appliances
+Content-Type: application/json
+
+{
+  "room": {
+    "roomId": 99999
+  },
+  "category": {
+    "categoryId": 1
+  },
+  "applianceName": "Invalid Room Test",
+  "brand": "Test",
+  "model": "TEST-01",
+  "ratedPower": 75.00,
+  "quantity": 1,
+  "energyRating": "A",
+  "typicalDailyHours": 4.0,
+  "status": "ACTIVE"
+}
+
+###
+POST http://localhost:8080/api/appliances
+Content-Type: application/json
+
+{
+  "room": {
+    "roomId": 2
+  },
+  "category": {
+    "categoryId": 99999
+  },
+  "applianceName": "Invalid Category Test",
+  "brand": "Test",
+  "model": "TEST-02",
+  "ratedPower": 75.00,
+  "quantity": 1,
+  "energyRating": "A",
+  "typicalDailyHours": 4.0,
+  "status": "ACTIVE"
+}
+
+###
+POST http://localhost:8080/api/daily-usage
+Content-Type: application/json
+
+{
+  "appliance": {
+    "applianceId": 99999
+  },
+  "usageDate": "2026-08-18",
+  "hoursUsed": 4.0,
+  "estimatedConsumptionKwh": 1.25,
+  "usageNotes": "Invalid appliance relationship test"
+}
+
+###
+POST http://localhost:8080/api/electricity-bills
+Content-Type: application/json
+
+{
+  "household": {
+    "householdId": 99999
+  },
+  "billingPeriod": "2026-08",
+  "unitsConsumedKwh": 180.50,
+  "billAmount": 6500.00,
+  "billDate": "2026-08-14",
+  "paymentStatus": "UNPAID"
+}
+
+###
+POST http://localhost:8080/api/bill-predictions
+Content-Type: application/json
+
+{
+  "household": {
+    "householdId": 99999
+  },
+  "tariff": {
+    "tariffId": 1
+  },
+  "predictionDate": "2026-08-14",
+  "targetMonth": "2026-09-01",
+  "predictedConsumptionKwh": 190.00,
+  "predictedBillAmount": 6800.00,
+  "lowerEstimate": 6200.00,
+  "upperEstimate": 7400.00,
+  "predictionStatus": "COMPLETED"
+}
+
+###
+POST http://localhost:8080/api/recommendations
+Content-Type: application/json
+
+{
+  "household": {
+    "householdId": 99999
+  },
+  "recommendationTitle": "Invalid Household Test",
+  "recommendationDescription": "Relationship validation test",
+  "recommendationType": "ENERGY_SAVING",
+  "priority": "HIGH",
+  "estimatedSavingKwh": 5.00,
+  "estimatedSavingAmount": 100.00,
+  "status": "ACTIVE"
+}
+
+###
+POST http://localhost:8080/api/budgets
+Content-Type: application/json
+
+{
+  "household": {
+    "householdId": 99999
+  },
+  "budgetMonth": 10,
+  "budgetYear": 2026,
+  "budgetAmount": 10000.00,
+  "warningThreshold": 80.00,
+  "currentEstimatedAmount": 2500.00,
+  "status": "ACTIVE"
+}
+
+###
+POST http://localhost:8080/api/energy-goals
+Content-Type: application/json
+
+{
+  "household": {
+    "householdId": 99999
+  },
+  "goalName": "Invalid Household Goal",
+  "goalType": "CONSUMPTION_REDUCTION",
+  "targetValue": 150.00,
+  "startDate": "2026-08-14",
+  "endDate": "2026-09-14",
+  "currentValue": 180.00,
+  "status": "ACTIVE"
+}
+
+###
+POST http://localhost:8080/api/notifications
+Content-Type: application/json
+
+{
+  "household": {
+    "householdId": 99999
+  },
+  "notificationType": "TEST",
+  "notificationTitle": "Invalid Household Test",
+  "notificationMessage": "Relationship validation test",
+  "isRead": false
+}
+
+###
+POST http://localhost:8080/api/tariffs
+Content-Type: application/json
+
+{
+  "tariffName": "Invalid Date Tariff",
+  "effectiveFrom": "2026-10-01",
+  "effectiveTo": "2026-09-01",
+  "ratePerUnit": 25.00,
+  "fixedCharge": 500.00,
+  "status": "ACTIVE"
+}
+
+###
+POST http://localhost:8080/api/tariffs
+Content-Type: application/json
+
+{
+  "tariffName": "Second Active Tariff",
+  "effectiveFrom": "2026-10-01",
+  "effectiveTo": null,
+  "ratePerUnit": 30.00,
+  "fixedCharge": 600.00,
+  "status": "ACTIVE"
+}
+
+###
+GET http://localhost:8080/api/tariff-rates
+
+###
+GET http://localhost:8080/api/tariffs
+
+###
+POST http://localhost:8080/api/tariff-rates
+Content-Type: application/json
+
+{
+  "tariff": {
+    "tariffId": 1
+  },
+  "minUnits": 0,
+  "maxUnits": 30,
+  "ratePerUnit": 5.00,
+  "fixedCharge": 80.00,
+  "consumerGroup": "LOW_USAGE",
+  "blockOrder": 1
+}
+
+###
+POST http://localhost:8080/api/tariff-rates
+Content-Type: application/json
+
+{
+  "tariff": {
+    "tariffId": 1
+  },
+  "minUnits": 31,
+  "maxUnits": 60,
+  "ratePerUnit": 9.00,
+  "fixedCharge": 210.00,
+  "consumerGroup": "LOW_USAGE",
+  "blockOrder": 2
+}
+
+###
+GET http://localhost:8080/api/tariff-rates/tariff/1
+
+
+###
+POST http://localhost:8080/api/tariff-rates
+Content-Type: application/json
+
+{
+  "tariff": {
+    "tariffId": 1
+  },
+  "minUnits": 0,
+  "maxUnits": 60,
+  "ratePerUnit": 14.00,
+  "fixedCharge": 0.00,
+  "consumerGroup": "ABOVE_60_TO_180",
+  "blockOrder": 1
+}
+
+###
+POST http://localhost:8080/api/tariff-rates
+Content-Type: application/json
+
+{
+  "tariff": {
+    "tariffId": 1
+  },
+  "minUnits": 61,
+  "maxUnits": 90,
+  "ratePerUnit": 20.00,
+  "fixedCharge": 400.00,
+  "consumerGroup": "ABOVE_60_TO_180",
+  "blockOrder": 2
+}
+
+###
+POST http://localhost:8080/api/tariff-rates
+Content-Type: application/json
+
+{
+  "tariff": {
+    "tariffId": 1
+  },
+  "minUnits": 91,
+  "maxUnits": 120,
+  "ratePerUnit": 28.00,
+  "fixedCharge": 1000.00,
+  "consumerGroup": "ABOVE_60_TO_180",
+  "blockOrder": 3
+}
+
+###
+POST http://localhost:8080/api/tariff-rates
+Content-Type: application/json
+
+{
+  "tariff": {
+    "tariffId": 1
+  },
+  "minUnits": 121,
+  "maxUnits": 180,
+  "ratePerUnit": 41.00,
+  "fixedCharge": 1500.00,
+  "consumerGroup": "ABOVE_60_TO_180",
+  "blockOrder": 4
+}
+
+###
+GET http://localhost:8080/api/tariff-rates/tariff/1
+
+###
+PUT http://localhost:8080/api/tariff-rates/5
+Content-Type: application/json
+
+{
+  "tariff": {
+    "tariffId": 1
+  },
+  "minUnits": 121,
+  "maxUnits": 180,
+  "ratePerUnit": 44.00,
+  "fixedCharge": 1500.00,
+  "consumerGroup": "ABOVE_60_TO_180",
+  "blockOrder": 4
+}
+
+###
+POST http://localhost:8080/api/tariff-rates
+Content-Type: application/json
+
+{
+  "tariff": {
+    "tariffId": 1
+  },
+  "minUnits": 181,
+  "maxUnits": null,
+  "ratePerUnit": 65.00,
+  "fixedCharge": 5000.00,
+  "consumerGroup": "ABOVE_180",
+  "blockOrder": 1
+}
+
+###
+GET http://localhost:8080/api/tariff-rates/tariff/1
+
+###
+PUT http://localhost:8080/api/tariff-rates/6
+Content-Type: application/json
+
+{
+  "tariff": {
+    "tariffId": 1
+  },
+  "minUnits": 91,
+  "maxUnits": 120,
+  "ratePerUnit": 28.00,
+  "fixedCharge": 1000.00,
+  "consumerGroup": "ABOVE_60_TO_180",
+  "blockOrder": 3
+}
+
+###
+GET http://localhost:8080/api/tariff-rates/tariff/1
+
+###
+PUT http://localhost:8080/api/tariff-rates/7
+Content-Type: application/json
+
+{
+  "tariff": {
+    "tariffId": 1
+  },
+  "minUnits": 0,
+  "maxUnits": 180,
+  "ratePerUnit": 32.50,
+  "fixedCharge": 0.00,
+  "consumerGroup": "ABOVE_180",
+  "blockOrder": 1
+}
+
+###
+POST http://localhost:8080/api/tariff-rates
+Content-Type: application/json
+
+{
+  "tariff": {
+    "tariffId": 1
+  },
+  "minUnits": 181,
+  "maxUnits": null,
+  "ratePerUnit": 100.00,
+  "fixedCharge": 2500.00,
+  "consumerGroup": "ABOVE_180",
+  "blockOrder": 2
+}
+
+###
+GET http://localhost:8080/api/tariff-rates/tariff/1
+
+###
+GET http://localhost:8080/api/bill-calculation?tariffId=1&units=45
+
+###
+GET http://localhost:8080/api/bill-calculation?tariffId=1&units=30
+
+###
+GET http://localhost:8080/api/bill-calculation?tariffId=1&units=60
+
+###
+GET http://localhost:8080/api/bill-calculation?tariffId=1&units=61
+
+###
+GET http://localhost:8080/api/bill-calculation?tariffId=1&units=90
+
+###
+GET http://localhost:8080/api/bill-calculation?tariffId=1&units=120
+
+###
+GET http://localhost:8080/api/bill-calculation?tariffId=1&units=180
+
+###
+GET http://localhost:8080/api/bill-calculation?tariffId=1&units=181
+
+###
+GET http://localhost:8080/api/bill-calculation?tariffId=1&units=61
+
+###
+GET http://localhost:8080/api/bill-calculation?tariffId=1&units=90
+
+###
+GET http://localhost:8080/api/bill-calculation?tariffId=1&units=120
+
+###
+GET http://localhost:8080/api/bill-calculation?tariffId=1&units=180
+
+###
+GET http://localhost:8080/api/bill-calculation?tariffId=1&units=181
+
+###
+GET http://localhost:8080/api/appliances
+
+###
+POST http://localhost:8080/api/daily-usage
+Content-Type: application/json
+
+{
+  "appliance": {
+    "applianceId": 5
+  },
+  "usageDate": "2026-08-15",
+  "hoursUsed": 5,
+  "usageNotes": "Automatic consumption calculation test"
+}
+
+###
+GET http://localhost:8080/api/daily-usage/household/1/consumption?startDate=2026-08-01&endDate=2026-08-31
+
+###
+GET http://localhost:8080/api/daily-usage/household/99999/consumption?startDate=2026-08-01&endDate=2026-08-31
+
+###
+GET http://localhost:8080/api/daily-usage/household/1/consumption?startDate=2026-08-31&endDate=2026-08-01
+
+###
+GET http://localhost:8080/api/daily-usage/household/1/monthly-summary?year=2026&month=8
+
+###
+GET http://localhost:8080/api/daily-usage/household/1/appliance-breakdown?startDate=2026-08-01&endDate=2026-08-31
+
+###
+GET http://localhost:8080/api/daily-usage/household/1/highest-consuming-appliance?startDate=2026-08-01&endDate=2026-08-31
+
+###
+GET http://localhost:8080/api/daily-usage/household/1/appliance-breakdown?startDate=2026-08-01&endDate=2026-08-31
+
+###
+GET http://localhost:8080/api/daily-usage/household/1/category-breakdown?startDate=2026-08-01&endDate=2026-08-31
+
+###
+GET http://localhost:8080/api/daily-usage/household/1/analytics?startDate=2026-08-01&endDate=2026-08-31
+
+###
+POST http://localhost:8080/api/ml/predict
+Content-Type: application/json
+
+{
+  "year": 2026,
+  "month": 8,
+  "number_of_residents": 4,
+  "appliance_count": 12,
+  "total_rated_power_w": 8500,
+  "previous_month_kwh": 160.0,
+  "previous_2_month_kwh": 155.0,
+  "previous_3_month_kwh": 150.0,
+  "average_last_3_months_kwh": 155.0
+}
+
+###
+POST http://localhost:8080/api/ml/predict-bill?tariffId=1
+Content-Type: application/json
+
+{
+  "year": 2026,
+  "month": 8,
+  "number_of_residents": 4,
+  "appliance_count": 12,
+  "total_rated_power_w": 8500,
+  "previous_month_kwh": 160.0,
+  "previous_2_month_kwh": 155.0,
+  "previous_3_month_kwh": 150.0,
+  "average_last_3_months_kwh": 155.0
+}
+
+###
+POST http://localhost:8080/api/ml/predict-household?householdId=1&tariffId=1&year=2026&month=9
+
+###
+GET http://localhost:8080/api/daily-usage/household/1/monthly-summary?year=2026&month=6
+
+###
+GET http://localhost:8080/api/daily-usage/household/1/monthly-summary?year=2026&month=7
+
+###
+GET http://localhost:8080/api/daily-usage/household/1/monthly-summary?year=2026&month=8
+
+###
+POST http://localhost:8080/api/ml/predict-household?householdId=1&tariffId=1&year=2026&month=9
+
+###
+POST http://localhost:8080/api/daily-usage
+Content-Type: application/json
+
+{
+  "appliance": {
+    "applianceId": 5
+  },
+  "usageDate": "2026-06-15",
+  "hoursUsed": 4,
+  "usageNotes": "Historical ML test data - June"
+}
+
+###
+POST http://localhost:8080/api/daily-usage
+Content-Type: application/json
+
+{
+  "appliance": {
+    "applianceId": 5
+  },
+  "usageDate": "2026-07-15",
+  "hoursUsed": 4.5,
+  "usageNotes": "Historical ML test data - July"
+}
+
+###
+POST http://localhost:8080/api/ml/predict-household?householdId=1&tariffId=1&year=2026&month=9
+
+###
+POST http://localhost:8080/api/ml/predict-household?householdId=1&tariffId=1&year=2026&month=9
+
+###
+POST http://localhost:8080/api/ml/predict-household?householdId=1&tariffId=1&year=2026&month=9
+
+###
+GET http://localhost:8080/api/bill-predictions/household/1
+
+###
+GET http://localhost:8080/api/bill-predictions/household/1/latest
+
+###
+### Generate AI recommendation
+POST http://localhost:8080/api/ai-recommendations/generate
+Content-Type: application/json
+
+{
+  "householdId": 1,
+  "householdName": "Test Household",
+  "year": 2026,
+  "month": 8,
+  "monthlyConsumptionKwh": 20.775,
+  "predictedConsumptionKwh": 63.4,
+  "predictedBillAmount": 1300.00,
+  "highestConsumingAppliance": "Test Air Conditioner",
+  "highestApplianceConsumptionKwh": 16.2,
+  "highestConsumingCategory": "Cooling",
+  "highestCategoryConsumptionKwh": 16.2
+}
+
+###
+POST http://localhost:8080/api/ai-recommendations/generate
+
+###
+POST http://localhost:8080/api/budgets
+Content-Type: application/json
+
+{
+  "household": {
+    "householdId": 1
+  },
+  "budgetMonth": 9,
+  "budgetYear": 2026,
+  "budgetAmount": 1500.00,
+  "warningThreshold": 20.00,
+  "currentEstimatedAmount": 0.00,
+  "status": "ACTIVE"
+}
+
+###
+POST http://localhost:8080/api/ml/predict-household?householdId=1&tariffId=1&year=2026&month=9
+
+###
+GET http://localhost:8080/api/budgets
+
+###
+PUT http://localhost:8080/api/budgets/9
+Content-Type: application/json
+
+{
+  "household": {
+    "householdId": 1
+  },
+  "budgetMonth": 9,
+  "budgetYear": 2026,
+  "budgetAmount": 1500.00,
+  "warningThreshold": 80.00,
+  "currentEstimatedAmount": 1300.00,
+  "status": "WARNING"
+}
+
+###
+POST http://localhost:8080/api/energy-goals
+Content-Type: application/json
+
+{
+  "household": {
+    "householdId": 1
+  },
+  "goalName": "September Energy Target",
+  "goalType": "MONTHLY_CONSUMPTION",
+  "targetValue": 70.00,
+  "startDate": "2026-09-01",
+  "endDate": "2026-09-30",
+  "currentValue": 0.00,
+  "status": "ON_TRACK"
+}
+
+###
+POST http://localhost:8080/api/ml/predict-household?householdId=1&tariffId=1&year=2026&month=9
+
+###
+GET http://localhost:8080/api/energy-goals
+
+###
+POST http://localhost:8080/api/ml/predict-household?householdId=1&tariffId=1&year=2026&month=9
+
+###
+GET http://localhost:8080/api/notifications
+
+###
+GET http://localhost:8080/api/notifications/household/1
+
+###
+GET http://localhost:8080/api/notifications/household/1/unread
+
+###
+PUT http://localhost:8080/api/notifications/1/read
+
+###
+GET http://localhost:8080/api/users
+
+###
+GET http://localhost:8080/api/users
+
+###
+POST http://localhost:8080/api/users
+Content-Type: application/json
+
+{
+  "firstName": "Login",
+  "lastName": "Test",
+  "email": "logintest@example.com",
+  "password": "Test12345",
+  "phoneNumber": "0770000000",
+  "accountStatus": "ACTIVE"
+}
+
+###
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "logintest@example.com",
+  "password": "Test12345"
+}
+
+###
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "logintest@example.com",
+  "password": "WrongPassword"
+}
+
+###
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "logintest@example.com",
+  "password": "Test12345"
+}
+
+###
+GET http://localhost:8080/api/users
+
+###
+POST http://localhost:8080/api/auth/login
+
+###
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "logintest@example.com",
+  "password": "Test12345"
+}
+
+###
+GET http://localhost:8080/api/users
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzMzk0OCwiaWF0IjoxNzg2NzQ3NTQ4LCJ1c2VySWQiOjZ9.QEq3QZsZK576JmrRXzJrMwYBByk4iAtWGZWFDYFaiNA
+
+###
+POST http://localhost:8080/api/auth/register
+Content-Type: application/json
+
+{
+  "firstName": "JWT",
+  "lastName": "User",
+  "email": "jwtuser@example.com",
+  "password": "Test12345"
+}
+
+###
+POST http://localhost:8080/api/users
+Content-Type: application/json
+
+{
+  "firstName": "Blocked",
+  "lastName": "User",
+  "email": "blocked@example.com",
+  "password": "Test12345"
+}
+
+###
+POST http://localhost:8080/api/auth/register
+Content-Type: application/json
+
+{
+  "firstName": "New",
+  "lastName": "User",
+  "email": "newuser2@example.com",
+  "password": "Test12345"
+}
+
+###
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "logintest@example.com",
+  "password": "Test12345"
+}
+
+###
+POST http://localhost:8080/api/households
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNTc2NSwiaWF0IjoxNzg2NzQ5MzY1LCJ1c2VySWQiOjZ9.crpwdnUZvmu7cz5CQ9HlnPC_WlyplVBetYG88ZgHRh8
+Content-Type: application/json
+
+{
+  "user": {
+    "userId": 999
+  },
+  "householdName": "JWT Ownership Test House",
+  "location": "Colombo",
+  "houseType": "House",
+  "numberOfResidents": 4
+}
+
+###
+GET http://localhost:8080/api/households/HOUSEHOLD_ID_FROM_USER_A
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNTc2NSwiaWF0IjoxNzg2NzQ5MzY1LCJ1c2VySWQiOjZ9.crpwdnUZvmu7cz5CQ9HlnPC_WlyplVBetYG88ZgHRh8
+
+
+###
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "logintest@example.com",
+  "password": "Test12345"
+}
+
+###
+
+POST http://localhost:8080/api/households
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+Content-Type: application/json
+
+{
+  "user": {
+    "userId": 999
+  },
+  "householdName": "Ownership Test House",
+  "location": "Colombo",
+  "houseType": "House",
+  "numberOfResidents": 4
+}
+
+###
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "jwtuser@example.com",
+  "password": "Test12345"
+}
+
+###
+
+GET http://localhost:8080/api/households/6
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6Imp3dHVzZXJAZXhhbXBsZS5jb20iLCJleHAiOjE3ODY4MzY2NDYsImlhdCI6MTc4Njc1MDI0NiwidXNlcklkIjo3fQ.HZkf7I_3dqb7Yfm3Ezq3gqJ0yxzc3Zao6HCsc5LZe-w
+
+###
+GET http://localhost:8080/api/households/6
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+###
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "jwtuser@example.com",
+  "password": "Test12345"
+}
+
+###
+
+GET http://localhost:8080/api/households/6
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6Imp3dHVzZXJAZXhhbXBsZS5jb20iLCJleHAiOjE3ODY4MzY5NDIsImlhdCI6MTc4Njc1MDU0MiwidXNlcklkIjo3fQ.nEQN52EmeI6u0pDCZzo_4qswvLYerM8q3wTLVB9L1pw
+
+###
+GET http://localhost:8080/api/households/6
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+
+###
+POST http://localhost:8080/api/rooms
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+Content-Type: application/json
+
+{
+  "household": {
+    "householdId": 6
+  },
+  "roomName": "Ownership Test Room",
+  "roomType": "Bedroom",
+  "description": "Room ownership test"
+}
+
+###
+GET http://localhost:8080/api/rooms/8
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6Imp3dHVzZXJAZXhhbXBsZS5jb20iLCJleHAiOjE3ODY4MzY5NDIsImlhdCI6MTc4Njc1MDU0MiwidXNlcklkIjo3fQ.nEQN52EmeI6u0pDCZzo_4qswvLYerM8q3wTLVB9L1pw
+
+###
+POST http://localhost:8080/api/rooms
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6Imp3dHVzZXJAZXhhbXBsZS5jb20iLCJleHAiOjE3ODY4MzY5NDIsImlhdCI6MTc4Njc1MDU0MiwidXNlcklkIjo3fQ.nEQN52EmeI6u0pDCZzo_4qswvLYerM8q3wTLVB9L1pw
+Content-Type: application/json
+
+{
+  "household": {
+    "householdId": 6
+  },
+  "roomName": "Unauthorized Room",
+  "roomType": "Bedroom",
+  "description": "Should not be created"
+}
+
+###
+GET http://localhost:8080/api/rooms
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+###
+GET http://localhost:8080/api/rooms/9
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+###
+POST http://localhost:8080/api/rooms
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6Imp3dHVzZXJAZXhhbXBsZS5jb20iLCJleHAiOjE3ODY4MzY5NDIsImlhdCI6MTc4Njc1MDU0MiwidXNlcklkIjo3fQ.nEQN52EmeI6u0pDCZzo_4qswvLYerM8q3wTLVB9L1pw
+
+{
+  "household": {
+    "householdId": 6
+  },
+  "roomName": "Unauthorized Room",
+  "roomType": "Bedroom",
+  "description": "This should not be created"
+}
+
+###
+POST http://localhost:8080/api/rooms
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6Imp3dHVzZXJAZXhhbXBsZS5jb20iLCJleHAiOjE3ODY4MzY5NDIsImlhdCI6MTc4Njc1MDU0MiwidXNlcklkIjo3fQ.nEQN52EmeI6u0pDCZzo_4qswvLYerM8q3wTLVB9L1pw
+Content-Type: application/json
+
+{
+  "household": {
+    "householdId": 6
+  },
+  "roomName": "Unauthorized Room",
+  "roomType": "Bedroom",
+  "description": "This should not be created"
+}
+
+###
+POST http://localhost:8080/api/appliances
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6Imp3dHVzZXJAZXhhbXBsZS5jb20iLCJleHAiOjE3ODY4MzY5NDIsImlhdCI6MTc4Njc1MDU0MiwidXNlcklkIjo3fQ.nEQN52EmeI6u0pDCZzo_4qswvLYerM8q3wTLVB9L1pw
+Content-Type: application/json
+
+{
+  "room": {
+    "roomId": 9
+  },
+  "category": {
+    "categoryId": 1
+  },
+  "applianceName": "Unauthorized Appliance",
+  "brand": "TestBrand",
+  "model": "UA-100",
+  "ratedPower": 100,
+  "quantity": 1,
+  "energyRating": "A",
+  "typicalDailyHours": 5,
+  "status": "ACTIVE"
+}
+
+###
+GET http://localhost:8080/api/appliances
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+###
+POST http://localhost:8080/api/appliances
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+Content-Type: application/json
+
+{
+  "room": {
+    "roomId": 9
+  },
+  "category": {
+    "categoryId": 1
+  },
+  "applianceName": "Ownership Test Fan",
+  "brand": "TestBrand",
+  "model": "TF-100",
+  "ratedPower": 75,
+  "quantity": 1,
+  "energyRating": "A",
+  "typicalDailyHours": 6,
+  "status": "ACTIVE"
+}
+
+###
+GET http://localhost:8080/api/appliances
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+###
+GET http://localhost:8080/api/appliances/9
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6Imp3dHVzZXJAZXhhbXBsZS5jb20iLCJleHAiOjE3ODY4MzY5NDIsImlhdCI6MTc4Njc1MDU0MiwidXNlcklkIjo3fQ.nEQN52EmeI6u0pDCZzo_4qswvLYerM8q3wTLVB9L1pw
+
+###
+GET http://localhost:8080/api/appliances/9
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+###
+POST http://localhost:8080/api/appliances
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6Imp3dHVzZXJAZXhhbXBsZS5jb20iLCJleHAiOjE3ODY4MzY5NDIsImlhdCI6MTc4Njc1MDU0MiwidXNlcklkIjo3fQ.nEQN52EmeI6u0pDCZzo_4qswvLYerM8q3wTLVB9L1pw
+Content-Type: application/json
+
+{
+  "room": {
+    "roomId": 9
+  },
+  "category": {
+    "categoryId": 1
+  },
+  "applianceName": "Unauthorized Appliance",
+  "brand": "TestBrand",
+  "model": "UA-100",
+  "ratedPower": 100,
+  "quantity": 1,
+  "energyRating": "A",
+  "typicalDailyHours": 5,
+  "status": "ACTIVE"
+}
+
+###
+POST http://localhost:8080/api/daily-usage
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+Content-Type: application/json
+
+{
+  "appliance": {
+    "applianceId": 9
+  },
+  "usageDate": "2026-08-15",
+  "hoursUsed": 5,
+  "usageNotes": "Ownership test"
+}
+
+###
+GET http://localhost:8080/api/daily-usage/14
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6Imp3dHVzZXJAZXhhbXBsZS5jb20iLCJleHAiOjE3ODY4MzY5NDIsImlhdCI6MTc4Njc1MDU0MiwidXNlcklkIjo3fQ.nEQN52EmeI6u0pDCZzo_4qswvLYerM8q3wTLVB9L1pw
+
+###
+GET http://localhost:8080/api/daily-usage/14
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+###
+POST http://localhost:8080/api/daily-usage
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6Imp3dHVzZXJAZXhhbXBsZS5jb20iLCJleHAiOjE3ODY4MzY5NDIsImlhdCI6MTc4Njc1MDU0MiwidXNlcklkIjo3fQ.nEQN52EmeI6u0pDCZzo_4qswvLYerM8q3wTLVB9L1pw
+Content-Type: application/json
+
+{
+  "appliance": {
+    "applianceId": 9
+  },
+  "usageDate": "2026-08-16",
+  "hoursUsed": 4,
+  "usageNotes": "Unauthorized test"
+}
+
+###
+GET http://localhost:8080/api/daily-usage/14
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+###
+POST http://localhost:8080/api/daily-usage
+Authorization: Bearer USER_B_TOKEN
+Content-Type: application/json
+
+{
+  "appliance": {
+    "applianceId": 9
+  },
+  "usageDate": "2026-08-16",
+  "hoursUsed": 4,
+  "usageNotes": "Unauthorized test"
+}
+
+###
+GET http://localhost:8080/api/daily-usage
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+###
+GET http://localhost:8080/api/daily-usage/14
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+###
+POST http://localhost:8080/api/daily-usage
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6Imp3dHVzZXJAZXhhbXBsZS5jb20iLCJleHAiOjE3ODY4MzY5NDIsImlhdCI6MTc4Njc1MDU0MiwidXNlcklkIjo3fQ.nEQN52EmeI6u0pDCZzo_4qswvLYerM8q3wTLVB9L1pw
+Content-Type: application/json
+
+{
+  "appliance": {
+    "applianceId": 9
+  },
+  "usageDate": "2026-08-16",
+  "hoursUsed": 4,
+  "usageNotes": "Unauthorized test"
+}
+
+###
+
+
+###
+POST http://localhost:8080/api/electricity-bills
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+Content-Type: application/json
+
+{
+  "household": {
+    "householdId": 6
+  },
+  "billingPeriod": "August 2026",
+  "unitsConsumedKwh": 65.5,
+  "billAmount": 1325.00,
+  "billDate": "2026-08-15",
+  "paymentStatus": "UNPAID"
+}
+
+###
+GET http://localhost:8080/api/electricity-bills/3
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6Imp3dHVzZXJAZXhhbXBsZS5jb20iLCJleHAiOjE3ODY4MzY5NDIsImlhdCI6MTc4Njc1MDU0MiwidXNlcklkIjo3fQ.nEQN52EmeI6u0pDCZzo_4qswvLYerM8q3wTLVB9L1pw
+
+###
+GET http://localhost:8080/api/electricity-bills/3
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+###
+POST http://localhost:8080/api/electricity-bills
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6Imp3dHVzZXJAZXhhbXBsZS5jb20iLCJleHAiOjE3ODY4MzY5NDIsImlhdCI6MTc4Njc1MDU0MiwidXNlcklkIjo3fQ.nEQN52EmeI6u0pDCZzo_4qswvLYerM8q3wTLVB9L1pw
+Content-Type: application/json
+
+{
+  "household": {
+    "householdId": 6
+  },
+  "billingPeriod": "Unauthorized Test",
+  "unitsConsumedKwh": 50,
+  "billAmount": 1000,
+  "billDate": "2026-08-15",
+  "paymentStatus": "UNPAID"
+}
+
+###
+GET http://localhost:8080/api/bill-predictions
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+###
+POST http://localhost:8080/api/bill-predictions
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+Content-Type: application/json
+
+{
+  "household": {
+    "householdId": 6
+  },
+  "tariff": {
+    "tariffId": 1
+  },
+  "predictionDate": "2026-08-15",
+  "targetMonth": "2026-09-01",
+  "predictedConsumptionKwh": 63.4,
+  "predictedBillAmount": 1300.00,
+  "lowerEstimate": 60.0,
+  "upperEstimate": 67.0,
+  "predictionStatus": "PREDICTED"
+}
+
+###
+GET http://localhost:8080/api/bill-predictions/10
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6Imp3dHVzZXJAZXhhbXBsZS5jb20iLCJleHAiOjE3ODY4MzY5NDIsImlhdCI6MTc4Njc1MDU0MiwidXNlcklkIjo3fQ.nEQN52EmeI6u0pDCZzo_4qswvLYerM8q3wTLVB9L1pw
+
+###
+GET http://localhost:8080/api/bill-predictions/10
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+###
+GET http://localhost:8080/api/bill-predictions/household/6
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6Imp3dHVzZXJAZXhhbXBsZS5jb20iLCJleHAiOjE3ODY4MzY5NDIsImlhdCI6MTc4Njc1MDU0MiwidXNlcklkIjo3fQ.nEQN52EmeI6u0pDCZzo_4qswvLYerM8q3wTLVB9L1pw
+
+###
+GET http://localhost:8080/api/bill-predictions/household/6
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+###
+GET http://localhost:8080/api/bill-predictions/household/6/latest
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6Imp3dHVzZXJAZXhhbXBsZS5jb20iLCJleHAiOjE3ODY4MzY5NDIsImlhdCI6MTc4Njc1MDU0MiwidXNlcklkIjo3fQ.nEQN52EmeI6u0pDCZzo_4qswvLYerM8q3wTLVB9L1pw
+
+###
+GET http://localhost:8080/api/bill-predictions/household/6/latest
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+###
+POST http://localhost:8080/api/budgets
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+Content-Type: application/json
+
+{
+  "household": {
+    "householdId": 6
+  },
+  "budgetMonth": 10,
+  "budgetYear": 2026,
+  "budgetAmount": 1600,
+  "warningThreshold": 80,
+  "currentEstimatedAmount": 0,
+  "status": "ACTIVE"
+}
+
+###
+GET http://localhost:8080/api/budgets/11
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6Imp3dHVzZXJAZXhhbXBsZS5jb20iLCJleHAiOjE3ODY4MzY5NDIsImlhdCI6MTc4Njc1MDU0MiwidXNlcklkIjo3fQ.nEQN52EmeI6u0pDCZzo_4qswvLYerM8q3wTLVB9L1pw
+
+###
+GET http://localhost:8080/api/budgets/11
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+###
+POST http://localhost:8080/api/budgets
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6Imp3dHVzZXJAZXhhbXBsZS5jb20iLCJleHAiOjE3ODY4MzY5NDIsImlhdCI6MTc4Njc1MDU0MiwidXNlcklkIjo3fQ.nEQN52EmeI6u0pDCZzo_4qswvLYerM8q3wTLVB9L1pw
+Content-Type: application/json
+
+{
+  "household": {
+    "householdId": 6
+  },
+  "budgetMonth": 11,
+  "budgetYear": 2026,
+  "budgetAmount": 1700,
+  "warningThreshold": 80,
+  "currentEstimatedAmount": 0,
+  "status": "ACTIVE"
+}
+
+###
+POST http://localhost:8080/api/energy-goals
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+Content-Type: application/json
+
+{
+  "household": {
+    "householdId": 6
+  },
+  "goalName": "September Energy Target",
+  "goalType": "MONTHLY_CONSUMPTION",
+  "targetValue": 70,
+  "startDate": "2026-09-01",
+  "endDate": "2026-09-30",
+  "currentValue": 0,
+  "status": "ON_TRACK"
+}
+
+###
+GET http://localhost:8080/api/energy-goals/8
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6Imp3dHVzZXJAZXhhbXBsZS5jb20iLCJleHAiOjE3ODY4MzY5NDIsImlhdCI6MTc4Njc1MDU0MiwidXNlcklkIjo3fQ.nEQN52EmeI6u0pDCZzo_4qswvLYerM8q3wTLVB9L1pw
+
+###
+GET http://localhost:8080/api/energy-goals/8
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+###
+POST http://localhost:8080/api/energy-goals
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6Imp3dHVzZXJAZXhhbXBsZS5jb20iLCJleHAiOjE3ODY4MzY5NDIsImlhdCI6MTc4Njc1MDU0MiwidXNlcklkIjo3fQ.nEQN52EmeI6u0pDCZzo_4qswvLYerM8q3wTLVB9L1pw
+Content-Type: application/json
+
+{
+  "household": {
+    "householdId": 6
+  },
+  "goalName": "Unauthorized Goal",
+  "goalType": "MONTHLY_CONSUMPTION",
+  "targetValue": 80,
+  "startDate": "2026-10-01",
+  "endDate": "2026-10-31",
+  "currentValue": 0,
+  "status": "ON_TRACK"
+}
+
+###
+POST http://localhost:8080/api/recommendations
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+Content-Type: application/json
+
+{
+  "household": {
+    "householdId": 6
+  },
+  "recommendationTitle": "Reduce AC Usage",
+  "recommendationDescription": "Reduce air-conditioner usage during low-occupancy hours.",
+  "recommendationType": "ENERGY_SAVING",
+  "priority": "HIGH",
+  "estimatedSavingKwh": 8.5,
+  "estimatedSavingAmount": 250,
+  "status": "ACTIVE"
+}
+
+###
+GET http://localhost:8080/api/recommendations/5
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6Imp3dHVzZXJAZXhhbXBsZS5jb20iLCJleHAiOjE3ODY4MzY5NDIsImlhdCI6MTc4Njc1MDU0MiwidXNlcklkIjo3fQ.nEQN52EmeI6u0pDCZzo_4qswvLYerM8q3wTLVB9L1pw
+
+###
+GET http://localhost:8080/api/recommendations/5
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+###
+POST http://localhost:8080/api/recommendations
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6Imp3dHVzZXJAZXhhbXBsZS5jb20iLCJleHAiOjE3ODY4MzY5NDIsImlhdCI6MTc4Njc1MDU0MiwidXNlcklkIjo3fQ.nEQN52EmeI6u0pDCZzo_4qswvLYerM8q3wTLVB9L1pw
+Content-Type: application/json
+
+{
+  "household": {
+    "householdId": 6
+  },
+  "recommendationTitle": "Unauthorized Recommendation",
+  "recommendationDescription": "Ownership security test.",
+  "recommendationType": "ENERGY_SAVING",
+  "priority": "LOW",
+  "estimatedSavingKwh": 2,
+  "estimatedSavingAmount": 50,
+  "status": "ACTIVE"
+}
+
+###
+POST http://localhost:8080/api/notifications
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+Content-Type: application/json
+
+{
+  "household": {
+    "householdId": 6
+  },
+  "notificationTitle": "Budget Warning Test",
+  "notificationMessage": "This is a notification ownership test.",
+  "notificationType": "BUDGET_WARNING",
+  "isRead": false
+}
+
+###
+GET http://localhost:8080/api/notifications/9
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6Imp3dHVzZXJAZXhhbXBsZS5jb20iLCJleHAiOjE3ODY4MzY5NDIsImlhdCI6MTc4Njc1MDU0MiwidXNlcklkIjo3fQ.nEQN52EmeI6u0pDCZzo_4qswvLYerM8q3wTLVB9L1pw
+
+###
+GET http://localhost:8080/api/notifications/9
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+###
+POST http://localhost:8080/api/notifications
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6Imp3dHVzZXJAZXhhbXBsZS5jb20iLCJleHAiOjE3ODY4MzY5NDIsImlhdCI6MTc4Njc1MDU0MiwidXNlcklkIjo3fQ.nEQN52EmeI6u0pDCZzo_4qswvLYerM8q3wTLVB9L1pw
+Content-Type: application/json
+
+{
+  "household": {
+    "householdId": 6
+  },
+  "notificationTitle": "Unauthorized Notification",
+  "notificationMessage": "This should be blocked.",
+  "notificationType": "TEST",
+  "isRead": false
+}
+
+###
+GET http://localhost:8080/api/households/6
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6Imp3dHVzZXJAZXhhbXBsZS5jb20iLCJleHAiOjE3ODY4MzY5NDIsImlhdCI6MTc4Njc1MDU0MiwidXNlcklkIjo3fQ.nEQN52EmeI6u0pDCZzo_4qswvLYerM8q3wTLVB9L1pw
+
+###
+GET http://localhost:8080/api/electricity-bills
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+###
+GET http://localhost:8080/api/bill-predictions
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+###
+GET http://localhost:8080/api/budgets
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+###
+GET http://localhost:8080/api/energy-goals
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+###
+GET http://localhost:8080/api/recommendations
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+###
+GET http://localhost:8080/api/notifications
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+
+###
+GET http://localhost:8080/api/rooms/9
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6Imp3dHVzZXJAZXhhbXBsZS5jb20iLCJleHAiOjE3ODY4MzY5NDIsImlhdCI6MTc4Njc1MDU0MiwidXNlcklkIjo3fQ.nEQN52EmeI6u0pDCZzo_4qswvLYerM8q3wTLVB9L1pw
+
+###
+GET http://localhost:8080/api/appliances/9
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6Imp3dHVzZXJAZXhhbXBsZS5jb20iLCJleHAiOjE3ODY4MzY5NDIsImlhdCI6MTc4Njc1MDU0MiwidXNlcklkIjo3fQ.nEQN52EmeI6u0pDCZzo_4qswvLYerM8q3wTLVB9L1pw
+
+###
+GET http://localhost:8080/api/daily-usage/14
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6Imp3dHVzZXJAZXhhbXBsZS5jb20iLCJleHAiOjE3ODY4MzY5NDIsImlhdCI6MTc4Njc1MDU0MiwidXNlcklkIjo3fQ.nEQN52EmeI6u0pDCZzo_4qswvLYerM8q3wTLVB9L1pw
+
+###
+GET http://localhost:8080/api/electricity-bills/3
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6Imp3dHVzZXJAZXhhbXBsZS5jb20iLCJleHAiOjE3ODY4MzY5NDIsImlhdCI6MTc4Njc1MDU0MiwidXNlcklkIjo3fQ.nEQN52EmeI6u0pDCZzo_4qswvLYerM8q3wTLVB9L1pw
+
+###
+GET http://localhost:8080/api/bill-predictions/10
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6Imp3dHVzZXJAZXhhbXBsZS5jb20iLCJleHAiOjE3ODY4MzY5NDIsImlhdCI6MTc4Njc1MDU0MiwidXNlcklkIjo3fQ.nEQN52EmeI6u0pDCZzo_4qswvLYerM8q3wTLVB9L1pw
+
+###
+GET http://localhost:8080/api/budgets/11
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6Imp3dHVzZXJAZXhhbXBsZS5jb20iLCJleHAiOjE3ODY4MzY5NDIsImlhdCI6MTc4Njc1MDU0MiwidXNlcklkIjo3fQ.nEQN52EmeI6u0pDCZzo_4qswvLYerM8q3wTLVB9L1pw
+
+###
+GET http://localhost:8080/api/energy-goals/8
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6Imp3dHVzZXJAZXhhbXBsZS5jb20iLCJleHAiOjE3ODY4MzY5NDIsImlhdCI6MTc4Njc1MDU0MiwidXNlcklkIjo3fQ.nEQN52EmeI6u0pDCZzo_4qswvLYerM8q3wTLVB9L1pw
+
+###
+GET http://localhost:8080/api/recommendations/5
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6Imp3dHVzZXJAZXhhbXBsZS5jb20iLCJleHAiOjE3ODY4MzY5NDIsImlhdCI6MTc4Njc1MDU0MiwidXNlcklkIjo3fQ.nEQN52EmeI6u0pDCZzo_4qswvLYerM8q3wTLVB9L1pw
+
+###
+GET http://localhost:8080/api/notifications/9
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6Imp3dHVzZXJAZXhhbXBsZS5jb20iLCJleHAiOjE3ODY4MzY5NDIsImlhdCI6MTc4Njc1MDU0MiwidXNlcklkIjo3fQ.nEQN52EmeI6u0pDCZzo_4qswvLYerM8q3wTLVB9L1pw
+
+
+###
+GET http://localhost:8080/api/rooms/9
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+###
+GET http://localhost:8080/api/appliances/9
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+###
+GET http://localhost:8080/api/daily-usage/14
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+###
+GET http://localhost:8080/api/electricity-bills/3
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+###
+GET http://localhost:8080/api/bill-predictions/10
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+###
+GET http://localhost:8080/api/budgets/11
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+###
+GET http://localhost:8080/api/energy-goals/8
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+###
+GET http://localhost:8080/api/recommendations/5
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+###
+GET http://localhost:8080/api/notifications/9
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+###
+GET http://localhost:8080/api/households
+
+###
+GET http://localhost:8080/api/households
+
+###
+GET http://localhost:8080/api/households
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+###
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "logintest@example.com",
+  "password": "Test12345"
+}
+
+###
+GET http://localhost:8080/api/households/6
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6Imp3dHVzZXJAZXhhbXBsZS5jb20iLCJleHAiOjE3ODY4MzY5NDIsImlhdCI6MTc4Njc1MDU0MiwidXNlcklkIjo3fQ.nEQN52EmeI6u0pDCZzo_4qswvLYerM8q3wTLVB9L1pw
+
+###
+GET http://localhost:8080/api/households/6
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+###
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "logintest@example.com",
+  "password": "Test12345"
+}
+
+###
+POST http://localhost:8080/api/auth/register
+Content-Type: application/json
+
+{
+  "firstName": "System",
+  "lastName": "Admin",
+  "email": "admin@example.com",
+  "password": "Admin12345"
+}
+
+###
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@example.com",
+  "password": "Admin12345"
+}
+
+###
+GET http://localhost:8080/api/tariffs
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6Imp3dHVzZXJAZXhhbXBsZS5jb20iLCJleHAiOjE3ODY4MzY5NDIsImlhdCI6MTc4Njc1MDU0MiwidXNlcklkIjo3fQ.nEQN52EmeI6u0pDCZzo_4qswvLYerM8q3wTLVB9L1pw
+
+###
+POST http://localhost:8080/api/tariffs
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6Imp3dHVzZXJAZXhhbXBsZS5jb20iLCJleHAiOjE3ODY4MzY5NDIsImlhdCI6MTc4Njc1MDU0MiwidXNlcklkIjo3fQ.nEQN52EmeI6u0pDCZzo_4qswvLYerM8q3wTLVB9L1pw
+Content-Type: application/json
+
+###
+GET http://localhost:8080/api/users
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6Imp3dHVzZXJAZXhhbXBsZS5jb20iLCJleHAiOjE3ODY4MzY5NDIsImlhdCI6MTc4Njc1MDU0MiwidXNlcklkIjo3fQ.nEQN52EmeI6u0pDCZzo_4qswvLYerM8q3wTLVB9L1pw
+
+###
+GET http://localhost:8080/api/users
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImFkbWluQGV4YW1wbGUuY29tIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzg2ODg5MzUxLCJpYXQiOjE3ODY4MDI5NTEsInVzZXJJZCI6MTB9.exN5xZpQ2n0jIQrCKCFbm4J8Rx-hFKPX3F75NjNluso
+
+###
+GET http://localhost:8080/api/users
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6Imp3dHVzZXJAZXhhbXBsZS5jb20iLCJleHAiOjE3ODY4MzY5NDIsImlhdCI6MTc4Njc1MDU0MiwidXNlcklkIjo3fQ.nEQN52EmeI6u0pDCZzo_4qswvLYerM8q3wTLVB9L1pw
+
+###
+PUT http://localhost:8080/api/users/10/status
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImFkbWluQGV4YW1wbGUuY29tIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzg2ODg5MzUxLCJpYXQiOjE3ODY4MDI5NTEsInVzZXJJZCI6MTB9.exN5xZpQ2n0jIQrCKCFbm4J8Rx-hFKPX3F75NjNluso
+Content-Type: application/json
+
+{
+  "accountStatus": "INACTIVE"
+}
+
+###
+GET http://localhost:8080/api/users/10
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImFkbWluQGV4YW1wbGUuY29tIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzg2ODg5MzUxLCJpYXQiOjE3ODY4MDI5NTEsInVzZXJJZCI6MTB9.exN5xZpQ2n0jIQrCKCFbm4J8Rx-hFKPX3F75NjNluso
+
+###
+POST http://localhost:8080/api/auth/register
+Content-Type: application/json
+
+{
+  "firstName": "Status",
+  "lastName": "Test",
+  "email": "statustest@example.com",
+  "password": "Status12345"
+}
+
+###
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "USER_10_EMAIL",
+  "password": "USER_10_PASSWORD"
+}
+
+###
+PUT http://localhost:8080/api/users/11/status
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImFkbWluQGV4YW1wbGUuY29tIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzg2ODg5MzUxLCJpYXQiOjE3ODY4MDI5NTEsInVzZXJJZCI6MTB9.exN5xZpQ2n0jIQrCKCFbm4J8Rx-hFKPX3F75NjNluso
+Content-Type: application/json
+
+{
+  "accountStatus": "INACTIVE"
+}
+
+###
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "statustest@example.com",
+  "password": "Status12345"
+}
+
+###
+PUT http://localhost:8080/api/users/11/status
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImFkbWluQGV4YW1wbGUuY29tIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzg2ODg5MzUxLCJpYXQiOjE3ODY4MDI5NTEsInVzZXJJZCI6MTB9.exN5xZpQ2n0jIQrCKCFbm4J8Rx-hFKPX3F75NjNluso
+Content-Type: application/json
+
+{
+  "accountStatus": "ACTIVE"
+}
+
+###
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "statustest@example.com",
+  "password": "Status12345"
+}
+
+###
+GET http://localhost:8080/api/admin/dashboard
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImFkbWluQGV4YW1wbGUuY29tIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzg2ODg5MzUxLCJpYXQiOjE3ODY4MDI5NTEsInVzZXJJZCI6MTB9.exN5xZpQ2n0jIQrCKCFbm4J8Rx-hFKPX3F75NjNluso
+
+###
+GET http://localhost:8080/api/admin/dashboard
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+###
+POST http://localhost:8080/api/auth/register
+Content-Type: application/json
+
+{
+  "firstName": "Role",
+  "lastName": "SecurityTest",
+  "email": "rolesecurity@example.com",
+  "password": "RoleTest12345"
+}
+
+###
+POST http://localhost:8080/api/ml/predict-household?householdId=6&tariffId=1&year=2026&month=9
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+###
+POST http://localhost:8080/api/daily-usage
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+Content-Type: application/json
+
+{
+  "appliance": {
+    "applianceId": 9
+  },
+  "usageDate": "2026-06-15",
+  "hoursUsed": 5,
+  "usageNotes": "ML integration history - June"
+}
+
+###
+POST http://localhost:8080/api/daily-usage
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+Content-Type: application/json
+
+{
+  "appliance": {
+    "applianceId": 9
+  },
+  "usageDate": "2026-07-15",
+  "hoursUsed": 6,
+  "usageNotes": "ML integration history - July"
+}
+
+###
+POST http://localhost:8080/api/ml/predict-household?householdId=6&tariffId=1&year=2026&month=9
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+###
+GET http://localhost:8080/api/households
+
+###
+GET http://localhost:8080/api/households
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+###
+GET http://localhost:8080/api/admin/dashboard
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+###
+GET http://localhost:8080/api/admin/dashboard
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImFkbWluQGV4YW1wbGUuY29tIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzg2ODg5MzUxLCJpYXQiOjE3ODY4MDI5NTEsInVzZXJJZCI6MTB9.exN5xZpQ2n0jIQrCKCFbm4J8Rx-hFKPX3F75NjNluso
+
+
+
+###
+GET http://localhost:8080/api/households/6
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+###
+GET http://localhost:8080/api/rooms/9
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+###
+GET http://localhost:8080/api/appliances/9
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+###
+GET http://localhost:8080/api/daily-usage
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+###
+GET http://localhost:8080/api/electricity-bills
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+###
+GET http://localhost:8080/api/bill-predictions
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+###
+GET http://localhost:8080/api/budgets
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+###
+GET http://localhost:8080/api/energy-goals
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+###
+GET http://localhost:8080/api/recommendations
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+
+
+###
+GET http://localhost:8080/api/notifications
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+###
+GET http://localhost:8080/api/daily-usage/household/6/consumption?startDate=2026-06-01&endDate=2026-08-31
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+###
+GET http://localhost:8080/api/daily-usage/household/6/monthly-summary?year=2026&month=8
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+###
+GET http://localhost:8080/api/daily-usage/household/6/analytics?startDate=2026-06-01&endDate=2026-08-31
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+
+
+
+###
+GET http://localhost:8080/api/tariffs/1
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+###
+GET http://localhost:8080/api/tariff-rates/tariff/1
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+###
+POST http://localhost:8080/api/bill-calculation?tariffId=1&consumptionKwh=63.4
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+###
+GET http://localhost:8080/api/bill-predictions/household/6/latest
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+###
+POST http://localhost:8080/api/daily-usage
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+Content-Type: application/json
+
+{
+  "appliance": {
+    "applianceId": 9
+  },
+  "usageDate": "2026-09-15",
+  "hoursUsed": 5.5,
+  "usageNotes": "ML integration history - September"
+}
+
+###
+POST http://localhost:8080/api/ml/predict-household?householdId=6&tariffId=1&year=2026&month=10
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+###
+GET http://localhost:8080/api/bill-predictions/household/6
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+###
+GET http://localhost:8080/api/bill-predictions/household/6/latest
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+###budget id 11
+GET http://localhost:8080/api/budgets
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+###
+POST http://localhost:8080/api/ml/predict-household?householdId=6&tariffId=1&year=2026&month=10
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+###
+GET http://localhost:8080/api/budgets
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+
+
+###
+GET http://localhost:8080/api/energy-goals
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+###
+POST http://localhost:8080/api/ml/predict-household?householdId=6&tariffId=1&year=2026&month=10
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+
+###
+GET http://localhost:8080/api/energy-goals
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+
+
+###
+GET http://localhost:8080/api/notifications/household/6
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+###
+POST http://localhost:8080/api/ml/predict-household?householdId=6&tariffId=1&year=2026&month=10
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+###
+GET http://localhost:8080/api/notifications/household/6
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+
+
+
+###
+GET http://localhost:8080/api/recommendations
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+
+###
+POST http://localhost:8080/api/recommendations
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+Content-Type: application/json
+
+{
+  "household": {
+    "householdId": 6
+  },
+  "recommendationTitle": "Reduce Evening AC Usage",
+  "recommendationDescription": "Reduce unnecessary air-conditioner usage during evening hours.",
+  "recommendationType": "ENERGY_SAVING",
+  "priority": "HIGH",
+  "estimatedSavingKwh": 6.5,
+  "estimatedSavingAmount": 200,
+  "status": "ACTIVE"
+}
+
+
+###
+GET http://localhost:8080/api/recommendations/household/6
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+
+###user2 token
+GET http://localhost:8080/api/recommendations/household/6
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6Imp3dHVzZXJAZXhhbXBsZS5jb20iLCJleHAiOjE3ODY4MzY5NDIsImlhdCI6MTc4Njc1MDU0MiwidXNlcklkIjo3fQ.nEQN52EmeI6u0pDCZzo_4qswvLYerM8q3wTLVB9L1pw
+
+
+###
+GET http://localhost:8080/api/admin/dashboard
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImFkbWluQGV4YW1wbGUuY29tIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzg2ODg5MzUxLCJpYXQiOjE3ODY4MDI5NTEsInVzZXJJZCI6MTB9.exN5xZpQ2n0jIQrCKCFbm4J8Rx-hFKPX3F75NjNluso
+
+###
+GET http://localhost:8080/api/tariffs
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImFkbWluQGV4YW1wbGUuY29tIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzg2ODg5MzUxLCJpYXQiOjE3ODY4MDI5NTEsInVzZXJJZCI6MTB9.exN5xZpQ2n0jIQrCKCFbm4J8Rx-hFKPX3F75NjNluso
+
+###
+GET http://localhost:8080/api/admin/dashboard
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImFkbWluQGV4YW1wbGUuY29tIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzg2ODg5MzUxLCJpYXQiOjE3ODY4MDI5NTEsInVzZXJJZCI6MTB9.exN5xZpQ2n0jIQrCKCFbm4J8Rx-hFKPX3F75NjNluso
+
+###user2 token
+GET http://localhost:8080/api/admin/dashboard
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6Imp3dHVzZXJAZXhhbXBsZS5jb20iLCJleHAiOjE3ODY4MzY5NDIsImlhdCI6MTc4Njc1MDU0MiwidXNlcklkIjo3fQ.nEQN52EmeI6u0pDCZzo_4qswvLYerM8q3wTLVB9L1pw
+
+###
+GET http://localhost:8080/api/users
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6Imp3dHVzZXJAZXhhbXBsZS5jb20iLCJleHAiOjE3ODY4MzY5NDIsImlhdCI6MTc4Njc1MDU0MiwidXNlcklkIjo3fQ.nEQN52EmeI6u0pDCZzo_4qswvLYerM8q3wTLVB9L1pw
+
+
+
+
+###
+GET http://localhost:8080/api/households
+
+###
+GET http://localhost:8080/api/admin/dashboard
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6Imp3dHVzZXJAZXhhbXBsZS5jb20iLCJleHAiOjE3ODY4MzY5NDIsImlhdCI6MTc4Njc1MDU0MiwidXNlcklkIjo3fQ.nEQN52EmeI6u0pDCZzo_4qswvLYerM8q3wTLVB9L1pw
+
+###
+GET http://localhost:8080/api/households/6
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6Imp3dHVzZXJAZXhhbXBsZS5jb20iLCJleHAiOjE3ODY4MzY5NDIsImlhdCI6MTc4Njc1MDU0MiwidXNlcklkIjo3fQ.nEQN52EmeI6u0pDCZzo_4qswvLYerM8q3wTLVB9L1pw
+
+###
+POST http://localhost:8080/api/daily-usage
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+Content-Type: application/json
+
+{
+  "appliance": {
+    "applianceId": 9
+  },
+  "usageDate": "2026-08-15",
+  "hoursUsed": -5,
+  "usageNotes": "Invalid negative usage"
+}
+
+###user 1
+GET http://localhost:8080/api/appliances/999999
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+
+
+
+###
+GET http://localhost:8080/api/households/6
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+###
+GET http://localhost:8080/api/rooms/9
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+###
+GET http://localhost:8080/api/appliances/9
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+###
+GET http://localhost:8080/api/daily-usage
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+###
+GET http://localhost:8080/api/electricity-bills
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+###
+GET http://localhost:8080/api/bill-predictions/household/6
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+
+###
+GET http://localhost:8080/api/budgets
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+###
+GET http://localhost:8080/api/recommendations/household/6
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+
+
+
+
+
+
+
+###
+### =========================================================
+### 1. LOGIN AS USER
+### =========================================================
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "logintest@example.com",
+  "password": "Test12345"
+}
+
+### eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsInJvbGUiOiJVU0VSIiwiZXhwIjoxNzg2ODkzOTEyLCJpYXQiOjE3ODY4MDc1MTIsInVzZXJJZCI6Nn0.RYnCpqeKU6k0Kn0p4jmcov59msVi385VZ5FL3PVOyjo
+### =========================================================
+### 2. GET OWN HOUSEHOLD
+### =========================================================
+GET http://localhost:8080/api/households/6
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsInJvbGUiOiJVU0VSIiwiZXhwIjoxNzg2ODkzOTEyLCJpYXQiOjE3ODY4MDc1MTIsInVzZXJJZCI6Nn0.RYnCpqeKU6k0Kn0p4jmcov59msVi385VZ5FL3PVOyjo
+
+### =========================================================
+### 3. GET OWN ROOM
+### =========================================================
+GET http://localhost:8080/api/rooms/9
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsInJvbGUiOiJVU0VSIiwiZXhwIjoxNzg2ODkzOTEyLCJpYXQiOjE3ODY4MDc1MTIsInVzZXJJZCI6Nn0.RYnCpqeKU6k0Kn0p4jmcov59msVi385VZ5FL3PVOyjo
+
+### =========================================================
+### 4. GET OWN APPLIANCE
+### =========================================================
+GET http://localhost:8080/api/appliances/9
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsInJvbGUiOiJVU0VSIiwiZXhwIjoxNzg2ODkzOTEyLCJpYXQiOjE3ODY4MDc1MTIsInVzZXJJZCI6Nn0.RYnCpqeKU6k0Kn0p4jmcov59msVi385VZ5FL3PVOyjo
+
+### =========================================================
+### 5. GET DAILY USAGE
+### =========================================================
+GET http://localhost:8080/api/daily-usage
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsInJvbGUiOiJVU0VSIiwiZXhwIjoxNzg2ODkzOTEyLCJpYXQiOjE3ODY4MDc1MTIsInVzZXJJZCI6Nn0.RYnCpqeKU6k0Kn0p4jmcov59msVi385VZ5FL3PVOyjo
+
+### =========================================================
+### 6. GET ANALYTICS
+### =========================================================
+GET http://localhost:8080/api/daily-usage/household/6/analytics?startDate=2026-06-01&endDate=2026-09-30
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsInJvbGUiOiJVU0VSIiwiZXhwIjoxNzg2ODkzOTEyLCJpYXQiOjE3ODY4MDc1MTIsInVzZXJJZCI6Nn0.RYnCpqeKU6k0Kn0p4jmcov59msVi385VZ5FL3PVOyjo
+
+### =========================================================
+### 7. GET TARIFF
+### =========================================================
+GET http://localhost:8080/api/tariffs/1
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsInJvbGUiOiJVU0VSIiwiZXhwIjoxNzg2ODkzOTEyLCJpYXQiOjE3ODY4MDc1MTIsInVzZXJJZCI6Nn0.RYnCpqeKU6k0Kn0p4jmcov59msVi385VZ5FL3PVOyjo
+
+### =========================================================
+### 8. RUN ML PREDICTION
+### =========================================================
+POST http://localhost:8080/api/ml/predict-household?householdId=6&tariffId=1&year=2026&month=10
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsInJvbGUiOiJVU0VSIiwiZXhwIjoxNzg2ODkzOTEyLCJpYXQiOjE3ODY4MDc1MTIsInVzZXJJZCI6Nn0.RYnCpqeKU6k0Kn0p4jmcov59msVi385VZ5FL3PVOyjo
+
+### =========================================================
+### 9. GET LATEST PREDICTION / keep fastAPi running
+### =========================================================
+GET http://localhost:8080/api/bill-predictions/household/6/latest
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsInJvbGUiOiJVU0VSIiwiZXhwIjoxNzg2ODkzOTEyLCJpYXQiOjE3ODY4MDc1MTIsInVzZXJJZCI6Nn0.RYnCpqeKU6k0Kn0p4jmcov59msVi385VZ5FL3PVOyjo
+
+### =========================================================
+### 10. GET BUDGETS
+### =========================================================
+GET http://localhost:8080/api/budgets
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsInJvbGUiOiJVU0VSIiwiZXhwIjoxNzg2ODkzOTEyLCJpYXQiOjE3ODY4MDc1MTIsInVzZXJJZCI6Nn0.RYnCpqeKU6k0Kn0p4jmcov59msVi385VZ5FL3PVOyjo
+
+### =========================================================
+### 11. GET ENERGY GOALS
+### =========================================================
+GET http://localhost:8080/api/energy-goals
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsInJvbGUiOiJVU0VSIiwiZXhwIjoxNzg2ODkzOTEyLCJpYXQiOjE3ODY4MDc1MTIsInVzZXJJZCI6Nn0.RYnCpqeKU6k0Kn0p4jmcov59msVi385VZ5FL3PVOyjo
+
+### =========================================================
+### 12. GET NOTIFICATIONS
+### =========================================================
+GET http://localhost:8080/api/notifications
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsInJvbGUiOiJVU0VSIiwiZXhwIjoxNzg2ODkzOTEyLCJpYXQiOjE3ODY4MDc1MTIsInVzZXJJZCI6Nn0.RYnCpqeKU6k0Kn0p4jmcov59msVi385VZ5FL3PVOyjo
+
+### =========================================================
+### 14. USER TRIES ADMIN DASHBOARD
+### Expected: 403 Forbidden
+### =========================================================
+GET http://localhost:8080/api/admin/dashboard
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsInJvbGUiOiJVU0VSIiwiZXhwIjoxNzg2ODkzOTEyLCJpYXQiOjE3ODY4MDc1MTIsInVzZXJJZCI6Nn0.RYnCpqeKU6k0Kn0p4jmcov59msVi385VZ5FL3PVOyjo
+
+### ADMIN LOGIN
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@example.com",
+  "password": "Admin12345"
+}
+
+### =========================================================
+### ADMIN LOGIN
+### =========================================================
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@example.com",
+  "password": "Admin12345"
+}
+
+
+### =========================================================
+### 15. ADMIN GETS ADMIN DASHBOARD
+### =========================================================
+GET http://localhost:8080/api/admin/dashboard
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImFkbWluQGV4YW1wbGUuY29tIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzg2ODk0NDAyLCJpYXQiOjE3ODY4MDgwMDIsInVzZXJJZCI6MTB9.tc346AFAgHoB5w9OEgW5K66lVSfi26oveqX8wu80A6E
+
+
+### =========================================================
+### 16. ADMIN GETS ALL USERS
+### =========================================================
+GET http://localhost:8080/api/users
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImFkbWluQGV4YW1wbGUuY29tIiwicm9sZSI6IkFETUlOIiwiZXhwIjoxNzg2ODk0NDAyLCJpYXQiOjE3ODY4MDgwMDIsInVzZXJJZCI6MTB9.tc346AFAgHoB5w9OEgW5K66lVSfi26oveqX8wu80A6E
+
+
+###
+GET http://localhost:8080/api/daily-usage/household/6/analytics?startDate=2026-06-01&endDate=2026-09-30
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+
+###
+POST http://localhost:8080/api/ml/predict-household?householdId=6&tariffId=1&year=2026&month=10
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+
+###
+GET http://localhost:8080/api/admin/dashboard
+Authorization: Bearer eyJraWQiOiJEdjYxSWtQYjRpb2RTbi1lRUZzVEtMZ1JSZUxERE1PZFRuOUxacUNXOVhjIiwiYWxnIjoiSFMyNTYifQ.eyJpc3MiOiJlbGVjdHJpY2l0eS1iaWxsLXByZWRpY3RvciIsInN1YiI6ImxvZ2ludGVzdEBleGFtcGxlLmNvbSIsImV4cCI6MTc4NjgzNjUwNSwiaWF0IjoxNzg2NzUwMTA1LCJ1c2VySWQiOjZ9.zthPIMi1r6WDWXjH11E2F3f2xMIzuK4zb9ciH5wnhZw
+
+
+
+###

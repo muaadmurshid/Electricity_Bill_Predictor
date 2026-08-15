@@ -1,9 +1,10 @@
 package com.example.electricity_bill_predictor.Controller;
 
-import jakarta.validation.Valid;
-
 import com.example.electricity_bill_predictor.Entity.ElectricityBill;
 import com.example.electricity_bill_predictor.Service.ElectricityBillService;
+
+import jakarta.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,73 +12,99 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/electricity-bills")
-@CrossOrigin(origins = "*")
 public class ElectricityBillController {
 
     private final ElectricityBillService electricityBillService;
 
     public ElectricityBillController(
             ElectricityBillService electricityBillService) {
-        this.electricityBillService = electricityBillService;
+
+        this.electricityBillService =
+                electricityBillService;
     }
 
-    // GET /api/electricity-bills
+    // GET current user's bills
     @GetMapping
-    public List<ElectricityBill> getAllBills() {
-        return electricityBillService.getAllElectricityBills();
+    public ResponseEntity<List<ElectricityBill>>
+    getAllBills() {
+
+        return ResponseEntity.ok(
+                electricityBillService
+                        .getAllElectricityBills()
+        );
     }
 
-    // GET /api/electricity-bills/{id}
+    // GET bills for one owned household
+    @GetMapping("/household/{householdId}")
+    public ResponseEntity<List<ElectricityBill>>
+    getBillsByHousehold(
+            @PathVariable Long householdId) {
+
+        return ResponseEntity.ok(
+                electricityBillService
+                        .getBillsByHousehold(
+                                householdId
+                        )
+        );
+    }
+
+    // GET bill by ID
     @GetMapping("/{id}")
-    public ResponseEntity<ElectricityBill> getElectricityBillById(
+    public ResponseEntity<ElectricityBill>
+    getElectricityBillById(
             @PathVariable Long id) {
 
-        ElectricityBill electricityBill =
-                electricityBillService.getElectricityBillById(id);
-
-        return ResponseEntity.ok(electricityBill);
+        return ResponseEntity.ok(
+                electricityBillService
+                        .getElectricityBillById(id)
+        );
     }
 
-    // POST /api/electricity-bills
+    // CREATE bill
     @PostMapping
-    public ResponseEntity<ElectricityBill> createElectricityBill(
-            @Valid @RequestBody ElectricityBill electricityBill) {
+    public ResponseEntity<ElectricityBill>
+    createElectricityBill(
+            @Valid
+            @RequestBody
+            ElectricityBill electricityBill) {
 
-        ElectricityBill createdBill =
-                electricityBillService.createElectricityBill(electricityBill);
-
-        return ResponseEntity.ok(createdBill);
+        return ResponseEntity.ok(
+                electricityBillService
+                        .createElectricityBill(
+                                electricityBill
+                        )
+        );
     }
 
-    // PUT /api/electricity-bills/{id}
+    // UPDATE bill
     @PutMapping("/{id}")
-    public ResponseEntity<ElectricityBill> updateBill(
+    public ResponseEntity<ElectricityBill>
+    updateBill(
             @PathVariable Long id,
-            @Valid @RequestBody ElectricityBill bill) {
+            @Valid
+            @RequestBody
+            ElectricityBill bill) {
 
-        try {
-            ElectricityBill updatedBill =
-                    electricityBillService.updateElectricityBill(id, bill);
-
-            return ResponseEntity.ok(updatedBill);
-
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok(
+                electricityBillService
+                        .updateElectricityBill(
+                                id,
+                                bill
+                        )
+        );
     }
 
-    // DELETE /api/electricity-bills/{id}
+    // DELETE bill
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteBill(
+    public ResponseEntity<Void>
+    deleteBill(
             @PathVariable Long id) {
 
-        try {
-            electricityBillService.deleteElectricityBill(id);
+        electricityBillService
+                .deleteElectricityBill(id);
 
-            return ResponseEntity.noContent().build();
-
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity
+                .noContent()
+                .build();
     }
 }
