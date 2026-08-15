@@ -1,0 +1,115 @@
+import { NavLink } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
+
+/**
+ * Navigation is grouped by what the user is doing, not by database table:
+ * first you set your home up, then you record what it uses, then you look
+ * at what that means.
+ */
+const NAV_GROUPS = [
+  {
+    label: "Overview",
+    items: [{ to: "/dashboard", label: "Dashboard", icon: "◱" }],
+  },
+  {
+    label: "My home",
+    items: [
+      { to: "/households", label: "Household", icon: "⌂" },
+      { to: "/rooms", label: "Rooms", icon: "▤" },
+      { to: "/appliances", label: "Appliances", icon: "⏻" },
+    ],
+  },
+  {
+    label: "Records",
+    items: [
+      { to: "/usage", label: "Daily usage", icon: "⏱" },
+      { to: "/bills", label: "Electricity bills", icon: "▦" },
+    ],
+  },
+  {
+    label: "Insight",
+    items: [
+      { to: "/predictions", label: "Predictions", icon: "◈" },
+      { to: "/analytics", label: "Analytics", icon: "◔" },
+      { to: "/recommendations", label: "Recommendations", icon: "✦" },
+    ],
+  },
+  {
+    label: "Targets",
+    items: [
+      { to: "/budget", label: "Budget", icon: "₨" },
+      { to: "/goals", label: "Energy goals", icon: "◎" },
+      { to: "/notifications", label: "Notifications", icon: "◉" },
+    ],
+  },
+];
+
+export default function Sidebar({ open, onNavigate, unreadCount = 0 }) {
+  const { user, logout } = useAuth();
+
+  return (
+    <aside className={`sidebar ${open ? "sidebar-open" : ""}`}>
+      <div className="sidebar-brand">
+        <span className="brand-mark" aria-hidden="true">
+          <span style={{ height: "7px" }} />
+          <span style={{ height: "11px" }} />
+          <span style={{ height: "15px" }} />
+          <span style={{ height: "20px" }} />
+        </span>
+        <span>
+          <span className="brand-name">Bill Predictor</span>
+          <br />
+          <span className="brand-sub">Home energy</span>
+        </span>
+      </div>
+
+      <nav className="sidebar-nav" aria-label="Main">
+        {NAV_GROUPS.map((group) => (
+          <div className="nav-group" key={group.label}>
+            <p className="nav-group-label">{group.label}</p>
+            <ul>
+              {group.items.map((item) => (
+                <li key={item.to}>
+                  <NavLink
+                    to={item.to}
+                    onClick={onNavigate}
+                    className={({ isActive }) =>
+                      `nav-link ${isActive ? "nav-link-active" : ""}`
+                    }
+                  >
+                    <span className="nav-icon" aria-hidden="true">
+                      {item.icon}
+                    </span>
+                    {item.label}
+                    {item.to === "/notifications" && unreadCount > 0 && (
+                      <span className="nav-count">{unreadCount}</span>
+                    )}
+                  </NavLink>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </nav>
+
+      <div className="sidebar-foot">
+        <NavLink
+          to="/profile"
+          onClick={onNavigate}
+          className={({ isActive }) => `nav-link ${isActive ? "nav-link-active" : ""}`}
+        >
+          <span className="nav-icon" aria-hidden="true">
+            ◯
+          </span>
+          {user ? `${user.firstName} ${user.lastName}` : "Profile"}
+        </NavLink>
+        <button type="button" className="nav-link" onClick={logout}>
+          <span className="nav-icon" aria-hidden="true">
+            ⇥
+          </span>
+          Log out
+        </button>
+      </div>
+    </aside>
+  );
+}

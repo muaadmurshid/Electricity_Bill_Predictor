@@ -1,0 +1,98 @@
+/* ============================================================
+   THEME — design tokens for the Electricity Bill Predictor
+   Royal red. Change a value here and it updates everywhere.
+   ============================================================ */
+
+:root {
+  /* ---------- Colour ---------- */
+  /* Neutrals carry a faint warm tint so white cards sit on the page
+     without the grey looking cold next to the red. */
+  --color-bg: #f7f4f3;
+  --color-surface: #ffffff;
+  --color-surface-sunk: #f1e9e8;
+  --color-line: #e4d9d8;
+  --color-line-strong: #d1bfbe;
+
+  /* Text */
+  --color-ink: #23100f; /* headings */
+  --color-ink-body: #4f3d3b; /* paragraphs */
+  --color-ink-muted: #8a7371; /* labels, captions */
+
+  /* Brand — royal red */
+  --color-primary: #620000;
+  --color-primary-hover: #4d0000;
+  --color-primary-active: #380000;
+  --color-primary-tint: #f5e7e6;
+  --color-primary-ink: #ffffff;
+
+  /* Deep panel used on the sidebar and the auth screens */
+  --color-deep: #2a0707;
+  --color-deep-2: #470d0d;
+  --color-on-deep: #ecdad8;       /* text on the deep panel */
+  --color-on-deep-muted: #ab8987; /* labels on the deep panel */
+
+  /* Gold reads as the highlight against maroon — active nav item,
+     logo mark, the tariff ladder on the auth screens. */
+  --color-accent: #d9a441;
+
+  /* Status — maps to backend enums.
+     Success is green, not the brand colour: "within budget" must not
+     look like every other branded thing on the page.
+       WITHIN_BUDGET / ON_TRACK ....... success
+       WARNING / AT_RISK .............. warning
+       OVER_BUDGET / MISSED .......... danger  */
+  --color-success: #276b4c;
+  --color-success-tint: #e4f0ea;
+  --color-warning: #a76300;
+  --color-warning-tint: #fbeed7;
+  --color-danger: #c0392b;
+  --color-danger-tint: #fae8e6;
+  --color-info: #1c5e86;
+  --color-info-tint: #e2eef5;
+
+  /* ---------- Type ---------- */
+  --font-display: "Sora", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Inter", "Segoe UI", system-ui, sans-serif;
+  /* Mono is used for every number, unit and eyebrow label. Figures line
+     up in columns and kWh / LKR values read like meter readings. */
+  --font-mono: "IBM Plex Mono", ui-monospace, "Courier New", monospace;
+
+  --text-xs: 0.75rem;     /* 12px */
+  --text-sm: 0.8125rem;   /* 13px */
+  --text-base: 0.9375rem; /* 15px */
+  --text-md: 1.0625rem;   /* 17px */
+  --text-lg: 1.375rem;    /* 22px */
+  --text-xl: 1.75rem;     /* 28px */
+  --text-2xl: 2.25rem;    /* 36px */
+  --text-3xl: 2.875rem;   /* 46px */
+
+  --leading-tight: 1.2;
+  --leading-normal: 1.55;
+
+  /* ---------- Space ---------- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+
+  /* ---------- Shape ---------- */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-pill: 999px;
+
+  --shadow-sm: 0 1px 2px rgba(45, 12, 12, 0.06);
+  --shadow-md: 0 4px 14px rgba(45, 12, 12, 0.08);
+  --shadow-lg: 0 12px 32px rgba(45, 12, 12, 0.16);
+
+  /* ---------- Layout ---------- */
+  --sidebar-width: 248px;
+  --navbar-height: 64px;
+  --content-max: 1180px;
+
+  --transition: 140ms ease;
+}
