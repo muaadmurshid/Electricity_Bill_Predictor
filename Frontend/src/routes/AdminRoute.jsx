@@ -1,19 +1,16 @@
 import {
   Navigate,
   Outlet,
-  useLocation,
 } from "react-router-dom";
 
 import { useAuth } from "../context/AuthContext";
 
-export default function ProtectedRoute() {
+export default function AdminRoute() {
   const {
     authenticated,
+    isAdmin,
     initialising,
   } = useAuth();
-
-  const location =
-    useLocation();
 
   if (initialising) {
     return (
@@ -24,8 +21,6 @@ export default function ProtectedRoute() {
           placeItems: "center",
           background: "#f7f3f1",
           color: "#3a1111",
-          fontFamily:
-            "inherit",
         }}
       >
         Loading...
@@ -38,11 +33,15 @@ export default function ProtectedRoute() {
       <Navigate
         to="/login"
         replace
-        state={{
-          from:
-            location.pathname +
-            location.search,
-        }}
+      />
+    );
+  }
+
+  if (!isAdmin) {
+    return (
+      <Navigate
+        to="/dashboard"
+        replace
       />
     );
   }

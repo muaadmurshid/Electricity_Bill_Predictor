@@ -1,79 +1,194 @@
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+
 import authService from "../services/authService";
-import { clearStoredAuth, readStoredAuth, storeAuth } from "../api/axios";
 
-/**
- * Holds the logged-in user for the whole app.
- * The user's identity comes from the JWT on the backend — nothing here
- * is trusted for authorisation, it only drives what the UI shows.
- */
+import {
+  clearStoredAuth,
+  readStoredAuth,
+  storeAuth,
+} from "../api/axios";
 
-const AuthContext = createContext(null);
+const AuthContext =
+  createContext(null);
 
-export function AuthProvider({ children }) {
-  const [session, setSession] = useState(null); // { token, user }
-  const [initialising, setInitialising] = useState(true);
+export function AuthProvider({
+  children,
+}) {
+  const [session, setSession] =
+    useState(null);
 
-  // Restore the session on a page refresh.
+  const [
+    initialising,
+    setInitialising,
+  ] = useState(true);
+
+  // =========================================================
+  // RESTORE SAVED LOGIN SESSION
+  // =========================================================
   useEffect(() => {
-    const stored = readStoredAuth();
-    if (stored?.token) setSession(stored);
+    const stored =
+      readStoredAuth();
+
+    if (
+      stored?.token &&
+      stored?.user
+    ) {
+      setSession(stored);
+    }
+
     setInitialising(false);
   }, []);
 
-  /** Turns a login/register response into the session we keep. */
-  function acceptAuthResponse(data) {
-    const next = {
+  // =========================================================
+  // NORMALISE BACKEND AUTH RESPONSE
+  // Backend login/register response contains role
+  // =========================================================
+  function acceptAuthResponse(
+    data
+  ) {
+    if (!data?.token) {
+      throw new Error(
+        "Authentication response did not contain a token."
+      );
+    }
+
+    const nextSession = {
       token: data.token,
+
       user: {
         userId: data.userId,
-        firstName: data.firstName,
-        lastName: data.lastName,
-        email: data.email,
+        firstName:
+          data.firstName || "",
+        lastName:
+          data.lastName || "",
+        email:
+          data.email || "",
+
+        role:
+          data.role || "USER",
       },
     };
-    storeAuth(next);
-    setSession(next);
-    return next;
+
+    storeAuth(nextSession);
+    setSession(nextSession);
+
+    return nextSession;
   }
 
-  async function login(credentials) {
-    const data = await authService.login(credentials);
-    return acceptAuthResponse(data);
+  // =========================================================
+  // LOGIN
+  // =========================================================
+  async function login(
+    credentials
+  ) {
+    const data =
+      await authService.login(
+        credentials
+      );
+
+    return acceptAuthResponse(
+      data
+    );
   }
 
-  async function register(details) {
-    const data = await authService.register(details);
-    // Registration also returns a token, so the user goes straight in.
-    if (data?.token) return acceptAuthResponse(data);
+  // =========================================================
+  // REGISTER
+  // Public registrations always become USER on backend
+  // =========================================================
+  async function register(
+    details
+  ) {
+    const data =
+      await authService.register(
+        details
+      );
+
+    if (data?.token) {
+      return acceptAuthResponse(
+        data
+      );
+    }
+
     return null;
   }
 
+  // =========================================================
+  // LOGOUT
+  // =========================================================
   function logout() {
     clearStoredAuth();
     setSession(null);
   }
 
+  // =========================================================
+  // ROLE HELPERS
+  // =========================================================
+  const role =
+    session?.user?.role || null;
+
+  const isAdmin =
+    role === "ADMIN";
+
+  const isUser =
+    role === "USER";
+
   const value = useMemo(
     () => ({
-      user: session?.user ?? null,
-      token: session?.token ?? null,
-      authenticated: Boolean(session?.token),
+      user:
+        session?.user ?? null,
+
+      token:
+        session?.token ?? null,
+
+      role,
+
+      authenticated:
+        Boolean(session?.token),
+
+      isAdmin,
+      isUser,
+
       initialising,
+
       login,
       register,
       logout,
     }),
-    [session, initialising]
+    [
+      session,
+      role,
+      isAdmin,
+      isUser,
+      initialising,
+    ]
   );
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider
+      value={value}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
 }
 
 export function useAuth() {
-  const ctx = useContext(AuthContext);
-  if (!ctx) throw new Error("useAuth must be used inside <AuthProvider>");
-  return ctx;
+  const context =
+    useContext(AuthContext);
+
+  if (!context) {
+    throw new Error(
+      "useAuth must be used inside <AuthProvider>"
+    );
+  }
+
+  return context;
 }
 
 export default AuthContext;
