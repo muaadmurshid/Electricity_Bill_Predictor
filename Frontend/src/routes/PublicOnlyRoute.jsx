@@ -9,6 +9,7 @@ export default function PublicOnlyRoute() {
   const {
     authenticated,
     initialising,
+    isAdmin,
   } = useAuth();
 
   if (initialising) {
@@ -30,7 +31,11 @@ export default function PublicOnlyRoute() {
   if (authenticated) {
     return (
       <Navigate
-        to="/dashboard"
+        to={
+          isAdmin
+            ? "/admin/dashboard"
+            : "/dashboard"
+        }
         replace
       />
     );

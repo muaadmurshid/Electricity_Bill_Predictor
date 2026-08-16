@@ -1,29 +1,157 @@
 import api from "../api/axios";
 
-/**
- * Consumption analytics used by the dashboard and the charts.
- * CONFIRM AGAINST: the analytics controller (route group not yet fixed).
- */
 const ENDPOINTS = {
-  monthly: (householdId) => `/api/analytics/household/${householdId}/monthly`,
-  byAppliance: (householdId) => `/api/analytics/household/${householdId}/appliances`,
-  byCategory: (householdId) => `/api/analytics/household/${householdId}/categories`,
-  highest: (householdId) => `/api/analytics/household/${householdId}/highest`,
-  dateRange: (householdId) => `/api/analytics/household/${householdId}/range`,
+  consumption: (householdId) =>
+    `/api/daily-usage/household/${householdId}/consumption`,
+
+  monthlySummary: (householdId) =>
+    `/api/daily-usage/household/${householdId}/monthly-summary`,
+
+  applianceBreakdown: (householdId) =>
+    `/api/daily-usage/household/${householdId}/appliance-breakdown`,
+
+  highestConsumer: (householdId) =>
+    `/api/daily-usage/household/${householdId}/highest-consuming-appliance`,
+
+  categoryBreakdown: (householdId) =>
+    `/api/daily-usage/household/${householdId}/category-breakdown`,
+
+  analytics: (householdId) =>
+    `/api/daily-usage/household/${householdId}/analytics`,
 };
 
 export const analyticsService = {
-  monthly: (householdId) => api.get(ENDPOINTS.monthly(householdId)).then((r) => r.data),
-  byAppliance: (householdId) =>
-    api.get(ENDPOINTS.byAppliance(householdId)).then((r) => r.data),
-  byCategory: (householdId) =>
-    api.get(ENDPOINTS.byCategory(householdId)).then((r) => r.data),
-  highestConsumer: (householdId) =>
-    api.get(ENDPOINTS.highest(householdId)).then((r) => r.data),
-  dateRange: (householdId, { startDate, endDate }) =>
+  consumption: (
+    householdId,
+    startDate,
+    endDate
+  ) =>
     api
-      .get(ENDPOINTS.dateRange(householdId), { params: { startDate, endDate } })
-      .then((r) => r.data),
+      .get(
+        ENDPOINTS.consumption(
+          householdId
+        ),
+        {
+          params: {
+            startDate,
+            endDate,
+          },
+        }
+      )
+      .then(
+        (response) =>
+          response.data
+      ),
+
+  monthlySummary: (
+    householdId,
+    year,
+    month
+  ) =>
+    api
+      .get(
+        ENDPOINTS.monthlySummary(
+          householdId
+        ),
+        {
+          params: {
+            year,
+            month,
+          },
+        }
+      )
+      .then(
+        (response) =>
+          response.data
+      ),
+
+  applianceBreakdown: (
+    householdId,
+    startDate,
+    endDate
+  ) =>
+    api
+      .get(
+        ENDPOINTS.applianceBreakdown(
+          householdId
+        ),
+        {
+          params: {
+            startDate,
+            endDate,
+          },
+        }
+      )
+      .then(
+        (response) =>
+          response.data
+      ),
+
+  highestConsumer: (
+    householdId,
+    startDate,
+    endDate
+  ) =>
+    api
+      .get(
+        ENDPOINTS.highestConsumer(
+          householdId
+        ),
+        {
+          params: {
+            startDate,
+            endDate,
+          },
+        }
+      )
+      .then(
+        (response) =>
+          response.data
+      ),
+
+  categoryBreakdown: (
+    householdId,
+    startDate,
+    endDate
+  ) =>
+    api
+      .get(
+        ENDPOINTS.categoryBreakdown(
+          householdId
+        ),
+        {
+          params: {
+            startDate,
+            endDate,
+          },
+        }
+      )
+      .then(
+        (response) =>
+          response.data
+      ),
+
+  analytics: (
+    householdId,
+    startDate,
+    endDate
+  ) =>
+    api
+      .get(
+        ENDPOINTS.analytics(
+          householdId
+        ),
+        {
+          params: {
+            startDate,
+            endDate,
+          },
+        }
+      )
+      .then(
+        (response) =>
+          response.data
+      ),
 };
 
 export default analyticsService;

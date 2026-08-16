@@ -495,17 +495,18 @@ export default function DailyUsage() {
                 Hours used
               </label>
 
-              <input
+             <input
                 type="number"
                 name="hoursUsed"
                 value={formData.hoursUsed}
                 onChange={handleChange}
                 required
                 min="0"
+                max="24"
                 step="0.1"
                 style={styles.input}
                 placeholder="Example: 5.5"
-              />
+/>
             </div>
 
             <div style={styles.field}>

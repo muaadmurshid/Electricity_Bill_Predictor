@@ -3,6 +3,11 @@ import {
   Routes,
 } from "react-router-dom";
 
+import AdminTariffs from "./pages/AdminTariffs";
+import AdminUsers from "./pages/AdminUsers";
+import AdminRoute from "./routes/AdminRoute";
+import AdminDashboard from "./pages/AdminDashboard";
+
 import { AuthProvider } from "./context/AuthContext";
 
 import ProtectedRoute from "./routes/ProtectedRoute";
@@ -152,8 +157,26 @@ export default function App() {
           </Route>
         </Route>
 
-        {/* Admin routes will be added only after
-            the complete admin pages are built. */}
+        {/* =====================================================
+    ADMIN AREA
+====================================================== */}
+
+<Route element={<AdminRoute />}>
+  <Route element={<MainLayout />}>
+    <Route
+      path="/admin/dashboard"
+      element={<AdminDashboard />}
+    />
+  </Route>
+  <Route
+  path="/admin/users"
+  element={<AdminUsers />}
+/>
+<Route
+  path="/admin/tariffs"
+  element={<AdminTariffs />}
+/>
+</Route>
 
         <Route
           path="*"

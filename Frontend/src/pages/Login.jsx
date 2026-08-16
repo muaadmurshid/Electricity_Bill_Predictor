@@ -58,10 +58,6 @@ export default function Login() {
       "expired"
     ) === "1";
 
-  const redirectTo =
-    location.state?.from ||
-    "/dashboard";
-
   function update(
     field,
     value
@@ -119,16 +115,57 @@ export default function Login() {
     setSubmitting(true);
 
     try {
-      await login({
-        email:
-          form.email.trim(),
+      const session =
+        await login({
+          email:
+            form.email.trim(),
 
-        password:
-          form.password,
-      });
+          password:
+            form.password,
+        });
+
+      /*
+       * Determine the role from the login response.
+       * Supports both:
+       *
+       * role: "ADMIN"
+       *
+       * and:
+       *
+       * role: "ROLE_ADMIN"
+       *
+       * It also supports the role being inside
+       * a nested user object.
+       */
+      const role =
+        String(
+          session?.role ||
+            session?.user?.role ||
+            ""
+        )
+          .replace(
+            "ROLE_",
+            ""
+          )
+          .toUpperCase();
+
+      /*
+       * If the user originally tried to open a
+       * protected route before logging in,
+       * return them there.
+       *
+       * Otherwise:
+       * ADMIN -> /admin/dashboard
+       * USER  -> /dashboard
+       */
+      const destination =
+        location.state?.from ||
+        (role === "ADMIN"
+          ? "/admin/dashboard"
+          : "/dashboard");
 
       navigate(
-        redirectTo,
+        destination,
         {
           replace: true,
         }

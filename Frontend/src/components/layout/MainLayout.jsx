@@ -1,46 +1,156 @@
-import { useEffect, useState } from "react";
-import { Outlet, useLocation } from "react-router-dom";
+import {
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
+
+import {
+  Outlet,
+  useLocation,
+} from "react-router-dom";
+
 import Sidebar from "./Sidebar";
 import Navbar from "./Navbar";
 
-/**
- * Sidebar + content on desktop; the sidebar becomes a slide-over drawer
- * below 900px.
- *
- * The unread notification count is passed down from here so the bell and
- * the sidebar always agree. Wire it up once NotificationController is
- * confirmed — see the note below.
- */
+import householdService from "../../services/householdService";
+import notificationService from "../../services/notificationService";
+
 export default function MainLayout() {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const { pathname } = useLocation();
+  const [
+    sidebarOpen,
+    setSidebarOpen,
+  ] = useState(false);
 
-  const unreadCount = 0;
-  // TODO (notifications module): replace the line above with
-  //   const [unreadCount, setUnreadCount] = useState(0);
-  //   useEffect(() => {
-  //     notificationService.unreadCount(householdId).then(setUnreadCount).catch(() => {});
-  //   }, [householdId]);
+  const [
+    unreadCount,
+    setUnreadCount,
+  ] = useState(0);
 
-  // Close the drawer whenever the route changes.
+  const { pathname } =
+    useLocation();
+
+  const loadUnreadCount =
+    useCallback(async () => {
+      try {
+        const households =
+          await householdService.list();
+
+        const list =
+          Array.isArray(households)
+            ? households
+            : [];
+
+        if (list.length === 0) {
+          setUnreadCount(0);
+          return;
+        }
+
+        const results =
+          await Promise.allSettled(
+            list.map(
+              (household) =>
+                notificationService.unreadCount(
+                  household.householdId
+                )
+            )
+          );
+
+        const total =
+          results.reduce(
+            (
+              sum,
+              result
+            ) => {
+              if (
+                result.status ===
+                "fulfilled"
+              ) {
+                return (
+                  sum +
+                  Number(
+                    result.value ||
+                      0
+                  )
+                );
+              }
+
+              return sum;
+            },
+            0
+          );
+
+        setUnreadCount(
+          total
+        );
+      } catch (error) {
+        console.error(
+          "Failed to load unread notification count:",
+          error
+        );
+
+        setUnreadCount(0);
+      }
+    }, []);
+
   useEffect(() => {
     setSidebarOpen(false);
-  }, [pathname]);
+
+    loadUnreadCount();
+  }, [
+    pathname,
+    loadUnreadCount,
+  ]);
+
+  useEffect(() => {
+    function handleNotificationUpdate() {
+      loadUnreadCount();
+    }
+
+    window.addEventListener(
+      "notifications-updated",
+      handleNotificationUpdate
+    );
+
+    return () => {
+      window.removeEventListener(
+        "notifications-updated",
+        handleNotificationUpdate
+      );
+    };
+  }, [loadUnreadCount]);
 
   return (
     <div className="app-shell">
       <Sidebar
         open={sidebarOpen}
-        onNavigate={() => setSidebarOpen(false)}
-        unreadCount={unreadCount}
+        onNavigate={() =>
+          setSidebarOpen(false)
+        }
+        unreadCount={
+          unreadCount
+        }
       />
 
       {sidebarOpen && (
-        <div className="sidebar-scrim" onClick={() => setSidebarOpen(false)} />
+        <div
+          className="sidebar-scrim"
+          onClick={() =>
+            setSidebarOpen(false)
+          }
+          aria-hidden="true"
+        />
       )}
 
       <div className="app-main">
-        <Navbar onOpenSidebar={() => setSidebarOpen(true)} unreadCount={unreadCount} />
+        <Navbar
+          onOpenSidebar={() =>
+            setSidebarOpen(true)
+          }
+          unreadCount={
+            unreadCount
+          }
+        />
+
         <main className="page">
           <Outlet />
         </main>

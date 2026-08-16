@@ -1,24 +1,45 @@
 import api from "../api/axios";
 
-/**
- * Energy goals. Backend statuses: ON_TRACK / AT_RISK / ACHIEVED / MISSED.
- * CONFIRM AGAINST: EnergyGoalController.java
- */
 const ENDPOINTS = {
-  byHousehold: (householdId) => `/api/energy-goals/household/${householdId}`,
-  active: (householdId) => `/api/energy-goals/household/${householdId}/active`,
+  all: "/api/energy-goals",
+  byId: (id) => `/api/energy-goals/${id}`,
+  byHousehold: (householdId) =>
+    `/api/energy-goals/household/${householdId}`,
   create: "/api/energy-goals",
   update: (id) => `/api/energy-goals/${id}`,
   remove: (id) => `/api/energy-goals/${id}`,
 };
 
 export const goalService = {
+  list: () =>
+    api
+      .get(ENDPOINTS.all)
+      .then((response) => response.data),
+
   listByHousehold: (householdId) =>
-    api.get(ENDPOINTS.byHousehold(householdId)).then((r) => r.data),
-  active: (householdId) => api.get(ENDPOINTS.active(householdId)).then((r) => r.data),
-  create: (payload) => api.post(ENDPOINTS.create, payload).then((r) => r.data),
-  update: (id, payload) => api.put(ENDPOINTS.update(id), payload).then((r) => r.data),
-  remove: (id) => api.delete(ENDPOINTS.remove(id)).then((r) => r.data),
+    api
+      .get(ENDPOINTS.byHousehold(householdId))
+      .then((response) => response.data),
+
+  get: (id) =>
+    api
+      .get(ENDPOINTS.byId(id))
+      .then((response) => response.data),
+
+  create: (payload) =>
+    api
+      .post(ENDPOINTS.create, payload)
+      .then((response) => response.data),
+
+  update: (id, payload) =>
+    api
+      .put(ENDPOINTS.update(id), payload)
+      .then((response) => response.data),
+
+  remove: (id) =>
+    api
+      .delete(ENDPOINTS.remove(id))
+      .then((response) => response.data),
 };
 
 export default goalService;

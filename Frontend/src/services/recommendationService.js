@@ -1,24 +1,114 @@
 import api from "../api/axios";
 
-/**
- * Energy-saving recommendations.
- * Generation runs on the backend (OpenAI). If the key has no credits the
- * call fails — the page must stay up and show a friendly message.
- *
- * CONFIRM AGAINST: AiRecommendationController.java / RecommendationController.java
- */
 const ENDPOINTS = {
-  generate: "/api/ai-recommendations/generate",
-  saved: (householdId) => `/api/recommendations/household/${householdId}`,
-  markApplied: (id) => `/api/recommendations/${id}/applied`,
+  generate:
+    "/api/ai-recommendations/generate",
+
+  all:
+    "/api/recommendations",
+
+  byId: (id) =>
+    `/api/recommendations/${id}`,
+
+  byHousehold: (householdId) =>
+    `/api/recommendations/household/${householdId}`,
+
+  predictionHistory: (householdId) =>
+    `/api/bill-predictions/household/${householdId}`,
+
+  analytics: (householdId) =>
+    `/api/daily-usage/household/${householdId}/analytics`,
+
+  remove: (id) =>
+    `/api/recommendations/${id}`,
 };
 
 export const recommendationService = {
-  generate: ({ householdId }) =>
-    api.post(ENDPOINTS.generate, null, { params: { householdId } }).then((r) => r.data),
-  listByHousehold: (householdId) =>
-    api.get(ENDPOINTS.saved(householdId)).then((r) => r.data),
-  markApplied: (id) => api.put(ENDPOINTS.markApplied(id)).then((r) => r.data),
+  generate: (payload) =>
+    api
+      .post(
+        ENDPOINTS.generate,
+        payload
+      )
+      .then(
+        (response) =>
+          response.data
+      ),
+
+  list: () =>
+    api
+      .get(
+        ENDPOINTS.all
+      )
+      .then(
+        (response) =>
+          response.data
+      ),
+
+  get: (id) =>
+    api
+      .get(
+        ENDPOINTS.byId(id)
+      )
+      .then(
+        (response) =>
+          response.data
+      ),
+
+  listByHousehold: (
+    householdId
+  ) =>
+    api
+      .get(
+        ENDPOINTS.byHousehold(
+          householdId
+        )
+      )
+      .then(
+        (response) =>
+          response.data
+      ),
+
+  predictionHistory: (
+    householdId
+  ) =>
+    api
+      .get(
+        ENDPOINTS.predictionHistory(
+          householdId
+        )
+      )
+      .then(
+        (response) =>
+          response.data
+      ),
+
+  analytics: (
+    householdId,
+    startDate,
+    endDate
+  ) =>
+    api
+      .get(
+        ENDPOINTS.analytics(
+          householdId
+        ),
+        {
+          params: {
+            startDate,
+            endDate,
+          },
+        }
+      )
+      .then(
+        (response) =>
+          response.data
+      ),
+
+  remove: (id) =>
+    api.delete(
+      ENDPOINTS.remove(id)
+    ),
 };
 
 export default recommendationService;

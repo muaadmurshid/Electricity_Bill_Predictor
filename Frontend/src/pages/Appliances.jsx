@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import applianceService from "../services/applianceService";
-import roomService from "../services/roomService";
+
 import householdService from "../services/householdService";
+import roomService from "../services/roomService";
+import applianceService from "../services/applianceService";
 import applianceCategoryService from "../services/applianceCategoryService";
 
 export default function Appliances() {
@@ -14,13 +15,14 @@ export default function Appliances() {
   const [selectedRoomId, setSelectedRoomId] = useState("");
 
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
   const [editingId, setEditingId] = useState(null);
 
   const [formData, setFormData] = useState({
-    categoryId: "",
     applianceName: "",
+    categoryId: "",
     brand: "",
     model: "",
     ratedPower: "",
@@ -31,7 +33,7 @@ export default function Appliances() {
   });
 
   useEffect(() => {
-    loadInitialData();
+    initialise();
   }, []);
 
   useEffect(() => {
@@ -52,7 +54,7 @@ export default function Appliances() {
     }
   }, [selectedRoomId]);
 
-  async function loadInitialData() {
+  async function initialise() {
     try {
       setLoading(true);
       setError("");
@@ -79,12 +81,12 @@ export default function Appliances() {
         );
       }
     } catch (err) {
-      console.error("Failed to load appliance setup data:", err);
+      console.error("Failed to initialise appliances page:", err);
 
       setError(
         err?.response?.data?.error ||
           err?.response?.data?.message ||
-          "Failed to load appliance data."
+          "Failed to load appliance information."
       );
     } finally {
       setLoading(false);
@@ -97,6 +99,7 @@ export default function Appliances() {
       setError("");
 
       const data = await roomService.listByHousehold(householdId);
+
       const roomList = Array.isArray(data) ? data : [];
 
       setRooms(roomList);
@@ -143,6 +146,7 @@ export default function Appliances() {
 
   function handleHouseholdChange(event) {
     setSelectedHouseholdId(event.target.value);
+    setSelectedRoomId("");
     resetForm();
   }
 
@@ -160,16 +164,55 @@ export default function Appliances() {
     }));
   }
 
-  async function handleSubmit(event) {
-    event.preventDefault();
-
+  function validateForm() {
     if (!selectedRoomId) {
       setError("Please select a room first.");
-      return;
+      return false;
+    }
+
+    if (!formData.applianceName.trim()) {
+      setError("Please enter an appliance name.");
+      return false;
     }
 
     if (!formData.categoryId) {
       setError("Please select an appliance category.");
+      return false;
+    }
+
+    if (
+      !formData.ratedPower ||
+      Number(formData.ratedPower) <= 0
+    ) {
+      setError("Rated power must be greater than 0.");
+      return false;
+    }
+
+    if (
+      !formData.quantity ||
+      Number(formData.quantity) < 1
+    ) {
+      setError("Quantity must be at least 1.");
+      return false;
+    }
+
+    if (
+      formData.typicalDailyHours !== "" &&
+      Number(formData.typicalDailyHours) < 0
+    ) {
+      setError("Typical daily hours cannot be negative.");
+      return false;
+    }
+
+    return true;
+  }
+
+  async function handleSubmit(event) {
+    event.preventDefault();
+
+    setError("");
+
+    if (!validateForm()) {
       return;
     }
 
@@ -177,24 +220,33 @@ export default function Appliances() {
       room: {
         roomId: Number(selectedRoomId),
       },
+
       category: {
         categoryId: Number(formData.categoryId),
       },
+
       applianceName: formData.applianceName.trim(),
+
       brand: formData.brand.trim(),
+
       model: formData.model.trim(),
+
       ratedPower: Number(formData.ratedPower),
+
       quantity: Number(formData.quantity),
+
       energyRating: formData.energyRating.trim(),
+
       typicalDailyHours:
         formData.typicalDailyHours === ""
-          ? null
+          ? 0
           : Number(formData.typicalDailyHours),
+
       status: formData.status,
     };
 
     try {
-      setError("");
+      setSaving(true);
 
       if (editingId) {
         await applianceService.update(editingId, payload);
@@ -203,6 +255,7 @@ export default function Appliances() {
       }
 
       resetForm();
+
       await loadAppliances(selectedRoomId);
     } catch (err) {
       console.error("Failed to save appliance:", err);
@@ -212,6 +265,8 @@ export default function Appliances() {
           err?.response?.data?.message ||
           "Failed to save appliance."
       );
+    } finally {
+      setSaving(false);
     }
   }
 
@@ -223,29 +278,38 @@ export default function Appliances() {
     }
 
     setFormData({
+      applianceName: appliance.applianceName || "",
+
       categoryId:
-        appliance.category?.categoryId !== undefined
+        appliance.category?.categoryId !== undefined &&
+        appliance.category?.categoryId !== null
           ? String(appliance.category.categoryId)
           : "",
-      applianceName: appliance.applianceName || "",
+
       brand: appliance.brand || "",
+
       model: appliance.model || "",
+
       ratedPower:
-        appliance.ratedPower !== null &&
-        appliance.ratedPower !== undefined
+        appliance.ratedPower !== undefined &&
+        appliance.ratedPower !== null
           ? String(appliance.ratedPower)
           : "",
+
       quantity:
-        appliance.quantity !== null &&
-        appliance.quantity !== undefined
+        appliance.quantity !== undefined &&
+        appliance.quantity !== null
           ? String(appliance.quantity)
           : "1",
+
       energyRating: appliance.energyRating || "",
+
       typicalDailyHours:
-        appliance.typicalDailyHours !== null &&
-        appliance.typicalDailyHours !== undefined
+        appliance.typicalDailyHours !== undefined &&
+        appliance.typicalDailyHours !== null
           ? String(appliance.typicalDailyHours)
           : "",
+
       status: appliance.status || "ACTIVE",
     });
   }
@@ -254,8 +318,8 @@ export default function Appliances() {
     setEditingId(null);
 
     setFormData({
-      categoryId: "",
       applianceName: "",
+      categoryId: "",
       brand: "",
       model: "",
       ratedPower: "",
@@ -304,24 +368,33 @@ export default function Appliances() {
         <h1 style={styles.title}>Appliances</h1>
 
         <p style={styles.lead}>
-          Manage the electrical appliances in each room,
-          including rated power, quantity and typical daily usage.
+          Add the appliances used in each room. Their power,
+          quantity and daily use are used when analysing household
+          electricity consumption.
         </p>
       </div>
 
-      {error && <div style={styles.error}>{error}</div>}
+      {error && (
+        <div style={styles.error}>
+          {error}
+        </div>
+      )}
 
       <section style={styles.selectorCard}>
         <div style={styles.selectorGrid}>
           <div>
-            <label style={styles.label}>Select household</label>
+            <label style={styles.label}>
+              Household
+            </label>
 
             <select
               value={selectedHouseholdId}
               onChange={handleHouseholdChange}
               style={styles.input}
             >
-              <option value="">Select household</option>
+              <option value="">
+                Select household
+              </option>
 
               {households.map((household) => (
                 <option
@@ -335,7 +408,9 @@ export default function Appliances() {
           </div>
 
           <div>
-            <label style={styles.label}>Select room</label>
+            <label style={styles.label}>
+              Room
+            </label>
 
             <select
               value={selectedRoomId}
@@ -343,7 +418,9 @@ export default function Appliances() {
               style={styles.input}
               disabled={!selectedHouseholdId}
             >
-              <option value="">Select room</option>
+              <option value="">
+                Select room
+              </option>
 
               {rooms.map((room) => (
                 <option
@@ -361,12 +438,32 @@ export default function Appliances() {
       <div style={styles.grid}>
         <section style={styles.card}>
           <h2 style={styles.cardTitle}>
-            {editingId ? "Edit appliance" : "Add appliance"}
+            {editingId
+              ? "Edit appliance"
+              : "Add appliance"}
           </h2>
 
           <form onSubmit={handleSubmit}>
             <div style={styles.field}>
-              <label style={styles.label}>Category</label>
+              <label style={styles.label}>
+                Appliance name
+              </label>
+
+              <input
+                type="text"
+                name="applianceName"
+                value={formData.applianceName}
+                onChange={handleChange}
+                required
+                placeholder="Example: Ceiling Fan"
+                style={styles.input}
+              />
+            </div>
+
+            <div style={styles.field}>
+              <label style={styles.label}>
+                Category
+              </label>
 
               <select
                 name="categoryId"
@@ -375,88 +472,87 @@ export default function Appliances() {
                 required
                 style={styles.input}
               >
-                <option value="">Select category</option>
+                <option value="">
+                  Select category
+                </option>
 
                 {categories.map((category) => (
                   <option
                     key={category.categoryId}
                     value={category.categoryId}
                   >
-                    {category.categoryName}
+                    {category.categoryName ||
+                      category.name ||
+                      `Category ${category.categoryId}`}
                   </option>
                 ))}
               </select>
             </div>
 
-            <div style={styles.field}>
-              <label style={styles.label}>Appliance name</label>
-
-              <input
-                type="text"
-                name="applianceName"
-                value={formData.applianceName}
-                onChange={handleChange}
-                required
-                style={styles.input}
-                placeholder="Example: Ceiling Fan"
-              />
-            </div>
-
             <div style={styles.twoColumn}>
               <div style={styles.field}>
-                <label style={styles.label}>Brand</label>
+                <label style={styles.label}>
+                  Brand
+                </label>
 
                 <input
                   type="text"
                   name="brand"
                   value={formData.brand}
                   onChange={handleChange}
+                  placeholder="Example: Panasonic"
                   style={styles.input}
-                  placeholder="Example: Singer"
                 />
               </div>
 
               <div style={styles.field}>
-                <label style={styles.label}>Model</label>
+                <label style={styles.label}>
+                  Model
+                </label>
 
                 <input
                   type="text"
                   name="model"
                   value={formData.model}
                   onChange={handleChange}
+                  placeholder="Optional"
                   style={styles.input}
-                  placeholder="Example: FAN-01"
                 />
               </div>
             </div>
 
             <div style={styles.twoColumn}>
               <div style={styles.field}>
-                <label style={styles.label}>Rated power (W)</label>
+                <label style={styles.label}>
+                  Rated power (W)
+                </label>
 
                 <input
                   type="number"
                   name="ratedPower"
                   value={formData.ratedPower}
                   onChange={handleChange}
-                  required
                   min="0.01"
                   step="0.01"
-                  style={styles.input}
+                  required
                   placeholder="Example: 75"
+                  style={styles.input}
                 />
               </div>
 
               <div style={styles.field}>
-                <label style={styles.label}>Quantity</label>
+                <label style={styles.label}>
+                  Quantity
+                </label>
 
                 <input
                   type="number"
                   name="quantity"
                   value={formData.quantity}
                   onChange={handleChange}
-                  required
                   min="1"
+                  step="1"
+                  required
                   style={styles.input}
                 />
               </div>
@@ -464,15 +560,17 @@ export default function Appliances() {
 
             <div style={styles.twoColumn}>
               <div style={styles.field}>
-                <label style={styles.label}>Energy rating</label>
+                <label style={styles.label}>
+                  Energy rating
+                </label>
 
                 <input
                   type="text"
                   name="energyRating"
                   value={formData.energyRating}
                   onChange={handleChange}
-                  style={styles.input}
                   placeholder="Example: A"
+                  style={styles.input}
                 />
               </div>
 
@@ -487,25 +585,32 @@ export default function Appliances() {
                   value={formData.typicalDailyHours}
                   onChange={handleChange}
                   min="0"
+                  max="24"
                   step="0.1"
+                  placeholder="Example: 6"
                   style={styles.input}
-                  placeholder="Example: 5"
                 />
               </div>
             </div>
 
             <div style={styles.field}>
-              <label style={styles.label}>Status</label>
+              <label style={styles.label}>
+                Status
+              </label>
 
               <select
                 name="status"
                 value={formData.status}
                 onChange={handleChange}
-                required
                 style={styles.input}
               >
-                <option value="ACTIVE">Active</option>
-                <option value="INACTIVE">Inactive</option>
+                <option value="ACTIVE">
+                  Active
+                </option>
+
+                <option value="INACTIVE">
+                  Inactive
+                </option>
               </select>
             </div>
 
@@ -513,10 +618,13 @@ export default function Appliances() {
               <button
                 type="submit"
                 style={styles.primaryButton}
+                disabled={saving}
               >
-                {editingId
-                  ? "Update appliance"
-                  : "Create appliance"}
+                {saving
+                  ? "Saving..."
+                  : editingId
+                    ? "Update appliance"
+                    : "Create appliance"}
               </button>
 
               {editingId && (
@@ -533,7 +641,9 @@ export default function Appliances() {
         </section>
 
         <section style={styles.card}>
-          <h2 style={styles.cardTitle}>Appliances</h2>
+          <h2 style={styles.cardTitle}>
+            Appliances
+          </h2>
 
           {!selectedRoomId ? (
             <p style={styles.muted}>
@@ -545,7 +655,7 @@ export default function Appliances() {
             </p>
           ) : appliances.length === 0 ? (
             <p style={styles.muted}>
-              No appliances found for this room.
+              No appliances found in this room.
             </p>
           ) : (
             <div style={styles.list}>
@@ -561,21 +671,13 @@ export default function Appliances() {
 
                     <p style={styles.detail}>
                       <strong>Category:</strong>{" "}
-                      {appliance.category?.categoryName || "—"}
+                      {appliance.category?.categoryName ||
+                        appliance.category?.name ||
+                        "—"}
                     </p>
 
                     <p style={styles.detail}>
-                      <strong>Brand:</strong>{" "}
-                      {appliance.brand || "—"}
-                    </p>
-
-                    <p style={styles.detail}>
-                      <strong>Model:</strong>{" "}
-                      {appliance.model || "—"}
-                    </p>
-
-                    <p style={styles.detail}>
-                      <strong>Rated power:</strong>{" "}
+                      <strong>Power:</strong>{" "}
                       {appliance.ratedPower} W
                     </p>
 
@@ -585,8 +687,8 @@ export default function Appliances() {
                     </p>
 
                     <p style={styles.detail}>
-                      <strong>Typical daily hours:</strong>{" "}
-                      {appliance.typicalDailyHours ?? "—"}
+                      <strong>Typical daily use:</strong>{" "}
+                      {appliance.typicalDailyHours ?? 0} hours
                     </p>
 
                     <p style={styles.detail}>
@@ -603,7 +705,9 @@ export default function Appliances() {
                   <div style={styles.itemActions}>
                     <button
                       type="button"
-                      onClick={() => startEdit(appliance)}
+                      onClick={() =>
+                        startEdit(appliance)
+                      }
                       style={styles.editButton}
                     >
                       Edit
@@ -612,7 +716,9 @@ export default function Appliances() {
                     <button
                       type="button"
                       onClick={() =>
-                        handleDelete(appliance.applianceId)
+                        handleDelete(
+                          appliance.applianceId
+                        )
                       }
                       style={styles.deleteButton}
                     >
@@ -678,14 +784,14 @@ const styles = {
   selectorGrid: {
     display: "grid",
     gridTemplateColumns:
-      "repeat(auto-fit, minmax(260px, 1fr))",
+      "repeat(auto-fit, minmax(220px, 1fr))",
     gap: "16px",
   },
 
   grid: {
     display: "grid",
     gridTemplateColumns:
-      "repeat(auto-fit, minmax(380px, 1fr))",
+      "repeat(auto-fit, minmax(340px, 1fr))",
     gap: "22px",
   },
 
@@ -694,7 +800,8 @@ const styles = {
     border: "1px solid #e6dcdc",
     borderRadius: "14px",
     padding: "24px",
-    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.04)",
+    boxShadow:
+      "0 2px 8px rgba(0, 0, 0, 0.04)",
   },
 
   cardTitle: {
@@ -704,13 +811,6 @@ const styles = {
 
   field: {
     marginBottom: "16px",
-  },
-
-  twoColumn: {
-    display: "grid",
-    gridTemplateColumns:
-      "repeat(auto-fit, minmax(180px, 1fr))",
-    gap: "14px",
   },
 
   label: {
@@ -726,6 +826,13 @@ const styles = {
     border: "1px solid #d8caca",
     borderRadius: "8px",
     fontSize: "15px",
+  },
+
+  twoColumn: {
+    display: "grid",
+    gridTemplateColumns:
+      "repeat(auto-fit, minmax(160px, 1fr))",
+    gap: "14px",
   },
 
   actions: {
