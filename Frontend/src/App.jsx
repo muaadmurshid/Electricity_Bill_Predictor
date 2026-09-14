@@ -27,6 +27,7 @@ import DailyUsage from "./pages/DailyUsage";
 import Bills from "./pages/Bills";
 import Predictions from "./pages/Predictions";
 import Analytics from "./pages/Analytics";
+import TariffIntelligence from "./pages/TariffIntelligence";
 import Budget from "./pages/Budget";
 import Goals from "./pages/Goals";
 import Recommendations from "./pages/Recommendations";
@@ -38,23 +39,13 @@ export default function App() {
   return (
     <AuthProvider>
       <Routes>
-        {/* =====================================================
-            PUBLIC
-        ====================================================== */}
-
         <Route
           path="/"
           element={<Landing />}
         />
 
-        {/* =====================================================
-            SIGNED-OUT ONLY
-        ====================================================== */}
-
         <Route
-          element={
-            <PublicOnlyRoute />
-          }
+          element={<PublicOnlyRoute />}
         >
           <Route
             path="/login"
@@ -67,19 +58,11 @@ export default function App() {
           />
         </Route>
 
-        {/* =====================================================
-            AUTHENTICATED USER AREA
-        ====================================================== */}
-
         <Route
-          element={
-            <ProtectedRoute />
-          }
+          element={<ProtectedRoute />}
         >
           <Route
-            element={
-              <MainLayout />
-            }
+            element={<MainLayout />}
           >
             <Route
               path="/dashboard"
@@ -127,6 +110,11 @@ export default function App() {
             />
 
             <Route
+              path="/tariff-intelligence"
+              element={<TariffIntelligence />}
+            />
+
+            <Route
               path="/budget"
               element={<Budget />}
             />
@@ -138,16 +126,12 @@ export default function App() {
 
             <Route
               path="/recommendations"
-              element={
-                <Recommendations />
-              }
+              element={<Recommendations />}
             />
 
             <Route
               path="/notifications"
-              element={
-                <Notifications />
-              }
+              element={<Notifications />}
             />
 
             <Route
@@ -157,26 +141,28 @@ export default function App() {
           </Route>
         </Route>
 
-        {/* =====================================================
-    ADMIN AREA
-====================================================== */}
+        <Route
+          element={<AdminRoute />}
+        >
+          <Route
+            element={<MainLayout />}
+          >
+            <Route
+              path="/admin/dashboard"
+              element={<AdminDashboard />}
+            />
+          </Route>
 
-<Route element={<AdminRoute />}>
-  <Route element={<MainLayout />}>
-    <Route
-      path="/admin/dashboard"
-      element={<AdminDashboard />}
-    />
-  </Route>
-  <Route
-  path="/admin/users"
-  element={<AdminUsers />}
-/>
-<Route
-  path="/admin/tariffs"
-  element={<AdminTariffs />}
-/>
-</Route>
+          <Route
+            path="/admin/users"
+            element={<AdminUsers />}
+          />
+
+          <Route
+            path="/admin/tariffs"
+            element={<AdminTariffs />}
+          />
+        </Route>
 
         <Route
           path="*"

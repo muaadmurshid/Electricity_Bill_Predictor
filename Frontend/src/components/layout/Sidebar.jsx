@@ -68,6 +68,11 @@ const USER_NAV_GROUPS = [
         icon: "◔",
       },
       {
+        to: "/tariff-intelligence",
+        label: "Tariff intelligence",
+        icon: "₨",
+      },
+      {
         to: "/recommendations",
         label: "Recommendations",
         icon: "✦",
