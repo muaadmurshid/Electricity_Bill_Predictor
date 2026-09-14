@@ -35,9 +35,9 @@ public class ApplianceService {
         this.currentUserService = currentUserService;
     }
 
-    // =========================================================
+
     // GET ALL APPLIANCES FOR CURRENT LOGGED-IN USER
-    // =========================================================
+
     public List<Appliance> getAllAppliances() {
 
         Long currentUserId =
@@ -49,10 +49,10 @@ public class ApplianceService {
                 );
     }
 
-    // =========================================================
+
     // GET APPLIANCES FOR ONE ROOM
     // Room must belong to current user
-    // =========================================================
+
     public List<Appliance> getAppliancesByRoomId(
             Long roomId) {
 
@@ -71,11 +71,12 @@ public class ApplianceService {
                         currentUserId
                 );
     }
-
+    
     // =========================================================
     // GET APPLIANCE BY ID
     // Only owner can access
     // =========================================================
+
     public Appliance getApplianceById(
             Long applianceId) {
 
@@ -100,10 +101,10 @@ public class ApplianceService {
         return appliance;
     }
 
-    // =========================================================
+
     // CREATE APPLIANCE
     // Appliance can only be added to current user's room
-    // =========================================================
+
     public Appliance createAppliance(
             Appliance appliance) {
 
@@ -146,16 +147,19 @@ public class ApplianceService {
         appliance.setRoom(room);
         appliance.setCategory(category);
 
+        if (appliance.getAiDetected() == null) {
+         appliance.setAiDetected(false);
+        }
+
         return applianceRepository.save(
                 appliance
         );
     }
 
-    // =========================================================
     // UPDATE APPLIANCE
     // Only owner can update
     // Cannot move appliance into another user's room
-    // =========================================================
+
     public Appliance updateAppliance(
             Long applianceId,
             Appliance applianceDetails) {
@@ -260,6 +264,23 @@ public class ApplianceService {
                 applianceDetails.getStatus()
         );
 
+        existingAppliance.setVoltage(
+        applianceDetails.getVoltage()
+
+        );
+
+        existingAppliance.setImagePath(
+        applianceDetails.getImagePath()
+
+        );
+
+        existingAppliance.setAiDetected(
+        applianceDetails.getAiDetected() != null
+                ? applianceDetails.getAiDetected()
+                : false
+
+        );
+
         return applianceRepository.save(
                 existingAppliance
         );
@@ -360,6 +381,54 @@ public class ApplianceService {
             );
         }
     }
+
+    // =========================================================
+// UPDATE APPLIANCE IMAGE PATH
+// Only the owner can update the image reference
+// =========================================================
+public Appliance updateApplianceImagePath(
+        Long applianceId,
+        String imagePath) {
+
+    Long currentUserId =
+            currentUserService.getCurrentUserId();
+
+    Appliance appliance =
+            applianceRepository
+                    .findById(applianceId)
+                    .orElseThrow(() ->
+                            new ResourceNotFoundException(
+                                    "Appliance not found with id: "
+                                            + applianceId
+                            )
+                    );
+
+    validateApplianceOwnership(
+            appliance,
+            currentUserId
+    );
+
+    appliance.setImagePath(
+            imagePath
+    );
+
+    return applianceRepository.save(
+            appliance
+    );
+}
+
+
+// =========================================================
+// REMOVE APPLIANCE IMAGE PATH
+// =========================================================
+public Appliance removeApplianceImagePath(
+        Long applianceId) {
+
+    return updateApplianceImagePath(
+            applianceId,
+            null
+    );
+}
 
     // =========================================================
     // CATEGORY VALIDATION

@@ -1,11 +1,11 @@
 package com.example.electricity_bill_predictor.Entity;
 
+import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-import jakarta.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
@@ -38,20 +38,29 @@ public class Appliance {
     private String model;
 
     @NotNull(message = "Rated power is required")
-    @DecimalMin(value = "0.01", message = "Rated power must be greater than 0")
+    @DecimalMin(
+            value = "0.01",
+            message = "Rated power must be greater than 0"
+    )
     @Column(name = "rated_power", nullable = false)
     private BigDecimal ratedPower;
 
     @NotNull(message = "Quantity is required")
-    @Min(value = 1, message = "Quantity must be at least 1")
+    @Min(
+            value = 1,
+            message = "Quantity must be at least 1"
+    )
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
 
     @Column(name = "energy_rating")
     private String energyRating;
 
-    @DecimalMin(value = "0.0", inclusive = true,
-            message = "Typical daily hours cannot be negative")
+    @DecimalMin(
+            value = "0.0",
+            inclusive = true,
+            message = "Typical daily hours cannot be negative"
+    )
     @Column(name = "typical_daily_hours")
     private BigDecimal typicalDailyHours;
 
@@ -59,7 +68,27 @@ public class Appliance {
     @Column(name = "status", nullable = false)
     private String status;
 
-    // Getters and Setters
+    // =========================================================
+    // SMART APPLIANCE IDENTIFICATION FIELDS
+    // =========================================================
+
+    @DecimalMin(
+            value = "0.0",
+            inclusive = true,
+            message = "Voltage cannot be negative"
+    )
+    @Column(name = "voltage")
+    private BigDecimal voltage;
+
+    @Column(name = "image_path", length = 500)
+    private String imagePath;
+
+    @Column(name = "ai_detected", nullable = false)
+    private Boolean aiDetected = false;
+
+    // =========================================================
+    // GETTERS AND SETTERS
+    // =========================================================
 
     public Long getApplianceId() {
         return applianceId;
@@ -147,5 +176,29 @@ public class Appliance {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public BigDecimal getVoltage() {
+        return voltage;
+    }
+
+    public void setVoltage(BigDecimal voltage) {
+        this.voltage = voltage;
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
+
+    public Boolean getAiDetected() {
+        return aiDetected;
+    }
+
+    public void setAiDetected(Boolean aiDetected) {
+        this.aiDetected = aiDetected;
     }
 }
