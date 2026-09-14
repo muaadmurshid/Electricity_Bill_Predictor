@@ -1,0 +1,30 @@
+{
+  "label_to_id": {
+    "GENERAL_ENERGY_SAVING": 0,
+    "HIGH_BILL_WARNING": 1,
+    "OPTIMIZE_REFRIGERATION": 2,
+    "REDUCE_COOLING_USAGE": 3,
+    "REDUCE_HEATING_USAGE": 4,
+    "REDUCE_HIGH_USAGE_APPLIANCE": 5,
+    "REDUCE_LIGHTING_USAGE": 6
+  },
+  "id_to_label": {
+    "0": "GENERAL_ENERGY_SAVING",
+    "1": "HIGH_BILL_WARNING",
+    "2": "OPTIMIZE_REFRIGERATION",
+    "3": "REDUCE_COOLING_USAGE",
+    "4": "REDUCE_HEATING_USAGE",
+    "5": "REDUCE_HIGH_USAGE_APPLIANCE",
+    "6": "REDUCE_LIGHTING_USAGE"
+  },
+  "features": [
+    "month",
+    "monthlyConsumptionKwh",
+    "predictedConsumptionKwh",
+    "predictedBillAmount",
+    "highestApplianceConsumptionKwh",
+    "highestCategoryConsumptionKwh",
+    "highestConsumingCategory"
+  ],
+  "accuracy": 0.97551
+}
