@@ -20,6 +20,8 @@ public class AiRecommendationRequest {
     private String highestConsumingCategory;
     private BigDecimal highestCategoryConsumptionKwh;
 
+    private String recommendationClass;
+
     public Long getHouseholdId() {
         return householdId;
     }
@@ -58,7 +60,9 @@ public class AiRecommendationRequest {
 
     public void setMonthlyConsumptionKwh(
             BigDecimal monthlyConsumptionKwh) {
-        this.monthlyConsumptionKwh = monthlyConsumptionKwh;
+
+        this.monthlyConsumptionKwh =
+                monthlyConsumptionKwh;
     }
 
     public BigDecimal getPredictedConsumptionKwh() {
@@ -67,7 +71,9 @@ public class AiRecommendationRequest {
 
     public void setPredictedConsumptionKwh(
             BigDecimal predictedConsumptionKwh) {
-        this.predictedConsumptionKwh = predictedConsumptionKwh;
+
+        this.predictedConsumptionKwh =
+                predictedConsumptionKwh;
     }
 
     public BigDecimal getPredictedBillAmount() {
@@ -76,7 +82,9 @@ public class AiRecommendationRequest {
 
     public void setPredictedBillAmount(
             BigDecimal predictedBillAmount) {
-        this.predictedBillAmount = predictedBillAmount;
+
+        this.predictedBillAmount =
+                predictedBillAmount;
     }
 
     public String getHighestConsumingAppliance() {
@@ -85,7 +93,9 @@ public class AiRecommendationRequest {
 
     public void setHighestConsumingAppliance(
             String highestConsumingAppliance) {
-        this.highestConsumingAppliance = highestConsumingAppliance;
+
+        this.highestConsumingAppliance =
+                highestConsumingAppliance;
     }
 
     public BigDecimal getHighestApplianceConsumptionKwh() {
@@ -94,6 +104,7 @@ public class AiRecommendationRequest {
 
     public void setHighestApplianceConsumptionKwh(
             BigDecimal highestApplianceConsumptionKwh) {
+
         this.highestApplianceConsumptionKwh =
                 highestApplianceConsumptionKwh;
     }
@@ -104,7 +115,9 @@ public class AiRecommendationRequest {
 
     public void setHighestConsumingCategory(
             String highestConsumingCategory) {
-        this.highestConsumingCategory = highestConsumingCategory;
+
+        this.highestConsumingCategory =
+                highestConsumingCategory;
     }
 
     public BigDecimal getHighestCategoryConsumptionKwh() {
@@ -113,7 +126,19 @@ public class AiRecommendationRequest {
 
     public void setHighestCategoryConsumptionKwh(
             BigDecimal highestCategoryConsumptionKwh) {
+
         this.highestCategoryConsumptionKwh =
                 highestCategoryConsumptionKwh;
+    }
+
+    public String getRecommendationClass() {
+        return recommendationClass;
+    }
+
+    public void setRecommendationClass(
+            String recommendationClass) {
+
+        this.recommendationClass =
+                recommendationClass;
     }
 }

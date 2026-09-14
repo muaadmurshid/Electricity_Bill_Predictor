@@ -25,63 +25,142 @@ public class AiRecommendationService {
     @Value("${openai.api.key}")
     private String openAiApiKey;
 
-    public AiRecommendationService(ObjectMapper objectMapper) {
+    public AiRecommendationService(
+            ObjectMapper objectMapper) {
 
-        this.objectMapper = objectMapper;
+        this.objectMapper =
+                objectMapper;
 
-        this.restClient = RestClient.builder()
-                .baseUrl("https://api.openai.com/v1")
-                .build();
+        this.restClient =
+                RestClient.builder()
+                        .baseUrl(
+                                "https://api.openai.com/v1"
+                        )
+                        .build();
     }
 
-    public AiRecommendationResponse generateRecommendation(
+    public AiRecommendationResponse
+    generateRecommendation(
             AiRecommendationRequest request) {
+
+        if (request == null) {
+            throw new IllegalArgumentException(
+                    "AI recommendation request cannot be null"
+            );
+        }
+
+        if (request.getRecommendationClass() == null ||
+                request
+                        .getRecommendationClass()
+                        .isBlank()) {
+
+            throw new IllegalArgumentException(
+                    "ML recommendation class is required"
+            );
+        }
 
         try {
 
-            String prompt = buildPrompt(request);
+            String recommendationType =
+                    mapRecommendationType(
+                            request.getRecommendationClass()
+                    );
 
-            Map<String, Object> requestBody = new HashMap<>();
+            String priority =
+                    mapPriority(
+                            request.getRecommendationClass()
+                    );
 
-            requestBody.put("model", "gpt-5-mini");
+            String prompt =
+                    buildPrompt(
+                            request,
+                            recommendationType,
+                            priority
+                    );
+
+            Map<String, Object> requestBody =
+                    new HashMap<>();
+
+            requestBody.put(
+                    "model",
+                    "gpt-5.6-luna"
+            );
 
             requestBody.put(
                     "input",
                     List.of(
                             Map.of(
-                                    "role", "system",
+                                    "role",
+                                    "system",
+
                                     "content",
-                                    "You are an energy efficiency advisor for "
-                                            + "Sri Lankan residential households. "
-                                            + "Provide practical and realistic electricity "
-                                            + "saving advice based only on the supplied data. "
+                                    "You are an energy efficiency communication assistant "
+                                            + "for Sri Lankan residential households. "
+                                            + "The recommendation decision has already been "
+                                            + "made by a trained machine learning model. "
+                                            + "Do not change, replace or override that decision. "
+                                            + "Your role is only to explain the supplied "
+                                            + "recommendation clearly and practically. "
                                             + "Return only valid JSON."
                             ),
+
                             Map.of(
-                                    "role", "user",
-                                    "content", prompt
+                                    "role",
+                                    "user",
+                                    "content",
+                                    prompt
                             )
                     )
             );
 
             String responseBody =
                     restClient.post()
-                            .uri("/responses")
+                            .uri(
+                                    "/responses"
+                            )
                             .header(
                                     "Authorization",
-                                    "Bearer " + openAiApiKey
+                                    "Bearer "
+                                            + openAiApiKey
                             )
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .body(requestBody)
+                            .contentType(
+                                    MediaType.APPLICATION_JSON
+                            )
+                            .body(
+                                    requestBody
+                            )
                             .retrieve()
-                            .body(String.class);
+                            .body(
+                                    String.class
+                            );
 
-            return parseResponse(responseBody);
+            AiRecommendationResponse response =
+                    parseResponse(
+                            responseBody
+                    );
+
+            response.setRecommendationType(
+                    recommendationType
+            );
+
+            response.setPriority(
+                    priority
+            );
+
+            response.setEstimatedSavingKwh(
+                    BigDecimal.ZERO
+            );
+
+            response.setEstimatedSavingAmount(
+                    BigDecimal.ZERO
+            );
+
+            return response;
 
         } catch (Exception e) {
 
             throw new IllegalStateException(
-                    "Failed to generate AI recommendation: "
+                    "Failed to generate AI recommendation explanation: "
                             + e.getMessage(),
                     e
             );
@@ -89,7 +168,9 @@ public class AiRecommendationService {
     }
 
     private String buildPrompt(
-            AiRecommendationRequest request) {
+            AiRecommendationRequest request,
+            String recommendationType,
+            String priority) {
 
         return """
                 Household energy information:
@@ -109,36 +190,45 @@ public class AiRecommendationService {
                 Highest consuming category: %s
                 Category consumption: %s kWh
 
-                Generate ONE personalized electricity-saving recommendation.
+                Machine learning recommendation class:
+                %s
+
+                Required recommendation type:
+                %s
+
+                Required priority:
+                %s
+
+                The recommendation class above was selected by our
+                trained machine learning classifier.
+
+                Do not choose another recommendation.
+
+                Write a short title and a practical explanation for
+                the user based on that recommendation class and the
+                supplied household information.
 
                 Return ONLY JSON using exactly this structure:
 
                 {
                   "recommendationTitle": "short title",
-                  "recommendationDescription": "practical explanation",
-                  "recommendationType": "APPLIANCE_USAGE",
-                  "priority": "HIGH",
-                  "estimatedSavingKwh": 0.0,
-                  "estimatedSavingAmount": 0.0
+                  "recommendationDescription": "practical explanation"
                 }
 
                 Rules:
-                - recommendationType should be one of:
-                  APPLIANCE_USAGE,
-                  BEHAVIOUR,
-                  SCHEDULE,
-                  ENERGY_EFFICIENCY
 
-                - priority should be:
-                  HIGH,
-                  MEDIUM,
-                  or LOW
-
-                - Do not invent appliances that are not provided.
-                - Keep the advice practical for a household.
-                - Savings must be non-negative.
-                - If exact savings cannot be reliably determined,
-                  use 0.0 rather than inventing a number.
+                - Do not change the ML recommendation class.
+                - Do not choose another recommendation category.
+                - Do not invent appliances.
+                - Do not invent technical specifications.
+                - Use the supplied appliance and category information
+                  where relevant.
+                - Keep the recommendation practical for a Sri Lankan
+                  residential household.
+                - Keep the title short.
+                - Keep the explanation clear and concise.
+                - Do not calculate or invent estimated monetary or kWh
+                  savings.
                 """
                 .formatted(
                         request.getHouseholdId(),
@@ -151,20 +241,30 @@ public class AiRecommendationService {
                         request.getHighestConsumingAppliance(),
                         request.getHighestApplianceConsumptionKwh(),
                         request.getHighestConsumingCategory(),
-                        request.getHighestCategoryConsumptionKwh()
+                        request.getHighestCategoryConsumptionKwh(),
+                        request.getRecommendationClass(),
+                        recommendationType,
+                        priority
                 );
     }
 
     private AiRecommendationResponse parseResponse(
-            String responseBody) throws Exception {
+            String responseBody)
+            throws Exception {
 
         JsonNode root =
-                objectMapper.readTree(responseBody);
+                objectMapper.readTree(
+                        responseBody
+                );
 
         JsonNode output =
-                root.path("output");
+                root.path(
+                        "output"
+                );
 
-        if (!output.isArray() || output.isEmpty()) {
+        if (!output.isArray() ||
+                output.isEmpty()) {
+
             throw new IllegalStateException(
                     "OpenAI response did not contain output"
             );
@@ -172,20 +272,29 @@ public class AiRecommendationService {
 
         String jsonText = null;
 
-        for (JsonNode outputItem : output) {
+        for (JsonNode outputItem :
+                output) {
 
             JsonNode content =
-                    outputItem.path("content");
+                    outputItem.path(
+                            "content"
+                    );
 
             if (content.isArray()) {
 
-                for (JsonNode contentItem : content) {
+                for (JsonNode contentItem :
+                        content) {
 
                     if ("output_text".equals(
-                            contentItem.path("type").asText())) {
+                            contentItem
+                                    .path("type")
+                                    .asText()
+                    )) {
 
                         jsonText =
-                                contentItem.path("text").asText();
+                                contentItem
+                                        .path("text")
+                                        .asText();
 
                         break;
                     }
@@ -197,58 +306,126 @@ public class AiRecommendationService {
             }
         }
 
-        if (jsonText == null || jsonText.isBlank()) {
+        if (jsonText == null ||
+                jsonText.isBlank()) {
+
             throw new IllegalStateException(
                     "OpenAI response did not contain recommendation text"
             );
         }
 
+        jsonText =
+                jsonText
+                        .replace(
+                                "```json",
+                                ""
+                        )
+                        .replace(
+                                "```",
+                                ""
+                        )
+                        .trim();
+
         JsonNode recommendationJson =
-                objectMapper.readTree(jsonText);
+                objectMapper.readTree(
+                        jsonText
+                );
+
+        String title =
+                recommendationJson
+                        .path(
+                                "recommendationTitle"
+                        )
+                        .asText()
+                        .trim();
+
+        String description =
+                recommendationJson
+                        .path(
+                                "recommendationDescription"
+                        )
+                        .asText()
+                        .trim();
+
+        if (title.isBlank()) {
+            throw new IllegalStateException(
+                    "AI explanation did not contain a recommendation title"
+            );
+        }
+
+        if (description.isBlank()) {
+            throw new IllegalStateException(
+                    "AI explanation did not contain a recommendation description"
+            );
+        }
 
         AiRecommendationResponse response =
                 new AiRecommendationResponse();
 
         response.setRecommendationTitle(
-                recommendationJson
-                        .path("recommendationTitle")
-                        .asText()
+                title
         );
 
         response.setRecommendationDescription(
-                recommendationJson
-                        .path("recommendationDescription")
-                        .asText()
-        );
-
-        response.setRecommendationType(
-                recommendationJson
-                        .path("recommendationType")
-                        .asText()
-        );
-
-        response.setPriority(
-                recommendationJson
-                        .path("priority")
-                        .asText()
-        );
-
-        response.setEstimatedSavingKwh(
-                new BigDecimal(
-                        recommendationJson
-                                .path("estimatedSavingKwh")
-                                .asText("0.0")
-                )
-        );
-
-        response.setEstimatedSavingAmount(
-                new BigDecimal(
-                        recommendationJson
-                                .path("estimatedSavingAmount")
-                                .asText("0.0")
-                )
+                description
         );
 
         return response;
+    }
+
+    private String mapRecommendationType(
+            String recommendationClass) {
+
+        return switch (
+                recommendationClass
+        ) {
+
+            case "REDUCE_COOLING_USAGE",
+                 "REDUCE_LIGHTING_USAGE",
+                 "OPTIMIZE_REFRIGERATION",
+                 "REDUCE_HEATING_USAGE",
+                 "REDUCE_HIGH_USAGE_APPLIANCE" ->
+                    "APPLIANCE_USAGE";
+
+            case "HIGH_BILL_WARNING" ->
+                    "BEHAVIOUR";
+
+            case "GENERAL_ENERGY_SAVING" ->
+                    "ENERGY_EFFICIENCY";
+
+            default ->
+                    throw new IllegalArgumentException(
+                            "Unsupported ML recommendation class: "
+                                    + recommendationClass
+                    );
+        };
+    }
+
+    private String mapPriority(
+            String recommendationClass) {
+
+        return switch (
+                recommendationClass
+        ) {
+
+            case "HIGH_BILL_WARNING" ->
+                    "HIGH";
+
+            case "REDUCE_COOLING_USAGE",
+                 "REDUCE_HEATING_USAGE",
+                 "REDUCE_HIGH_USAGE_APPLIANCE" ->
+                    "MEDIUM";
+
+            case "REDUCE_LIGHTING_USAGE",
+                 "OPTIMIZE_REFRIGERATION",
+                 "GENERAL_ENERGY_SAVING" ->
+                    "LOW";
+
+            default ->
+                    throw new IllegalArgumentException(
+                            "Unsupported ML recommendation class: "
+                                    + recommendationClass
+                    );
+        };
     }
 }
