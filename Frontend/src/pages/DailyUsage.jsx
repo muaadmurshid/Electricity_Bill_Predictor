@@ -1,26 +1,111 @@
-import { useEffect, useMemo, useState } from "react";
+import {
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 
 import usageService from "../services/dailyusageService";
 import householdService from "../services/householdService";
 import roomService from "../services/roomService";
 import applianceService from "../services/applianceService";
 
+function formatDate(value) {
+  if (!value) {
+    return "—";
+  }
+
+  const date =
+    new Date(`${value}T00:00:00`);
+
+  if (
+    Number.isNaN(
+      date.getTime()
+    )
+  ) {
+    return value;
+  }
+
+  return new Intl.DateTimeFormat(
+    "en-LK",
+    {
+      dateStyle: "medium",
+    }
+  ).format(date);
+}
+
+function formatKwh(value) {
+  if (
+    value === null ||
+    value === undefined
+  ) {
+    return "—";
+  }
+
+  return `${Number(value).toFixed(
+    3
+  )} kWh`;
+}
+
 export default function DailyUsage() {
-  const [households, setHouseholds] = useState([]);
-  const [rooms, setRooms] = useState([]);
-  const [appliances, setAppliances] = useState([]);
-  const [usageRecords, setUsageRecords] = useState([]);
+  const [
+    households,
+    setHouseholds,
+  ] = useState([]);
 
-  const [selectedHouseholdId, setSelectedHouseholdId] = useState("");
-  const [selectedRoomId, setSelectedRoomId] = useState("");
+  const [
+    rooms,
+    setRooms,
+  ] = useState([]);
 
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+  const [
+    appliances,
+    setAppliances,
+  ] = useState([]);
 
-  const [editingId, setEditingId] = useState(null);
+  const [
+    usageRecords,
+    setUsageRecords,
+  ] = useState([]);
 
-  const [formData, setFormData] = useState({
+  const [
+    selectedHouseholdId,
+    setSelectedHouseholdId,
+  ] = useState("");
+
+  const [
+    selectedRoomId,
+    setSelectedRoomId,
+  ] = useState("");
+
+  const [
+    loading,
+    setLoading,
+  ] = useState(true);
+
+  const [
+    saving,
+    setSaving,
+  ] = useState(false);
+
+  const [
+    error,
+    setError,
+  ] = useState("");
+
+  const [
+    success,
+    setSuccess,
+  ] = useState("");
+
+  const [
+    editingId,
+    setEditingId,
+  ] = useState(null);
+
+  const [
+    formData,
+    setFormData,
+  ] = useState({
     applianceId: "",
     usageDate: "",
     hoursUsed: "",
@@ -32,8 +117,12 @@ export default function DailyUsage() {
   }, []);
 
   useEffect(() => {
-    if (selectedHouseholdId) {
-      loadRooms(selectedHouseholdId);
+    if (
+      selectedHouseholdId
+    ) {
+      loadRooms(
+        selectedHouseholdId
+      );
     } else {
       setRooms([]);
       setSelectedRoomId("");
@@ -42,8 +131,12 @@ export default function DailyUsage() {
   }, [selectedHouseholdId]);
 
   useEffect(() => {
-    if (selectedRoomId) {
-      loadAppliances(selectedRoomId);
+    if (
+      selectedRoomId
+    ) {
+      loadAppliances(
+        selectedRoomId
+      );
     } else {
       setAppliances([]);
     }
@@ -54,32 +147,55 @@ export default function DailyUsage() {
       setLoading(true);
       setError("");
 
-      const [householdData, usageData] = await Promise.all([
+      const [
+        householdData,
+        usageData,
+      ] = await Promise.all([
         householdService.list(),
         usageService.list(),
       ]);
 
-      const householdList = Array.isArray(householdData)
-        ? householdData
-        : [];
+      const householdList =
+        Array.isArray(
+          householdData
+        )
+          ? householdData
+          : [];
 
-      setHouseholds(householdList);
-
-      setUsageRecords(
-        Array.isArray(usageData) ? usageData : []
+      setHouseholds(
+        householdList
       );
 
-      if (householdList.length > 0) {
+      setUsageRecords(
+        Array.isArray(
+          usageData
+        )
+          ? usageData
+          : []
+      );
+
+      if (
+        householdList.length >
+        0
+      ) {
         setSelectedHouseholdId(
-          String(householdList[0].householdId)
+          String(
+            householdList[0]
+              .householdId
+          )
         );
       }
     } catch (err) {
-      console.error("Failed to load daily usage data:", err);
+      console.error(
+        "Failed to load daily usage data:",
+        err
+      );
 
       setError(
-        err?.response?.data?.error ||
-          err?.response?.data?.message ||
+        err?.response?.data
+          ?.error ||
+          err?.response?.data
+            ?.message ||
           "Failed to load daily usage data."
       );
     } finally {
@@ -89,50 +205,74 @@ export default function DailyUsage() {
 
   async function loadUsageRecords() {
     try {
-      const data = await usageService.list();
+      const data =
+        await usageService.list();
 
       setUsageRecords(
-        Array.isArray(data) ? data : []
+        Array.isArray(data)
+          ? data
+          : []
       );
     } catch (err) {
-      console.error("Failed to load usage records:", err);
+      console.error(
+        "Failed to load usage records:",
+        err
+      );
 
       setError(
-        err?.response?.data?.error ||
-          err?.response?.data?.message ||
+        err?.response?.data
+          ?.error ||
+          err?.response?.data
+            ?.message ||
           "Failed to load usage records."
       );
     }
   }
 
-  async function loadRooms(householdId) {
+  async function loadRooms(
+    householdId
+  ) {
     try {
       setLoading(true);
       setError("");
 
       const data =
-        await roomService.listByHousehold(householdId);
+        await roomService.listByHousehold(
+          householdId
+        );
 
-      const roomList = Array.isArray(data)
-        ? data
-        : [];
+      const roomList =
+        Array.isArray(data)
+          ? data
+          : [];
 
-      setRooms(roomList);
+      setRooms(
+        roomList
+      );
 
-      if (roomList.length > 0) {
+      if (
+        roomList.length > 0
+      ) {
         setSelectedRoomId(
-          String(roomList[0].roomId)
+          String(
+            roomList[0].roomId
+          )
         );
       } else {
         setSelectedRoomId("");
         setAppliances([]);
       }
     } catch (err) {
-      console.error("Failed to load rooms:", err);
+      console.error(
+        "Failed to load rooms:",
+        err
+      );
 
       setError(
-        err?.response?.data?.error ||
-          err?.response?.data?.message ||
+        err?.response?.data
+          ?.error ||
+          err?.response?.data
+            ?.message ||
           "Failed to load rooms."
       );
     } finally {
@@ -140,23 +280,34 @@ export default function DailyUsage() {
     }
   }
 
-  async function loadAppliances(roomId) {
+  async function loadAppliances(
+    roomId
+  ) {
     try {
       setLoading(true);
       setError("");
 
       const data =
-        await applianceService.listByRoom(roomId);
+        await applianceService.listByRoom(
+          roomId
+        );
 
       setAppliances(
-        Array.isArray(data) ? data : []
+        Array.isArray(data)
+          ? data
+          : []
       );
     } catch (err) {
-      console.error("Failed to load appliances:", err);
+      console.error(
+        "Failed to load appliances:",
+        err
+      );
 
       setError(
-        err?.response?.data?.error ||
-          err?.response?.data?.message ||
+        err?.response?.data
+          ?.error ||
+          err?.response?.data
+            ?.message ||
           "Failed to load appliances."
       );
     } finally {
@@ -164,45 +315,123 @@ export default function DailyUsage() {
     }
   }
 
-  function handleHouseholdChange(event) {
-    setSelectedHouseholdId(event.target.value);
+  function handleHouseholdChange(
+    event
+  ) {
+    setSelectedHouseholdId(
+      event.target.value
+    );
+
+    setSelectedRoomId("");
+
     resetForm();
+
+    setError("");
+    setSuccess("");
   }
 
-  function handleRoomChange(event) {
-    setSelectedRoomId(event.target.value);
+  function handleRoomChange(
+    event
+  ) {
+    setSelectedRoomId(
+      event.target.value
+    );
+
     resetForm();
+
+    setError("");
+    setSuccess("");
   }
 
   function handleChange(event) {
-    const { name, value } = event.target;
+    const {
+      name,
+      value,
+    } = event.target;
 
-    setFormData((previous) => ({
-      ...previous,
-      [name]: value,
-    }));
+    setFormData(
+      (previous) => ({
+        ...previous,
+        [name]: value,
+      })
+    );
   }
 
-  async function handleSubmit(event) {
+  function validateForm() {
+    if (
+      !formData.applianceId
+    ) {
+      setError(
+        "Please select an appliance."
+      );
+
+      return false;
+    }
+
+    if (
+      !formData.usageDate
+    ) {
+      setError(
+        "Please select a usage date."
+      );
+
+      return false;
+    }
+
+    if (
+      formData.hoursUsed ===
+        "" ||
+      Number(
+        formData.hoursUsed
+      ) < 0 ||
+      Number(
+        formData.hoursUsed
+      ) > 24
+    ) {
+      setError(
+        "Hours used must be between 0 and 24."
+      );
+
+      return false;
+    }
+
+    return true;
+  }
+
+  async function handleSubmit(
+    event
+  ) {
     event.preventDefault();
 
-    if (!formData.applianceId) {
-      setError("Please select an appliance.");
+    setError("");
+    setSuccess("");
+
+    if (!validateForm()) {
       return;
     }
 
     const payload = {
       appliance: {
-        applianceId: Number(formData.applianceId),
+        applianceId:
+          Number(
+            formData.applianceId
+          ),
       },
-      usageDate: formData.usageDate,
-      hoursUsed: Number(formData.hoursUsed),
-      usageNotes: formData.usageNotes.trim(),
+
+      usageDate:
+        formData.usageDate,
+
+      hoursUsed:
+        Number(
+          formData.hoursUsed
+        ),
+
+      usageNotes:
+        formData.usageNotes.trim(),
     };
 
     try {
-      setError("");
-      setSuccess("");
+      setSaving(true);
 
       if (editingId) {
         await usageService.update(
@@ -214,7 +443,9 @@ export default function DailyUsage() {
           "Daily usage updated successfully."
         );
       } else {
-        await usageService.create(payload);
+        await usageService.create(
+          payload
+        );
 
         setSuccess(
           "Daily usage recorded successfully."
@@ -222,39 +453,58 @@ export default function DailyUsage() {
       }
 
       resetForm();
+
       await loadUsageRecords();
     } catch (err) {
-      console.error("Failed to save daily usage:", err);
+      console.error(
+        "Failed to save daily usage:",
+        err
+      );
 
-      if (err?.response?.status === 409) {
+      if (
+        err?.response?.status ===
+        409
+      ) {
         setError(
           "A usage record already exists for this appliance on the selected date."
         );
       } else {
         setError(
-          err?.response?.data?.error ||
-            err?.response?.data?.message ||
-            "Failed to save daily usage."
+          err?.response?.data
+            ?.error ||
+          err?.response?.data
+            ?.message ||
+          "Failed to save daily usage."
         );
       }
+    } finally {
+      setSaving(false);
     }
   }
 
   function startEdit(record) {
-    setEditingId(record.usageId);
+    setEditingId(
+      record.usageId
+    );
 
     const applianceId =
-      record.appliance?.applianceId;
+      record.appliance
+        ?.applianceId;
 
     const roomId =
-      record.appliance?.room?.roomId;
+      record.appliance?.room
+        ?.roomId;
 
     const householdId =
-      record.appliance?.room?.household?.householdId;
+      record.appliance?.room
+        ?.household
+        ?.householdId;
 
     if (householdId) {
       setSelectedHouseholdId(
-        String(householdId)
+        String(
+          householdId
+        )
       );
     }
 
@@ -266,26 +516,41 @@ export default function DailyUsage() {
 
     setFormData({
       applianceId:
-        applianceId !== undefined &&
-        applianceId !== null
-          ? String(applianceId)
+        applianceId !==
+          undefined &&
+        applianceId !==
+          null
+          ? String(
+              applianceId
+            )
           : "",
 
       usageDate:
-        record.usageDate || "",
+        record.usageDate ||
+        "",
 
       hoursUsed:
-        record.hoursUsed !== null &&
-        record.hoursUsed !== undefined
-          ? String(record.hoursUsed)
+        record.hoursUsed !==
+          null &&
+        record.hoursUsed !==
+          undefined
+          ? String(
+              record.hoursUsed
+            )
           : "",
 
       usageNotes:
-        record.usageNotes || "",
+        record.usageNotes ||
+        "",
     });
 
     setError("");
     setSuccess("");
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
   }
 
   function resetForm() {
@@ -299,10 +564,13 @@ export default function DailyUsage() {
     });
   }
 
-  async function handleDelete(usageId) {
-    const confirmed = window.confirm(
-      "Are you sure you want to delete this daily usage record?"
-    );
+  async function handleDelete(
+    usageId
+  ) {
+    const confirmed =
+      window.confirm(
+        "Are you sure you want to delete this daily usage record?"
+      );
 
     if (!confirmed) {
       return;
@@ -312,508 +580,772 @@ export default function DailyUsage() {
       setError("");
       setSuccess("");
 
-      await usageService.remove(usageId);
+      await usageService.remove(
+        usageId
+      );
 
       setSuccess(
         "Daily usage record deleted successfully."
       );
 
-      if (editingId === usageId) {
+      if (
+        editingId === usageId
+      ) {
         resetForm();
       }
 
       await loadUsageRecords();
     } catch (err) {
-      console.error("Failed to delete daily usage:", err);
+      console.error(
+        "Failed to delete daily usage:",
+        err
+      );
 
       setError(
-        err?.response?.data?.error ||
-          err?.response?.data?.message ||
+        err?.response?.data
+          ?.error ||
+          err?.response?.data
+            ?.message ||
           "Failed to delete daily usage."
       );
     }
   }
 
-  const filteredUsageRecords = useMemo(() => {
-    if (!selectedHouseholdId) {
-      return usageRecords;
-    }
+  const filteredUsageRecords =
+    useMemo(() => {
+      if (
+        !selectedHouseholdId
+      ) {
+        return usageRecords;
+      }
 
-    return usageRecords.filter((record) => {
-      const householdId =
-        record.appliance?.room?.household?.householdId;
+      return usageRecords.filter(
+        (record) => {
+          const householdId =
+            record.appliance
+              ?.room
+              ?.household
+              ?.householdId;
 
-      return (
-        String(householdId) ===
-        String(selectedHouseholdId)
+          return (
+            String(
+              householdId
+            ) ===
+            String(
+              selectedHouseholdId
+            )
+          );
+        }
       );
-    });
-  }, [
-    usageRecords,
-    selectedHouseholdId,
-  ]);
+    }, [
+      usageRecords,
+      selectedHouseholdId,
+    ]);
+
+  const sortedUsageRecords =
+    useMemo(() => {
+      return [
+        ...filteredUsageRecords,
+      ].sort(
+        (a, b) =>
+          new Date(
+            b.usageDate || 0
+          ) -
+          new Date(
+            a.usageDate || 0
+          )
+      );
+    }, [
+      filteredUsageRecords,
+    ]);
+
+  const selectedHousehold =
+    useMemo(
+      () =>
+        households.find(
+          (household) =>
+            String(
+              household.householdId
+            ) ===
+            String(
+              selectedHouseholdId
+            )
+        ) || null,
+      [
+        households,
+        selectedHouseholdId,
+      ]
+    );
+
+  const selectedRoom =
+    useMemo(
+      () =>
+        rooms.find(
+          (room) =>
+            String(
+              room.roomId
+            ) ===
+            String(
+              selectedRoomId
+            )
+        ) || null,
+      [
+        rooms,
+        selectedRoomId,
+      ]
+    );
+
+  const totalConsumption =
+    useMemo(
+      () =>
+        filteredUsageRecords.reduce(
+          (
+            total,
+            record
+          ) =>
+            total +
+            Number(
+              record.estimatedConsumptionKwh ||
+                0
+            ),
+          0
+        ),
+      [filteredUsageRecords]
+    );
+
+  const totalHours =
+    useMemo(
+      () =>
+        filteredUsageRecords.reduce(
+          (
+            total,
+            record
+          ) =>
+            total +
+            Number(
+              record.hoursUsed ||
+                0
+            ),
+          0
+        ),
+      [filteredUsageRecords]
+    );
+
+  const uniqueApplianceCount =
+    useMemo(() => {
+      return new Set(
+        filteredUsageRecords
+          .map(
+            (record) =>
+              record.appliance
+                ?.applianceId
+          )
+          .filter(Boolean)
+      ).size;
+    }, [
+      filteredUsageRecords,
+    ]);
 
   return (
-    <div style={styles.page}>
-      <div style={styles.header}>
-        <p style={styles.eyebrow}>
-          RECORDS
-        </p>
+    <div className="usage-redesign">
+      <section className="usage-redesign-hero">
+        <div className="usage-redesign-orb usage-redesign-orb-one" />
+        <div className="usage-redesign-orb usage-redesign-orb-two" />
 
-        <h1 style={styles.title}>
-          Daily usage
-        </h1>
+        <div className="usage-redesign-hero-copy">
+          <p className="dashboard-kicker dashboard-kicker-light">
+            Daily energy records
+          </p>
 
-        <p style={styles.lead}>
-          Record how many hours each appliance runs each day.
-          Electricity consumption is calculated automatically by
-          the backend using the appliance rated power and quantity.
-        </p>
-      </div>
+          <h1>
+            Turn appliance hours into
+            real energy data.
+          </h1>
 
-      {error && (
-        <div style={styles.error}>
-          {error}
+          <p>
+            Record how long appliances
+            run each day. Your backend
+            automatically converts those
+            hours, rated power and
+            quantity into estimated
+            electricity consumption.
+          </p>
         </div>
-      )}
 
-      {success && (
-        <div style={styles.success}>
-          {success}
-        </div>
-      )}
+        <div className="usage-redesign-hero-badge">
+          <span>
+            ⏱
+          </span>
 
-      <section style={styles.selectorCard}>
-        <div style={styles.selectorGrid}>
           <div>
-            <label style={styles.label}>
-              Select household
-            </label>
+            <small>
+              Usage tracking
+            </small>
+
+            <strong>
+              Daily records
+            </strong>
+          </div>
+        </div>
+
+        <div className="usage-redesign-selectors">
+          <label>
+            <span>
+              Household
+            </span>
 
             <select
-              value={selectedHouseholdId}
-              onChange={handleHouseholdChange}
-              style={styles.input}
+              value={
+                selectedHouseholdId
+              }
+              onChange={
+                handleHouseholdChange
+              }
             >
               <option value="">
                 Select household
               </option>
 
-              {households.map((household) => (
-                <option
-                  key={household.householdId}
-                  value={household.householdId}
-                >
-                  {household.householdName}
-                </option>
-              ))}
+              {households.map(
+                (household) => (
+                  <option
+                    key={
+                      household.householdId
+                    }
+                    value={
+                      household.householdId
+                    }
+                  >
+                    {
+                      household.householdName
+                    }
+                  </option>
+                )
+              )}
             </select>
-          </div>
+          </label>
 
-          <div>
-            <label style={styles.label}>
-              Select room
-            </label>
+          <label>
+            <span>
+              Room
+            </span>
 
             <select
-              value={selectedRoomId}
-              onChange={handleRoomChange}
-              style={styles.input}
-              disabled={!selectedHouseholdId}
+              value={
+                selectedRoomId
+              }
+              onChange={
+                handleRoomChange
+              }
+              disabled={
+                !selectedHouseholdId
+              }
             >
               <option value="">
                 Select room
               </option>
 
-              {rooms.map((room) => (
-                <option
-                  key={room.roomId}
-                  value={room.roomId}
-                >
-                  {room.roomName}
-                </option>
-              ))}
+              {rooms.map(
+                (room) => (
+                  <option
+                    key={
+                      room.roomId
+                    }
+                    value={
+                      room.roomId
+                    }
+                  >
+                    {
+                      room.roomName
+                    }
+                  </option>
+                )
+              )}
             </select>
-          </div>
+          </label>
         </div>
       </section>
 
-      <div style={styles.grid}>
-        <section style={styles.card}>
-          <h2 style={styles.cardTitle}>
-            {editingId
-              ? "Edit daily usage"
-              : "Record daily usage"}
-          </h2>
+      {error && (
+        <div className="dashboard-error">
+          {error}
+        </div>
+      )}
 
-          <form onSubmit={handleSubmit}>
-            <div style={styles.field}>
-              <label style={styles.label}>
+      {success && (
+        <div className="prediction-redesign-success">
+          <span>
+            ✓
+          </span>
+
+          {success}
+        </div>
+      )}
+
+      <section className="usage-redesign-summary">
+        <article className="usage-redesign-stat usage-redesign-stat-feature">
+          <div className="usage-redesign-stat-icon">
+            ⚡
+          </div>
+
+          <span>
+            Consumption
+          </span>
+
+          <strong>
+            {totalConsumption.toFixed(
+              3
+            )}
+            <small>
+              kWh
+            </small>
+          </strong>
+
+          <p>
+            Recorded for the selected
+            household.
+          </p>
+        </article>
+
+        <article className="usage-redesign-stat">
+          <div className="usage-redesign-stat-icon usage-redesign-stat-icon-green">
+            ⏱
+          </div>
+
+          <span>
+            Usage hours
+          </span>
+
+          <strong>
+            {totalHours.toFixed(
+              1
+            )}
+            <small>
+              hrs
+            </small>
+          </strong>
+
+          <p>
+            Total appliance operating
+            time recorded.
+          </p>
+        </article>
+
+        <article className="usage-redesign-stat">
+          <div className="usage-redesign-stat-icon">
+            ⏻
+          </div>
+
+          <span>
+            Appliances tracked
+          </span>
+
+          <strong>
+            {
+              uniqueApplianceCount
+            }
+          </strong>
+
+          <p>
+            Appliances with saved usage
+            records.
+          </p>
+        </article>
+
+        <article className="usage-redesign-stat">
+          <div className="usage-redesign-stat-icon">
+            ▤
+          </div>
+
+          <span>
+            Current room
+          </span>
+
+          <strong>
+            {selectedRoom
+              ?.roomName ||
+              "—"}
+          </strong>
+
+          <p>
+            {selectedHousehold
+              ?.householdName ||
+              "No household selected"}
+          </p>
+        </article>
+      </section>
+
+      <section className="usage-redesign-grid">
+        <article className="usage-redesign-form-card">
+          <div className="usage-redesign-card-head">
+            <div>
+              <p className="dashboard-kicker">
+                Usage entry
+              </p>
+
+              <h2>
+                {editingId
+                  ? "Edit daily usage"
+                  : "Record daily usage"}
+              </h2>
+            </div>
+
+            <span className="usage-redesign-form-icon">
+              ⏱
+            </span>
+          </div>
+
+          <form
+            className="usage-redesign-form"
+            onSubmit={
+              handleSubmit
+            }
+          >
+            <label>
+              <span>
                 Appliance
-              </label>
+              </span>
 
               <select
                 name="applianceId"
-                value={formData.applianceId}
-                onChange={handleChange}
+                value={
+                  formData.applianceId
+                }
+                onChange={
+                  handleChange
+                }
                 required
-                style={styles.input}
-                disabled={!selectedRoomId}
+                disabled={
+                  !selectedRoomId
+                }
               >
                 <option value="">
                   Select appliance
                 </option>
 
-                {appliances.map((appliance) => (
-                  <option
-                    key={appliance.applianceId}
-                    value={appliance.applianceId}
-                  >
-                    {appliance.applianceName}
-                  </option>
-                ))}
+                {appliances.map(
+                  (appliance) => (
+                    <option
+                      key={
+                        appliance.applianceId
+                      }
+                      value={
+                        appliance.applianceId
+                      }
+                    >
+                      {
+                        appliance.applianceName
+                      }
+                    </option>
+                  )
+                )}
               </select>
-            </div>
+            </label>
 
-            <div style={styles.field}>
-              <label style={styles.label}>
-                Usage date
+            <div className="usage-redesign-two-column">
+              <label>
+                <span>
+                  Usage date
+                </span>
+
+                <input
+                  type="date"
+                  name="usageDate"
+                  value={
+                    formData.usageDate
+                  }
+                  onChange={
+                    handleChange
+                  }
+                  required
+                />
               </label>
 
-              <input
-                type="date"
-                name="usageDate"
-                value={formData.usageDate}
-                onChange={handleChange}
-                required
-                style={styles.input}
-              />
-            </div>
+              <label>
+                <span>
+                  Hours used
+                </span>
 
-            <div style={styles.field}>
-              <label style={styles.label}>
-                Hours used
+                <div className="usage-redesign-unit-input">
+                  <input
+                    type="number"
+                    name="hoursUsed"
+                    value={
+                      formData.hoursUsed
+                    }
+                    onChange={
+                      handleChange
+                    }
+                    required
+                    min="0"
+                    max="24"
+                    step="0.1"
+                    placeholder="5.5"
+                  />
+
+                  <span>
+                    hrs
+                  </span>
+                </div>
               </label>
-
-             <input
-                type="number"
-                name="hoursUsed"
-                value={formData.hoursUsed}
-                onChange={handleChange}
-                required
-                min="0"
-                max="24"
-                step="0.1"
-                style={styles.input}
-                placeholder="Example: 5.5"
-/>
             </div>
 
-            <div style={styles.field}>
-              <label style={styles.label}>
+            <label>
+              <span>
                 Usage notes
-              </label>
+              </span>
 
               <textarea
                 name="usageNotes"
-                value={formData.usageNotes}
-                onChange={handleChange}
-                rows="4"
-                style={styles.input}
-                placeholder="Optional notes"
+                value={
+                  formData.usageNotes
+                }
+                onChange={
+                  handleChange
+                }
+                rows="5"
+                placeholder="Optional notes about how this appliance was used"
               />
+            </label>
+
+            <div className="usage-redesign-calculation-note">
+              <span>
+                ⚡
+              </span>
+
+              <div>
+                <strong>
+                  Consumption is
+                  automatic
+                </strong>
+
+                <p>
+                  You only enter the
+                  appliance and hours
+                  used. The backend uses
+                  rated power and
+                  quantity to calculate
+                  estimated kWh.
+                </p>
+              </div>
             </div>
 
-            <div style={styles.actions}>
+            <div className="usage-redesign-actions">
               <button
                 type="submit"
-                style={styles.primaryButton}
+                className="usage-redesign-primary"
+                disabled={
+                  saving ||
+                  !selectedRoomId
+                }
               >
-                {editingId
-                  ? "Update usage"
-                  : "Record usage"}
+                {saving
+                  ? "Saving..."
+                  : editingId
+                    ? "Update usage"
+                    : "Record usage"}
               </button>
 
               {editingId && (
                 <button
                   type="button"
-                  onClick={resetForm}
-                  style={styles.secondaryButton}
+                  className="usage-redesign-secondary"
+                  onClick={
+                    resetForm
+                  }
+                  disabled={
+                    saving
+                  }
                 >
                   Cancel
                 </button>
               )}
             </div>
           </form>
-        </section>
+        </article>
 
-        <section style={styles.card}>
-          <h2 style={styles.cardTitle}>
-            Usage records
-          </h2>
+        <article className="usage-redesign-history-card">
+          <div className="usage-redesign-card-head">
+            <div>
+              <p className="dashboard-kicker">
+                Energy history
+              </p>
 
-          {loading ? (
-            <p style={styles.muted}>
+              <h2>
+                Usage records
+              </h2>
+            </div>
+
+            <span className="usage-redesign-count">
+              {
+                sortedUsageRecords.length
+              }
+            </span>
+          </div>
+
+          {!selectedHouseholdId ? (
+            <div className="usage-redesign-empty">
+              Select a household to view
+              daily usage.
+            </div>
+          ) : loading ? (
+            <div className="usage-redesign-empty">
               Loading daily usage...
-            </p>
-          ) : filteredUsageRecords.length === 0 ? (
-            <p style={styles.muted}>
-              No daily usage records found for this household.
-            </p>
+            </div>
+          ) : sortedUsageRecords.length ===
+            0 ? (
+            <div className="usage-redesign-empty">
+              <div className="usage-redesign-empty-icon">
+                ⏱
+              </div>
+
+              <strong>
+                No usage recorded yet
+              </strong>
+
+              <span>
+                Record appliance usage to
+                start building your
+                household energy history.
+              </span>
+            </div>
           ) : (
-            <div style={styles.list}>
-              {filteredUsageRecords.map((record) => (
-                <div
-                  key={record.usageId}
-                  style={styles.usageItem}
-                >
-                  <div>
-                    <h3 style={styles.applianceName}>
-                      {record.appliance?.applianceName ||
-                        "Appliance"}
-                    </h3>
+            <div className="usage-redesign-list">
+              {sortedUsageRecords.map(
+                (record) => (
+                  <article
+                    key={
+                      record.usageId
+                    }
+                    className="usage-redesign-item"
+                  >
+                    <div className="usage-redesign-item-top">
+                      <div className="usage-redesign-item-icon">
+                        ⏻
+                      </div>
 
-                    <p style={styles.detail}>
-                      <strong>Date:</strong>{" "}
-                      {record.usageDate}
-                    </p>
+                      <div className="usage-redesign-item-title">
+                        <span>
+                          {
+                            record.appliance
+                              ?.room
+                              ?.roomName ||
+                            "Room"
+                          }
+                        </span>
 
-                    <p style={styles.detail}>
-                      <strong>Hours used:</strong>{" "}
-                      {record.hoursUsed}
-                    </p>
+                        <h3>
+                          {record.appliance
+                            ?.applianceName ||
+                            "Appliance"}
+                        </h3>
 
-                    <p style={styles.detail}>
-                      <strong>Consumption:</strong>{" "}
-                      {record.estimatedConsumptionKwh ?? "—"} kWh
-                    </p>
+                        <p>
+                          {formatDate(
+                            record.usageDate
+                          )}
+                        </p>
+                      </div>
 
-                    <p style={styles.detail}>
-                      <strong>Room:</strong>{" "}
-                      {record.appliance?.room?.roomName ||
-                        "—"}
-                    </p>
+                      <div className="usage-redesign-energy-badge">
+                        <span>
+                          Consumption
+                        </span>
 
-                    <p style={styles.detail}>
-                      <strong>Notes:</strong>{" "}
-                      {record.usageNotes || "—"}
-                    </p>
+                        <strong>
+                          {formatKwh(
+                            record.estimatedConsumptionKwh
+                          )}
+                        </strong>
+                      </div>
+                    </div>
 
-                    <p style={styles.detail}>
-                      <strong>Usage ID:</strong>{" "}
-                      {record.usageId}
-                    </p>
-                  </div>
+                    <div className="usage-redesign-item-values">
+                      <div>
+                        <span>
+                          Hours used
+                        </span>
 
-                  <div style={styles.itemActions}>
-                    <button
-                      type="button"
-                      onClick={() =>
-                        startEdit(record)
-                      }
-                      style={styles.editButton}
-                    >
-                      Edit
-                    </button>
+                        <strong>
+                          {
+                            record.hoursUsed
+                          }{" "}
+                          hrs
+                        </strong>
+                      </div>
 
-                    <button
-                      type="button"
-                      onClick={() =>
-                        handleDelete(
-                          record.usageId
-                        )
-                      }
-                      style={styles.deleteButton}
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </div>
-              ))}
+                      <div>
+                        <span>
+                          Room
+                        </span>
+
+                        <strong>
+                          {record.appliance
+                            ?.room
+                            ?.roomName ||
+                            "—"}
+                        </strong>
+                      </div>
+
+                      <div>
+                        <span>
+                          Usage ID
+                        </span>
+
+                        <strong>
+                          #
+                          {
+                            record.usageId
+                          }
+                        </strong>
+                      </div>
+                    </div>
+
+                    {record.usageNotes && (
+                      <div className="usage-redesign-notes">
+                        <span>
+                          Notes
+                        </span>
+
+                        <p>
+                          {
+                            record.usageNotes
+                          }
+                        </p>
+                      </div>
+                    )}
+
+                    <div className="usage-redesign-item-actions">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          startEdit(
+                            record
+                          )
+                        }
+                      >
+                        Edit
+                      </button>
+
+                      <button
+                        type="button"
+                        className="usage-redesign-delete"
+                        onClick={() =>
+                          handleDelete(
+                            record.usageId
+                          )
+                        }
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </article>
+                )
+              )}
             </div>
           )}
-        </section>
-      </div>
+        </article>
+      </section>
     </div>
   );
 }
-
-const styles = {
-  page: {
-    padding: "32px",
-    maxWidth: "1200px",
-    margin: "0 auto",
-  },
-
-  header: {
-    marginBottom: "24px",
-  },
-
-  eyebrow: {
-    fontSize: "12px",
-    letterSpacing: "0.14em",
-    marginBottom: "8px",
-    color: "#7a5c5c",
-  },
-
-  title: {
-    fontSize: "34px",
-    margin: "0 0 10px 0",
-  },
-
-  lead: {
-    maxWidth: "780px",
-    lineHeight: 1.6,
-    color: "#765f5f",
-  },
-
-  error: {
-    padding: "14px 16px",
-    marginBottom: "20px",
-    border: "1px solid #e5b4b4",
-    borderRadius: "10px",
-    background: "#fff0f0",
-    color: "#9a1f1f",
-  },
-
-  success: {
-    padding: "14px 16px",
-    marginBottom: "20px",
-    border: "1px solid #b9d8b9",
-    borderRadius: "10px",
-    background: "#effbef",
-    color: "#286428",
-  },
-
-  selectorCard: {
-    background: "#ffffff",
-    border: "1px solid #e6dcdc",
-    borderRadius: "12px",
-    padding: "18px",
-    marginBottom: "22px",
-  },
-
-  selectorGrid: {
-    display: "grid",
-    gridTemplateColumns:
-      "repeat(auto-fit, minmax(260px, 1fr))",
-    gap: "16px",
-  },
-
-  grid: {
-    display: "grid",
-    gridTemplateColumns:
-      "repeat(auto-fit, minmax(380px, 1fr))",
-    gap: "22px",
-  },
-
-  card: {
-    background: "#ffffff",
-    border: "1px solid #e6dcdc",
-    borderRadius: "14px",
-    padding: "24px",
-    boxShadow:
-      "0 2px 8px rgba(0, 0, 0, 0.04)",
-  },
-
-  cardTitle: {
-    marginTop: 0,
-    marginBottom: "20px",
-  },
-
-  field: {
-    marginBottom: "16px",
-  },
-
-  label: {
-    display: "block",
-    fontWeight: 600,
-    marginBottom: "7px",
-  },
-
-  input: {
-    width: "100%",
-    boxSizing: "border-box",
-    padding: "11px 12px",
-    border: "1px solid #d8caca",
-    borderRadius: "8px",
-    fontSize: "15px",
-  },
-
-  actions: {
-    display: "flex",
-    gap: "10px",
-    marginTop: "18px",
-  },
-
-  primaryButton: {
-    padding: "11px 18px",
-    border: "none",
-    borderRadius: "8px",
-    background: "#7f0000",
-    color: "#ffffff",
-    fontWeight: 600,
-    cursor: "pointer",
-  },
-
-  secondaryButton: {
-    padding: "11px 18px",
-    border: "1px solid #cbbbbb",
-    borderRadius: "8px",
-    background: "#ffffff",
-    cursor: "pointer",
-  },
-
-  list: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "14px",
-  },
-
-  usageItem: {
-    display: "flex",
-    justifyContent: "space-between",
-    gap: "20px",
-    padding: "18px",
-    border: "1px solid #eadede",
-    borderRadius: "10px",
-    background: "#fffafa",
-  },
-
-  applianceName: {
-    marginTop: 0,
-    marginBottom: "12px",
-  },
-
-  detail: {
-    margin: "6px 0",
-    color: "#5f5050",
-  },
-
-  itemActions: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "8px",
-  },
-
-  editButton: {
-    padding: "8px 14px",
-    border: "1px solid #a88",
-    borderRadius: "7px",
-    background: "#ffffff",
-    cursor: "pointer",
-  },
-
-  deleteButton: {
-    padding: "8px 14px",
-    border: "none",
-    borderRadius: "7px",
-    background: "#a22323",
-    color: "#ffffff",
-    cursor: "pointer",
-  },
-
-  muted: {
-    color: "#806d6d",
-  },
-};

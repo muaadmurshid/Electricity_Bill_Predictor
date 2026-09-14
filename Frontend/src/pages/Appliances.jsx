@@ -1,5 +1,6 @@
 import {
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from "react";
@@ -10,44 +11,100 @@ import applianceService from "../services/applianceService";
 import applianceCategoryService from "../services/applianceCategoryService";
 import applianceVisionService from "../services/applianceVisionService";
 
+function categoryName(category) {
+  return (
+    category?.categoryName ||
+    category?.name ||
+    "Uncategorised"
+  );
+}
+
+function statusLabel(status) {
+  return status === "INACTIVE"
+    ? "Inactive"
+    : "Active";
+}
+
 export default function Appliances() {
-  const [households, setHouseholds] = useState([]);
-  const [rooms, setRooms] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [appliances, setAppliances] = useState([]);
+  const [
+    households,
+    setHouseholds,
+  ] = useState([]);
 
-  const [selectedHouseholdId, setSelectedHouseholdId] =
-    useState("");
+  const [
+    rooms,
+    setRooms,
+  ] = useState([]);
 
-  const [selectedRoomId, setSelectedRoomId] =
-    useState("");
+  const [
+    categories,
+    setCategories,
+  ] = useState([]);
 
-  const [loading, setLoading] =
-    useState(true);
+  const [
+    appliances,
+    setAppliances,
+  ] = useState([]);
 
-  const [saving, setSaving] =
-    useState(false);
+  const [
+    selectedHouseholdId,
+    setSelectedHouseholdId,
+  ] = useState("");
 
-  const [uploadingImage, setUploadingImage] =
-    useState(false);
+  const [
+    selectedRoomId,
+    setSelectedRoomId,
+  ] = useState("");
 
-  const [analysingImage, setAnalysingImage] =
-    useState(false);
+  const [
+    loading,
+    setLoading,
+  ] = useState(true);
 
-  const [visionNotes, setVisionNotes] =
-    useState("");
+  const [
+    saving,
+    setSaving,
+  ] = useState(false);
 
-  const [error, setError] =
-    useState("");
+  const [
+    uploadingImage,
+    setUploadingImage,
+  ] = useState(false);
 
-  const [editingId, setEditingId] =
-    useState(null);
+  const [
+    analysingImage,
+    setAnalysingImage,
+  ] = useState(false);
 
-  const [selectedImage, setSelectedImage] =
-    useState(null);
+  const [
+    visionNotes,
+    setVisionNotes,
+  ] = useState("");
 
-  const [imagePreview, setImagePreview] =
-    useState("");
+  const [
+    error,
+    setError,
+  ] = useState("");
+
+  const [
+    success,
+    setSuccess,
+  ] = useState("");
+
+  const [
+    editingId,
+    setEditingId,
+  ] = useState(null);
+
+  const [
+    selectedImage,
+    setSelectedImage,
+  ] = useState(null);
+
+  const [
+    imagePreview,
+    setImagePreview,
+  ] = useState("");
 
   const uploadInputRef =
     useRef(null);
@@ -55,7 +112,10 @@ export default function Appliances() {
   const cameraInputRef =
     useRef(null);
 
-  const [formData, setFormData] = useState({
+  const [
+    formData,
+    setFormData,
+  ] = useState({
     applianceName: "",
     categoryId: "",
     brand: "",
@@ -96,6 +156,16 @@ export default function Appliances() {
     }
   }, [selectedRoomId]);
 
+  useEffect(() => {
+    return () => {
+      if (imagePreview) {
+        URL.revokeObjectURL(
+          imagePreview
+        );
+      }
+    };
+  }, [imagePreview]);
+
   async function initialise() {
     try {
       setLoading(true);
@@ -132,7 +202,8 @@ export default function Appliances() {
       );
 
       if (
-        householdList.length > 0
+        householdList.length >
+        0
       ) {
         setSelectedHouseholdId(
           String(
@@ -167,10 +238,9 @@ export default function Appliances() {
       setError("");
 
       const data =
-        await roomService
-          .listByHousehold(
-            householdId
-          );
+        await roomService.listByHousehold(
+          householdId
+        );
 
       const roomList =
         Array.isArray(data)
@@ -219,10 +289,9 @@ export default function Appliances() {
       setError("");
 
       const data =
-        await applianceService
-          .listByRoom(
-            roomId
-          );
+        await applianceService.listByRoom(
+          roomId
+        );
 
       setAppliances(
         Array.isArray(data)
@@ -257,6 +326,8 @@ export default function Appliances() {
     setSelectedRoomId("");
 
     resetForm();
+    setError("");
+    setSuccess("");
   }
 
   function handleRoomChange(
@@ -267,6 +338,8 @@ export default function Appliances() {
     );
 
     resetForm();
+    setError("");
+    setSuccess("");
   }
 
   function handleChange(
@@ -289,8 +362,7 @@ export default function Appliances() {
     event
   ) {
     const file =
-      event.target
-        .files?.[0];
+      event.target.files?.[0];
 
     if (!file) {
       return;
@@ -333,6 +405,7 @@ export default function Appliances() {
     }
 
     setError("");
+    setSuccess("");
     setVisionNotes("");
 
     if (imagePreview) {
@@ -345,13 +418,10 @@ export default function Appliances() {
       file
     );
 
-    const previewUrl =
+    setImagePreview(
       URL.createObjectURL(
         file
-      );
-
-    setImagePreview(
-      previewUrl
+      )
     );
   }
 
@@ -400,13 +470,13 @@ export default function Appliances() {
     try {
       setAnalysingImage(true);
       setError("");
+      setSuccess("");
       setVisionNotes("");
 
       const result =
-        await applianceVisionService
-          .analyse(
-            selectedImage
-          );
+        await applianceVisionService.analyse(
+          selectedImage
+        );
 
       let matchedCategoryId =
         "";
@@ -422,7 +492,7 @@ export default function Appliances() {
         const matchedCategory =
           categories.find(
             (category) => {
-              const categoryName =
+              const name =
                 (
                   category.categoryName ||
                   category.name ||
@@ -432,13 +502,13 @@ export default function Appliances() {
                   .toLowerCase();
 
               return (
-                categoryName ===
+                name ===
                   aiCategory ||
-                categoryName.includes(
+                name.includes(
                   aiCategory
                 ) ||
                 aiCategory.includes(
-                  categoryName
+                  name
                 )
               );
             }
@@ -449,8 +519,7 @@ export default function Appliances() {
         ) {
           matchedCategoryId =
             String(
-              matchedCategory
-                .categoryId
+              matchedCategory.categoryId
             );
         }
       }
@@ -503,17 +572,10 @@ export default function Appliances() {
         })
       );
 
-      if (
-        result?.notes
-      ) {
-        setVisionNotes(
-          result.notes
-        );
-      } else {
-        setVisionNotes(
+      setVisionNotes(
+        result?.notes ||
           "AI analysis completed. Please review the detected appliance details before saving."
-        );
-      }
+      );
     } catch (err) {
       console.error(
         "Failed to analyse appliance image:",
@@ -544,9 +606,7 @@ export default function Appliances() {
     }
 
     if (
-      !formData
-        .applianceName
-        .trim()
+      !formData.applianceName.trim()
     ) {
       setError(
         "Please enter an appliance name."
@@ -605,16 +665,14 @@ export default function Appliances() {
     }
 
     if (
-      formData
-        .typicalDailyHours !== "" &&
+      formData.typicalDailyHours !==
+        "" &&
       (
         Number(
-          formData
-            .typicalDailyHours
+          formData.typicalDailyHours
         ) < 0 ||
         Number(
-          formData
-            .typicalDailyHours
+          formData.typicalDailyHours
         ) > 24
       )
     ) {
@@ -634,6 +692,7 @@ export default function Appliances() {
     event.preventDefault();
 
     setError("");
+    setSuccess("");
 
     if (!validateForm()) {
       return;
@@ -650,30 +709,22 @@ export default function Appliances() {
       category: {
         categoryId:
           Number(
-            formData
-              .categoryId
+            formData.categoryId
           ),
       },
 
       applianceName:
-        formData
-          .applianceName
-          .trim(),
+        formData.applianceName.trim(),
 
       brand:
-        formData
-          .brand
-          .trim(),
+        formData.brand.trim(),
 
       model:
-        formData
-          .model
-          .trim(),
+        formData.model.trim(),
 
       ratedPower:
         Number(
-          formData
-            .ratedPower
+          formData.ratedPower
         ),
 
       voltage:
@@ -689,17 +740,14 @@ export default function Appliances() {
         ),
 
       energyRating:
-        formData
-          .energyRating
-          .trim(),
+        formData.energyRating.trim(),
 
       typicalDailyHours:
-        formData
-          .typicalDailyHours === ""
+        formData.typicalDailyHours ===
+        ""
           ? 0
           : Number(
-              formData
-                .typicalDailyHours
+              formData.typicalDailyHours
             ),
 
       status:
@@ -722,35 +770,30 @@ export default function Appliances() {
 
       if (editingId) {
         savedAppliance =
-          await applianceService
-            .update(
-              editingId,
-              payload
-            );
+          await applianceService.update(
+            editingId,
+            payload
+          );
       } else {
         savedAppliance =
-          await applianceService
-            .create(
-              payload
-            );
+          await applianceService.create(
+            payload
+          );
       }
 
       if (
         selectedImage &&
-        savedAppliance
-          ?.applianceId
+        savedAppliance?.applianceId
       ) {
         try {
           setUploadingImage(
             true
           );
 
-          await applianceService
-            .uploadImage(
-              savedAppliance
-                .applianceId,
-              selectedImage
-            );
+          await applianceService.uploadImage(
+            savedAppliance.applianceId,
+            selectedImage
+          );
         } catch (
           imageError
         ) {
@@ -760,14 +803,10 @@ export default function Appliances() {
           );
 
           setError(
-            imageError
-              ?.response
-              ?.data
+            imageError?.response?.data
               ?.error ||
-              imageError
-                ?.response
-                ?.data
-                ?.message ||
+              imageError?.response
+                ?.data?.message ||
               "The appliance was saved, but its photo could not be uploaded."
           );
 
@@ -778,6 +817,12 @@ export default function Appliances() {
           return;
         }
       }
+
+      setSuccess(
+        editingId
+          ? "Appliance updated successfully."
+          : "Appliance created successfully."
+      );
 
       resetForm();
 
@@ -813,21 +858,18 @@ export default function Appliances() {
     );
 
     if (
-      appliance.room
-        ?.roomId
+      appliance.room?.roomId
     ) {
       setSelectedRoomId(
         String(
-          appliance.room
-            .roomId
+          appliance.room.roomId
         )
       );
     }
 
     setFormData({
       applianceName:
-        appliance
-          .applianceName ||
+        appliance.applianceName ||
         "",
 
       categoryId:
@@ -838,8 +880,7 @@ export default function Appliances() {
           ?.categoryId !==
           null
           ? String(
-              appliance
-                .category
+              appliance.category
                 .categoryId
             )
           : "",
@@ -853,15 +894,12 @@ export default function Appliances() {
         "",
 
       ratedPower:
-        appliance
-          .ratedPower !==
+        appliance.ratedPower !==
           undefined &&
-        appliance
-          .ratedPower !==
+        appliance.ratedPower !==
           null
           ? String(
-              appliance
-                .ratedPower
+              appliance.ratedPower
             )
           : "",
 
@@ -886,20 +924,16 @@ export default function Appliances() {
           : "1",
 
       energyRating:
-        appliance
-          .energyRating ||
+        appliance.energyRating ||
         "",
 
       typicalDailyHours:
-        appliance
-          .typicalDailyHours !==
+        appliance.typicalDailyHours !==
           undefined &&
-        appliance
-          .typicalDailyHours !==
+        appliance.typicalDailyHours !==
           null
           ? String(
-              appliance
-                .typicalDailyHours
+              appliance.typicalDailyHours
             )
           : "",
 
@@ -918,6 +952,8 @@ export default function Appliances() {
     });
 
     setVisionNotes("");
+    setError("");
+    setSuccess("");
 
     window.scrollTo({
       top: 0,
@@ -962,11 +998,11 @@ export default function Appliances() {
 
     try {
       setError("");
+      setSuccess("");
 
-      await applianceService
-        .remove(
-          applianceId
-        );
+      await applianceService.remove(
+        applianceId
+      );
 
       if (
         editingId ===
@@ -974,6 +1010,10 @@ export default function Appliances() {
       ) {
         resetForm();
       }
+
+      setSuccess(
+        "Appliance deleted successfully."
+      );
 
       await loadAppliances(
         selectedRoomId
@@ -994,44 +1034,129 @@ export default function Appliances() {
     }
   }
 
+  const selectedHousehold =
+    useMemo(
+      () =>
+        households.find(
+          (household) =>
+            String(
+              household.householdId
+            ) ===
+            String(
+              selectedHouseholdId
+            )
+        ) || null,
+      [
+        households,
+        selectedHouseholdId,
+      ]
+    );
+
+  const selectedRoom =
+    useMemo(
+      () =>
+        rooms.find(
+          (room) =>
+            String(
+              room.roomId
+            ) ===
+            String(
+              selectedRoomId
+            )
+        ) || null,
+      [
+        rooms,
+        selectedRoomId,
+      ]
+    );
+
+  const aiIdentifiedCount =
+    useMemo(
+      () =>
+        appliances.filter(
+          (appliance) =>
+            appliance.aiDetected
+        ).length,
+      [appliances]
+    );
+
+  const totalRatedPower =
+    useMemo(
+      () =>
+        appliances.reduce(
+          (
+            total,
+            appliance
+          ) =>
+            total +
+            Number(
+              appliance.ratedPower ||
+                0
+            ) *
+              Number(
+                appliance.quantity ||
+                  1
+              ),
+          0
+        ),
+      [appliances]
+    );
+
   return (
-    <div style={styles.page}>
-      <div style={styles.header}>
-        <p style={styles.eyebrow}>
-          MY HOME
-        </p>
+    <div className="appliance-redesign">
+      <section className="appliance-redesign-hero">
+        <div className="appliance-redesign-orb appliance-redesign-orb-one" />
+        <div className="appliance-redesign-orb appliance-redesign-orb-two" />
 
-        <h1 style={styles.title}>
-          Appliances
-        </h1>
+        <div className="appliance-redesign-hero-copy">
+          <p className="dashboard-kicker dashboard-kicker-light">
+            Smart appliance profile
+          </p>
 
-        <p style={styles.lead}>
-          Add the appliances used in each room.
-          Their power, quantity and daily use are
-          used when analysing household electricity
-          consumption.
-        </p>
-      </div>
+          <h1>
+            Add appliances with a little
+            help from AI.
+          </h1>
 
-      {error && (
-        <div style={styles.error}>
-          {error}
+          <p>
+            Upload or photograph an
+            appliance and let Vision AI
+            identify visible details.
+            Review the result yourself
+            before saving it to your
+            household energy profile.
+          </p>
         </div>
-      )}
 
-      <section style={styles.selectorCard}>
-        <div style={styles.selectorGrid}>
+        <div className="appliance-redesign-hero-badge">
+          <span>
+            AI
+          </span>
+
           <div>
-            <label style={styles.label}>
+            <small>
+              Vision assistant
+            </small>
+
+            <strong>
+              Smart identification
+            </strong>
+          </div>
+        </div>
+
+        <div className="appliance-redesign-selectors">
+          <label>
+            <span>
               Household
-            </label>
+            </span>
 
             <select
-              value={selectedHouseholdId}
+              value={
+                selectedHouseholdId
+              }
               onChange={
                 handleHouseholdChange
               }
-              style={styles.input}
             >
               <option value="">
                 Select household
@@ -1041,35 +1166,33 @@ export default function Appliances() {
                 (household) => (
                   <option
                     key={
-                      household
-                        .householdId
+                      household.householdId
                     }
                     value={
-                      household
-                        .householdId
+                      household.householdId
                     }
                   >
                     {
-                      household
-                        .householdName
+                      household.householdName
                     }
                   </option>
                 )
               )}
             </select>
-          </div>
+          </label>
 
-          <div>
-            <label style={styles.label}>
+          <label>
+            <span>
               Room
-            </label>
+            </span>
 
             <select
-              value={selectedRoomId}
+              value={
+                selectedRoomId
+              }
               onChange={
                 handleRoomChange
               }
-              style={styles.input}
               disabled={
                 !selectedHouseholdId
               }
@@ -1095,71 +1218,200 @@ export default function Appliances() {
                 )
               )}
             </select>
-          </div>
+          </label>
         </div>
       </section>
 
-      <div style={styles.grid}>
-        <section style={styles.card}>
-          <h2 style={styles.cardTitle}>
-            {editingId
-              ? "Edit appliance"
-              : "Add appliance"}
-          </h2>
+      {error && (
+        <div className="dashboard-error">
+          {error}
+        </div>
+      )}
+
+      {success && (
+        <div className="prediction-redesign-success">
+          <span>
+            ✓
+          </span>
+
+          {success}
+        </div>
+      )}
+
+      <section className="appliance-redesign-summary">
+        <article className="appliance-redesign-stat appliance-redesign-stat-feature">
+          <div className="appliance-redesign-stat-icon">
+            ⏻
+          </div>
+
+          <span>
+            Appliances
+          </span>
+
+          <strong>
+            {
+              appliances.length
+            }
+          </strong>
+
+          <p>
+            Saved in the selected room.
+          </p>
+        </article>
+
+        <article className="appliance-redesign-stat">
+          <div className="appliance-redesign-stat-icon appliance-redesign-stat-icon-ai">
+            AI
+          </div>
+
+          <span>
+            AI identified
+          </span>
+
+          <strong>
+            {
+              aiIdentifiedCount
+            }
+          </strong>
+
+          <p>
+            Appliances assisted by
+            Vision AI.
+          </p>
+        </article>
+
+        <article className="appliance-redesign-stat">
+          <div className="appliance-redesign-stat-icon appliance-redesign-stat-icon-green">
+            W
+          </div>
+
+          <span>
+            Combined rated power
+          </span>
+
+          <strong>
+            {totalRatedPower.toFixed(
+              0
+            )}
+            <small>
+              W
+            </small>
+          </strong>
+
+          <p>
+            Based on appliance quantity.
+          </p>
+        </article>
+
+        <article className="appliance-redesign-stat">
+          <div className="appliance-redesign-stat-icon">
+            ▤
+          </div>
+
+          <span>
+            Current room
+          </span>
+
+          <strong>
+            {selectedRoom
+              ?.roomName ||
+              "—"}
+          </strong>
+
+          <p>
+            {selectedHousehold
+              ?.householdName ||
+              "No household selected"}
+          </p>
+        </article>
+      </section>
+
+      <section className="appliance-redesign-grid">
+        <article className="appliance-redesign-form-card">
+          <div className="appliance-redesign-card-head">
+            <div>
+              <p className="dashboard-kicker">
+                Appliance setup
+              </p>
+
+              <h2>
+                {editingId
+                  ? "Edit appliance"
+                  : "Add appliance"}
+              </h2>
+            </div>
+
+            <span className="appliance-redesign-form-icon">
+              ⏻
+            </span>
+          </div>
 
           <form
+            className="appliance-redesign-form"
             onSubmit={
               handleSubmit
             }
           >
-            <div style={styles.photoSection}>
-              <div style={styles.photoHeader}>
+            <section className="appliance-redesign-vision">
+              <div className="appliance-redesign-vision-head">
                 <div>
-                  <label style={styles.label}>
-                    Appliance photo
-                  </label>
+                  <div className="appliance-redesign-ai-label">
+                    <span>
+                      AI
+                    </span>
 
-                  <p style={styles.photoHelp}>
-                    Upload a clear photo or use your
-                    camera. AI can analyse the image and
-                    fill the appliance details for you.
+                    Smart identification
+                  </div>
+
+                  <h3>
+                    Identify from a photo
+                  </h3>
+
+                  <p>
+                    Upload a clear image
+                    or use your camera.
+                    Visible appliance
+                    details can be filled
+                    automatically.
                   </p>
                 </div>
 
-                <span style={styles.optionalBadge}>
+                <span className="appliance-redesign-optional">
                   Optional
                 </span>
               </div>
 
               <input
-                ref={uploadInputRef}
+                ref={
+                  uploadInputRef
+                }
                 type="file"
                 accept="image/jpeg,image/png,image/webp"
                 onChange={
                   handleImageChange
                 }
-                style={styles.hiddenInput}
+                className="appliance-redesign-hidden"
               />
 
               <input
-                ref={cameraInputRef}
+                ref={
+                  cameraInputRef
+                }
                 type="file"
                 accept="image/jpeg,image/png,image/webp"
                 capture="environment"
                 onChange={
                   handleImageChange
                 }
-                style={styles.hiddenInput}
+                className="appliance-redesign-hidden"
               />
 
-              <div style={styles.photoActions}>
+              <div className="appliance-redesign-photo-actions">
                 <button
                   type="button"
-                  style={styles.uploadButton}
+                  className="appliance-redesign-upload"
                   onClick={() =>
-                    uploadInputRef
-                      .current
-                      ?.click()
+                    uploadInputRef.current?.click()
                   }
                 >
                   Upload photo
@@ -1167,11 +1419,9 @@ export default function Appliances() {
 
                 <button
                   type="button"
-                  style={styles.cameraButton}
+                  className="appliance-redesign-camera"
                   onClick={() =>
-                    cameraInputRef
-                      .current
-                      ?.click()
+                    cameraInputRef.current?.click()
                   }
                 >
                   Use camera
@@ -1179,7 +1429,7 @@ export default function Appliances() {
 
                 <button
                   type="button"
-                  style={styles.aiAnalyseButton}
+                  className="appliance-redesign-analyse"
                   onClick={
                     analyseSelectedImage
                   }
@@ -1188,27 +1438,41 @@ export default function Appliances() {
                     analysingImage
                   }
                 >
+                  <span>
+                    AI
+                  </span>
+
                   {analysingImage
                     ? "Analysing..."
-                    : "Analyse with AI"}
+                    : "Analyse image"}
                 </button>
               </div>
 
-              <p style={styles.fileHelp}>
-                JPG, PNG or WEBP • Maximum 10 MB
-              </p>
+              <small className="appliance-redesign-file-help">
+                JPG, PNG or WEBP ·
+                Maximum 10 MB
+              </small>
 
               {imagePreview && (
-                <div style={styles.previewWrap}>
-                  <img
-                    src={imagePreview}
-                    alt="Selected appliance"
-                    style={styles.previewImage}
-                  />
+                <div className="appliance-redesign-preview">
+                  <div className="appliance-redesign-preview-image-wrap">
+                    <img
+                      src={
+                        imagePreview
+                      }
+                      alt="Selected appliance"
+                    />
 
-                  <div style={styles.previewFooter}>
-                    <span style={styles.previewName}>
-                      {selectedImage?.name}
+                    <span>
+                      Ready for analysis
+                    </span>
+                  </div>
+
+                  <div className="appliance-redesign-preview-foot">
+                    <span>
+                      {
+                        selectedImage?.name
+                      }
                     </span>
 
                     <button
@@ -1216,78 +1480,106 @@ export default function Appliances() {
                       onClick={
                         removeSelectedImage
                       }
-                      style={styles.removePhotoButton}
                     >
-                      Remove
+                      Remove photo
                     </button>
                   </div>
                 </div>
               )}
 
               {visionNotes && (
-                <div style={styles.aiResult}>
-                  <strong>
-                    AI analysis
-                  </strong>
+                <div className="appliance-redesign-ai-result">
+                  <div className="appliance-redesign-ai-result-head">
+                    <span>
+                      AI
+                    </span>
 
-                  <p style={styles.aiResultText}>
+                    <strong>
+                      Analysis complete
+                    </strong>
+                  </div>
+
+                  <p>
                     {visionNotes}
                   </p>
 
-                  <p style={styles.aiWarning}>
-                    Please verify all detected technical details before saving.
-                  </p>
+                  <div className="appliance-redesign-ai-warning">
+                    Please verify all
+                    detected technical
+                    details before saving.
+                  </div>
                 </div>
               )}
 
               {!imagePreview &&
                 editingId &&
                 formData.imagePath && (
-                  <div style={styles.existingImageNote}>
-                    This appliance already has a saved
-                    photo. Select a new photo only if you
-                    want to replace it.
+                  <div className="appliance-redesign-existing-photo">
+                    <span>
+                      ✓
+                    </span>
+
+                    This appliance already
+                    has a saved photo. Add
+                    another photo only if
+                    you want to replace it.
                   </div>
                 )}
-            </div>
+            </section>
 
-            <div style={styles.field}>
-              <label style={styles.label}>
+            {formData.aiDetected && (
+              <div className="appliance-redesign-detected">
+                <span>
+                  AI
+                </span>
+
+                <div>
+                  <strong>
+                    AI-assisted details
+                  </strong>
+
+                  <p>
+                    Review and edit any
+                    field below before
+                    saving.
+                  </p>
+                </div>
+              </div>
+            )}
+
+            <label>
+              <span>
                 Appliance name
-              </label>
+              </span>
 
               <input
                 type="text"
                 name="applianceName"
                 value={
-                  formData
-                    .applianceName
+                  formData.applianceName
                 }
                 onChange={
                   handleChange
                 }
                 required
                 placeholder="Example: Ceiling Fan"
-                style={styles.input}
               />
-            </div>
+            </label>
 
-            <div style={styles.field}>
-              <label style={styles.label}>
+            <label>
+              <span>
                 Category
-              </label>
+              </span>
 
               <select
                 name="categoryId"
                 value={
-                  formData
-                    .categoryId
+                  formData.categoryId
                 }
                 onChange={
                   handleChange
                 }
                 required
-                style={styles.input}
               >
                 <option value="">
                   Select category
@@ -1297,29 +1589,26 @@ export default function Appliances() {
                   (category) => (
                     <option
                       key={
-                        category
-                          .categoryId
+                        category.categoryId
                       }
                       value={
-                        category
-                          .categoryId
+                        category.categoryId
                       }
                     >
-                      {category
-                        .categoryName ||
-                        category.name ||
-                        `Category ${category.categoryId}`}
+                      {categoryName(
+                        category
+                      )}
                     </option>
                   )
                 )}
               </select>
-            </div>
+            </label>
 
-            <div style={styles.twoColumn}>
-              <div style={styles.field}>
-                <label style={styles.label}>
+            <div className="appliance-redesign-two-column">
+              <label>
+                <span>
                   Brand
-                </label>
+                </span>
 
                 <input
                   type="text"
@@ -1330,15 +1619,14 @@ export default function Appliances() {
                   onChange={
                     handleChange
                   }
-                  placeholder="Example: Panasonic"
-                  style={styles.input}
+                  placeholder="Example: Singer"
                 />
-              </div>
+              </label>
 
-              <div style={styles.field}>
-                <label style={styles.label}>
+              <label>
+                <span>
                   Model
-                </label>
+                </span>
 
                 <input
                   type="text"
@@ -1349,63 +1637,71 @@ export default function Appliances() {
                   onChange={
                     handleChange
                   }
-                  placeholder="Example: CS-XU12ZKH"
-                  style={styles.input}
+                  placeholder="Model number"
                 />
-              </div>
+              </label>
             </div>
 
-            <div style={styles.twoColumn}>
-              <div style={styles.field}>
-                <label style={styles.label}>
-                  Rated power (W)
-                </label>
+            <div className="appliance-redesign-two-column">
+              <label>
+                <span>
+                  Rated power
+                </span>
 
-                <input
-                  type="number"
-                  name="ratedPower"
-                  value={
-                    formData
-                      .ratedPower
-                  }
-                  onChange={
-                    handleChange
-                  }
-                  min="0.01"
-                  step="0.01"
-                  required
-                  placeholder="Example: 75"
-                  style={styles.input}
-                />
-              </div>
+                <div className="appliance-redesign-unit-input">
+                  <input
+                    type="number"
+                    name="ratedPower"
+                    value={
+                      formData.ratedPower
+                    }
+                    onChange={
+                      handleChange
+                    }
+                    min="0.01"
+                    step="0.01"
+                    required
+                    placeholder="75"
+                  />
 
-              <div style={styles.field}>
-                <label style={styles.label}>
-                  Voltage (V)
-                </label>
+                  <span>
+                    W
+                  </span>
+                </div>
+              </label>
 
-                <input
-                  type="number"
-                  name="voltage"
-                  value={
-                    formData.voltage
-                  }
-                  onChange={
-                    handleChange
-                  }
-                  min="0"
-                  step="0.01"
-                  placeholder="Example: 230"
-                  style={styles.input}
-                />
-              </div>
+              <label>
+                <span>
+                  Voltage
+                </span>
+
+                <div className="appliance-redesign-unit-input">
+                  <input
+                    type="number"
+                    name="voltage"
+                    value={
+                      formData.voltage
+                    }
+                    onChange={
+                      handleChange
+                    }
+                    min="0"
+                    step="0.01"
+                    placeholder="230"
+                  />
+
+                  <span>
+                    V
+                  </span>
+                </div>
+              </label>
             </div>
 
-            <div style={styles.twoColumn}>
-              <div style={styles.field}>
-                <label style={styles.label}>
+            <div className="appliance-redesign-two-column">
+              <label>
+                <span>
                   Quantity
-                </label>
+                </span>
 
                 <input
                   type="number"
@@ -1419,107 +1715,106 @@ export default function Appliances() {
                   min="1"
                   step="1"
                   required
-                  style={styles.input}
                 />
-              </div>
+              </label>
 
-              <div style={styles.field}>
-                <label style={styles.label}>
+              <label>
+                <span>
                   Energy rating
-                </label>
+                </span>
 
                 <input
                   type="text"
                   name="energyRating"
                   value={
-                    formData
-                      .energyRating
+                    formData.energyRating
                   }
                   onChange={
                     handleChange
                   }
                   placeholder="Example: A"
-                  style={styles.input}
                 />
-              </div>
+              </label>
             </div>
 
-            <div style={styles.field}>
-              <label style={styles.label}>
-                Typical daily hours
+            <div className="appliance-redesign-two-column">
+              <label>
+                <span>
+                  Typical daily use
+                </span>
+
+                <div className="appliance-redesign-unit-input">
+                  <input
+                    type="number"
+                    name="typicalDailyHours"
+                    value={
+                      formData.typicalDailyHours
+                    }
+                    onChange={
+                      handleChange
+                    }
+                    min="0"
+                    max="24"
+                    step="0.1"
+                    placeholder="6"
+                  />
+
+                  <span>
+                    hrs
+                  </span>
+                </div>
               </label>
 
-              <input
-                type="number"
-                name="typicalDailyHours"
-                value={
-                  formData
-                    .typicalDailyHours
-                }
-                onChange={
-                  handleChange
-                }
-                min="0"
-                max="24"
-                step="0.1"
-                placeholder="Example: 6"
-                style={styles.input}
-              />
-            </div>
+              <label>
+                <span>
+                  Status
+                </span>
 
-            <div style={styles.field}>
-              <label style={styles.label}>
-                Status
+                <select
+                  name="status"
+                  value={
+                    formData.status
+                  }
+                  onChange={
+                    handleChange
+                  }
+                >
+                  <option value="ACTIVE">
+                    Active
+                  </option>
+
+                  <option value="INACTIVE">
+                    Inactive
+                  </option>
+                </select>
               </label>
-
-              <select
-                name="status"
-                value={
-                  formData.status
-                }
-                onChange={
-                  handleChange
-                }
-                style={styles.input}
-              >
-                <option value="ACTIVE">
-                  Active
-                </option>
-
-                <option value="INACTIVE">
-                  Inactive
-                </option>
-              </select>
             </div>
 
-            <div style={styles.actions}>
+            <div className="appliance-redesign-actions">
               <button
                 type="submit"
-                style={styles.primaryButton}
+                className="appliance-redesign-primary"
                 disabled={
                   saving ||
                   uploadingImage ||
                   analysingImage
                 }
               >
-                {saving ||
-                uploadingImage
-                  ? uploadingImage
-                    ? "Uploading photo..."
-                    : "Saving..."
-                  : editingId
-                    ? "Update appliance"
-                    : "Create appliance"}
+                {uploadingImage
+                  ? "Uploading photo..."
+                  : saving
+                    ? "Saving..."
+                    : editingId
+                      ? "Update appliance"
+                      : "Create appliance"}
               </button>
 
               {editingId && (
                 <button
                   type="button"
+                  className="appliance-redesign-secondary"
                   onClick={
                     resetForm
-                  }
-                  style={
-                    styles.secondaryButton
                   }
                   disabled={
                     saving ||
@@ -1532,169 +1827,203 @@ export default function Appliances() {
               )}
             </div>
           </form>
-        </section>
+        </article>
 
-        <section style={styles.card}>
-          <h2 style={styles.cardTitle}>
-            Appliances
-          </h2>
+        <article className="appliance-redesign-list-card">
+          <div className="appliance-redesign-card-head">
+            <div>
+              <p className="dashboard-kicker">
+                Room appliances
+              </p>
+
+              <h2>
+                Your appliances
+              </h2>
+            </div>
+
+            <span className="appliance-redesign-count">
+              {
+                appliances.length
+              }
+            </span>
+          </div>
 
           {!selectedRoomId ? (
-            <p style={styles.muted}>
-              Select a room to view appliances.
-            </p>
+            <div className="appliance-redesign-empty">
+              Select a room to view
+              appliances.
+            </div>
           ) : loading ? (
-            <p style={styles.muted}>
+            <div className="appliance-redesign-empty">
               Loading appliances...
-            </p>
+            </div>
           ) : appliances.length ===
             0 ? (
-            <p style={styles.muted}>
-              No appliances found in this room.
-            </p>
+            <div className="appliance-redesign-empty">
+              <div className="appliance-redesign-empty-icon">
+                ⏻
+              </div>
+
+              <strong>
+                No appliances yet
+              </strong>
+
+              <span>
+                Add an appliance manually
+                or identify one from a
+                photo.
+              </span>
+            </div>
           ) : (
-            <div style={styles.list}>
+            <div className="appliance-redesign-list">
               {appliances.map(
                 (appliance) => (
-                  <div
+                  <article
                     key={
-                      appliance
-                        .applianceId
+                      appliance.applianceId
                     }
-                    style={
-                      styles.applianceItem
-                    }
+                    className="appliance-redesign-item"
                   >
-                    <div style={styles.applianceInfo}>
-                      <div style={styles.applianceTitleRow}>
-                        <h3 style={styles.applianceName}>
+                    <div className="appliance-redesign-item-top">
+                      <div className="appliance-redesign-item-icon">
+                        ⏻
+                      </div>
+
+                      <div className="appliance-redesign-item-title">
+                        <div className="appliance-redesign-item-badges">
+                          <span className="appliance-redesign-category">
+                            {categoryName(
+                              appliance.category
+                            )}
+                          </span>
+
+                          {appliance.aiDetected && (
+                            <span className="appliance-redesign-ai-badge">
+                              AI identified
+                            </span>
+                          )}
+
+                          <span
+                            className={`appliance-redesign-status ${
+                              appliance.status ===
+                              "ACTIVE"
+                                ? "appliance-redesign-status-active"
+                                : "appliance-redesign-status-inactive"
+                            }`}
+                          >
+                            {statusLabel(
+                              appliance.status
+                            )}
+                          </span>
+                        </div>
+
+                        <h3>
                           {
-                            appliance
-                              .applianceName
+                            appliance.applianceName
                           }
                         </h3>
 
-                        {appliance.aiDetected && (
-                          <span style={styles.aiBadge}>
-                            AI identified
-                          </span>
-                        )}
-                      </div>
+                        {(appliance.brand ||
+                          appliance.model) && (
+                          <p>
+                            {appliance.brand ||
+                              "Unknown brand"}
 
-                      <p style={styles.detail}>
-                        <strong>
-                          Category:
-                        </strong>{" "}
-                        {appliance.category
-                          ?.categoryName ||
-                          appliance.category
-                            ?.name ||
-                          "—"}
-                      </p>
-
-                      {(appliance.brand ||
-                        appliance.model) && (
-                        <p style={styles.detail}>
-                          <strong>
-                            Brand / Model:
-                          </strong>{" "}
-                          {appliance.brand ||
-                            "—"}
-                          {" / "}
-                          {appliance.model ||
-                            "—"}
-                        </p>
-                      )}
-
-                      <p style={styles.detail}>
-                        <strong>
-                          Power:
-                        </strong>{" "}
-                        {
-                          appliance
-                            .ratedPower
-                        }{" "}
-                        W
-                      </p>
-
-                      {appliance.voltage !==
-                        null &&
-                        appliance.voltage !==
-                          undefined && (
-                          <p style={styles.detail}>
-                            <strong>
-                              Voltage:
-                            </strong>{" "}
-                            {
-                              appliance
-                                .voltage
-                            }{" "}
-                            V
+                            {appliance.model
+                              ? ` · ${appliance.model}`
+                              : ""}
                           </p>
                         )}
+                      </div>
+                    </div>
 
-                      <p style={styles.detail}>
+                    <div className="appliance-redesign-item-values">
+                      <div>
+                        <span>
+                          Rated power
+                        </span>
+
                         <strong>
-                          Quantity:
-                        </strong>{" "}
-                        {
-                          appliance
-                            .quantity
-                        }
-                      </p>
-
-                      <p style={styles.detail}>
-                        <strong>
-                          Typical daily use:
-                        </strong>{" "}
-                        {appliance
-                          .typicalDailyHours ??
-                          0}{" "}
-                        hours
-                      </p>
-
-                      {appliance.energyRating && (
-                        <p style={styles.detail}>
-                          <strong>
-                            Energy rating:
-                          </strong>{" "}
                           {
-                            appliance
-                              .energyRating
-                          }
-                        </p>
-                      )}
+                            appliance.ratedPower
+                          }{" "}
+                          W
+                        </strong>
+                      </div>
 
-                      <p style={styles.detail}>
+                      <div>
+                        <span>
+                          Voltage
+                        </span>
+
                         <strong>
-                          Photo:
-                        </strong>{" "}
+                          {appliance.voltage !==
+                            null &&
+                          appliance.voltage !==
+                            undefined
+                            ? `${appliance.voltage} V`
+                            : "—"}
+                        </strong>
+                      </div>
+
+                      <div>
+                        <span>
+                          Quantity
+                        </span>
+
+                        <strong>
+                          {
+                            appliance.quantity
+                          }
+                        </strong>
+                      </div>
+
+                      <div>
+                        <span>
+                          Daily use
+                        </span>
+
+                        <strong>
+                          {appliance.typicalDailyHours ??
+                            0}{" "}
+                          hrs
+                        </strong>
+                      </div>
+                    </div>
+
+                    <div className="appliance-redesign-item-meta">
+                      <span>
+                        Energy rating
+                      </span>
+
+                      <strong>
+                        {appliance.energyRating ||
+                          "Not specified"}
+                      </strong>
+
+                      <span>
+                        Photo
+                      </span>
+
+                      <strong>
                         {appliance.imagePath
                           ? "Saved"
                           : "Not added"}
-                      </p>
+                      </strong>
 
-                      <p style={styles.detail}>
-                        <strong>
-                          Status:
-                        </strong>{" "}
-                        {
-                          appliance.status
-                        }
-                      </p>
+                      <span>
+                        ID
+                      </span>
 
-                      <p style={styles.detail}>
-                        <strong>
-                          Appliance ID:
-                        </strong>{" "}
+                      <strong>
+                        #
                         {
-                          appliance
-                            .applianceId
+                          appliance.applianceId
                         }
-                      </p>
+                      </strong>
                     </div>
 
-                    <div style={styles.itemActions}>
+                    <div className="appliance-redesign-item-actions">
                       <button
                         type="button"
                         onClick={() =>
@@ -1702,406 +2031,29 @@ export default function Appliances() {
                             appliance
                           )
                         }
-                        style={
-                          styles.editButton
-                        }
                       >
                         Edit
                       </button>
 
                       <button
                         type="button"
+                        className="appliance-redesign-delete"
                         onClick={() =>
                           handleDelete(
-                            appliance
-                              .applianceId
+                            appliance.applianceId
                           )
-                        }
-                        style={
-                          styles.deleteButton
                         }
                       >
                         Delete
                       </button>
                     </div>
-                  </div>
+                  </article>
                 )
               )}
             </div>
           )}
-        </section>
-      </div>
+        </article>
+      </section>
     </div>
   );
 }
-
-const styles = {
-  page: {
-    padding: "32px",
-    maxWidth: "1200px",
-    margin: "0 auto",
-  },
-
-  header: {
-    marginBottom: "24px",
-  },
-
-  eyebrow: {
-    fontSize: "12px",
-    letterSpacing: "0.14em",
-    marginBottom: "8px",
-    color: "#7a5c5c",
-  },
-
-  title: {
-    fontSize: "34px",
-    margin: "0 0 10px 0",
-  },
-
-  lead: {
-    maxWidth: "760px",
-    lineHeight: 1.6,
-    color: "#765f5f",
-  },
-
-  error: {
-    padding: "14px 16px",
-    marginBottom: "20px",
-    border:
-      "1px solid #e5b4b4",
-    borderRadius: "10px",
-    background: "#fff0f0",
-    color: "#9a1f1f",
-  },
-
-  selectorCard: {
-    background: "#ffffff",
-    border:
-      "1px solid #e6dcdc",
-    borderRadius: "12px",
-    padding: "18px",
-    marginBottom: "22px",
-  },
-
-  selectorGrid: {
-    display: "grid",
-    gridTemplateColumns:
-      "repeat(auto-fit, minmax(220px, 1fr))",
-    gap: "16px",
-  },
-
-  grid: {
-    display: "grid",
-    gridTemplateColumns:
-      "repeat(auto-fit, minmax(340px, 1fr))",
-    gap: "22px",
-  },
-
-  card: {
-    background: "#ffffff",
-    border:
-      "1px solid #e6dcdc",
-    borderRadius: "14px",
-    padding: "24px",
-    boxShadow:
-      "0 2px 8px rgba(0, 0, 0, 0.04)",
-  },
-
-  cardTitle: {
-    marginTop: 0,
-    marginBottom: "20px",
-  },
-
-  field: {
-    marginBottom: "16px",
-  },
-
-  label: {
-    display: "block",
-    fontWeight: 600,
-    marginBottom: "7px",
-  },
-
-  input: {
-    width: "100%",
-    boxSizing: "border-box",
-    padding: "11px 12px",
-    border:
-      "1px solid #d8caca",
-    borderRadius: "8px",
-    fontSize: "15px",
-  },
-
-  twoColumn: {
-    display: "grid",
-    gridTemplateColumns:
-      "repeat(auto-fit, minmax(160px, 1fr))",
-    gap: "14px",
-  },
-
-  photoSection: {
-    marginBottom: "22px",
-    padding: "18px",
-    border:
-      "1px solid #e5d8d8",
-    borderRadius: "12px",
-    background: "#fffafa",
-  },
-
-  photoHeader: {
-    display: "flex",
-    justifyContent:
-      "space-between",
-    alignItems: "flex-start",
-    gap: "14px",
-  },
-
-  photoHelp: {
-    margin:
-      "4px 0 0 0",
-    color: "#806d6d",
-    lineHeight: 1.5,
-    fontSize: "14px",
-  },
-
-  optionalBadge: {
-    padding: "5px 9px",
-    borderRadius: "999px",
-    background: "#f0e5e5",
-    color: "#6f5656",
-    fontSize: "12px",
-    fontWeight: 600,
-    whiteSpace: "nowrap",
-  },
-
-  hiddenInput: {
-    display: "none",
-  },
-
-  photoActions: {
-    display: "flex",
-    flexWrap: "wrap",
-    gap: "10px",
-    marginTop: "16px",
-  },
-
-  uploadButton: {
-    padding: "10px 16px",
-    border:
-      "1px solid #7f0000",
-    borderRadius: "8px",
-    background: "#ffffff",
-    color: "#7f0000",
-    fontWeight: 600,
-    cursor: "pointer",
-  },
-
-  cameraButton: {
-    padding: "10px 16px",
-    border: "none",
-    borderRadius: "8px",
-    background: "#7f0000",
-    color: "#ffffff",
-    fontWeight: 600,
-    cursor: "pointer",
-  },
-
-  aiAnalyseButton: {
-    padding: "10px 16px",
-    border: "none",
-    borderRadius: "8px",
-    background: "#8b6b18",
-    color: "#ffffff",
-    fontWeight: 600,
-    cursor: "pointer",
-  },
-
-  fileHelp: {
-    margin:
-      "10px 0 0 0",
-    fontSize: "12px",
-    color: "#8c7777",
-  },
-
-  previewWrap: {
-    marginTop: "16px",
-    border:
-      "1px solid #e6dcdc",
-    borderRadius: "10px",
-    padding: "10px",
-    background: "#ffffff",
-  },
-
-  previewImage: {
-    display: "block",
-    width: "100%",
-    maxHeight: "280px",
-    objectFit: "contain",
-    borderRadius: "8px",
-    background: "#f7f2f2",
-  },
-
-  previewFooter: {
-    display: "flex",
-    justifyContent:
-      "space-between",
-    alignItems: "center",
-    gap: "12px",
-    marginTop: "10px",
-  },
-
-  previewName: {
-    color: "#665555",
-    fontSize: "13px",
-    overflow: "hidden",
-    textOverflow:
-      "ellipsis",
-    whiteSpace: "nowrap",
-  },
-
-  removePhotoButton: {
-    padding: "7px 11px",
-    border:
-      "1px solid #c6aaaa",
-    borderRadius: "7px",
-    background: "#ffffff",
-    color: "#8b2424",
-    cursor: "pointer",
-  },
-
-  existingImageNote: {
-    marginTop: "14px",
-    padding: "11px 12px",
-    borderRadius: "8px",
-    background: "#f5eeee",
-    color: "#6d5656",
-    fontSize: "13px",
-    lineHeight: 1.5,
-  },
-
-  aiResult: {
-    marginTop: "14px",
-    padding: "13px 14px",
-    border:
-      "1px solid #dfcf9f",
-    borderRadius: "9px",
-    background: "#fff9e8",
-    color: "#5f4a17",
-  },
-
-  aiResultText: {
-    margin: "7px 0",
-    lineHeight: 1.5,
-  },
-
-  aiWarning: {
-    margin: 0,
-    fontSize: "12px",
-    color: "#806621",
-  },
-
-  actions: {
-    display: "flex",
-    gap: "10px",
-    marginTop: "18px",
-  },
-
-  primaryButton: {
-    padding: "11px 18px",
-    border: "none",
-    borderRadius: "8px",
-    background: "#7f0000",
-    color: "#ffffff",
-    fontWeight: 600,
-    cursor: "pointer",
-  },
-
-  secondaryButton: {
-    padding: "11px 18px",
-    border:
-      "1px solid #cbbbbb",
-    borderRadius: "8px",
-    background: "#ffffff",
-    cursor: "pointer",
-  },
-
-  list: {
-    display: "flex",
-    flexDirection:
-      "column",
-    gap: "14px",
-  },
-
-  applianceItem: {
-    display: "flex",
-    justifyContent:
-      "space-between",
-    alignItems: "flex-start",
-    gap: "20px",
-    padding: "18px",
-    border:
-      "1px solid #eadede",
-    borderRadius: "10px",
-    background: "#fffafa",
-  },
-
-  applianceInfo: {
-    minWidth: 0,
-    flex: 1,
-  },
-
-  applianceTitleRow: {
-    display: "flex",
-    alignItems: "center",
-    flexWrap: "wrap",
-    gap: "8px",
-    marginBottom: "12px",
-  },
-
-  applianceName: {
-    margin: 0,
-  },
-
-  aiBadge: {
-    padding: "4px 8px",
-    borderRadius: "999px",
-    background: "#eee5cf",
-    color: "#725817",
-    fontSize: "11px",
-    fontWeight: 700,
-  },
-
-  detail: {
-    margin: "6px 0",
-    color: "#5f5050",
-  },
-
-  itemActions: {
-    display: "flex",
-    flexDirection:
-      "column",
-    gap: "8px",
-  },
-
-  editButton: {
-    padding: "8px 14px",
-    border:
-      "1px solid #a88",
-    borderRadius: "7px",
-    background: "#ffffff",
-    cursor: "pointer",
-  },
-
-  deleteButton: {
-    padding: "8px 14px",
-    border: "none",
-    borderRadius: "7px",
-    background: "#a22323",
-    color: "#ffffff",
-    cursor: "pointer",
-  },
-
-  muted: {
-    color: "#806d6d",
-  },
-};

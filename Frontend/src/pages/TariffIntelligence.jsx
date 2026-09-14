@@ -232,38 +232,77 @@ export default function TariffIntelligence() {
     return `${min}–${max} kWh`;
   }
 
+  function getSavingTone() {
+    if (!whatIf) {
+      return "neutral";
+    }
+
+    if (
+      Number(
+        whatIf.billDifference
+      ) > 0
+    ) {
+      return "saving";
+    }
+
+    if (
+      Number(
+        whatIf.billDifference
+      ) < 0
+    ) {
+      return "increase";
+    }
+
+    return "neutral";
+  }
+
   return (
-    <section className="tariff-intelligence-page">
-      <div className="page-heading">
-        <div>
-          <p className="eyebrow">
-            Tariff intelligence
-          </p>
+    <div className="tariff-redesign">
+      <section className="tariff-redesign-hero">
+        <div className="tariff-redesign-orb tariff-redesign-orb-one" />
+        <div className="tariff-redesign-orb tariff-redesign-orb-two" />
 
-          <h1>
-            Understand your electricity tariff
-          </h1>
+        <div className="tariff-redesign-hero-content">
+          <div>
+            <p className="dashboard-kicker dashboard-kicker-light">
+              Tariff intelligence
+            </p>
 
-          <p className="page-description">
-            See your current tariff block,
-            next threshold and how changes
-            in electricity usage may affect
-            your estimated monthly bill.
-          </p>
+            <h1>
+              Understand what your
+              electricity really costs.
+            </h1>
+
+            <p>
+              Explore your current tariff
+              block, upcoming threshold
+              and the financial impact of
+              changing your monthly
+              electricity usage.
+            </p>
+          </div>
+
+          <div className="tariff-redesign-hero-badge">
+            <span>
+              ₨
+            </span>
+
+            <div>
+              <small>
+                Sri Lankan
+              </small>
+
+              <strong>
+                Tariff insight
+              </strong>
+            </div>
+          </div>
         </div>
-      </div>
 
-      {error && (
-        <div className="form-error">
-          {error}
-        </div>
-      )}
-
-      <div className="tariff-control-card">
-        <div className="tariff-control-grid">
+        <div className="tariff-redesign-controls">
           <label>
             <span>
-              Tariff
+              Active tariff
             </span>
 
             <select
@@ -304,7 +343,7 @@ export default function TariffIntelligence() {
               Monthly usage
             </span>
 
-            <div className="input-with-unit">
+            <div className="tariff-redesign-input">
               <input
                 type="number"
                 min="0"
@@ -324,7 +363,7 @@ export default function TariffIntelligence() {
 
           <button
             type="button"
-            className="primary-button"
+            className="tariff-redesign-primary"
             onClick={
               loadIntelligence
             }
@@ -335,22 +374,32 @@ export default function TariffIntelligence() {
               : "Analyse tariff"}
           </button>
         </div>
-      </div>
+      </section>
+
+      {error && (
+        <div className="dashboard-error">
+          {error}
+        </div>
+      )}
 
       {intelligence && (
         <>
-          <div className="tariff-summary-grid">
-            <article className="tariff-stat-card">
-              <p className="tariff-stat-label">
-                Estimated bill
-              </p>
+          <section className="tariff-redesign-summary">
+            <article className="tariff-redesign-stat tariff-redesign-stat-feature">
+              <div className="tariff-redesign-stat-icon">
+                ₨
+              </div>
 
-              <h2>
+              <span>
+                Estimated bill
+              </span>
+
+              <strong>
                 {formatMoney(
                   intelligence
                     .currentEstimatedBill
                 )}
-              </h2>
+              </strong>
 
               <p>
                 At{" "}
@@ -362,14 +411,18 @@ export default function TariffIntelligence() {
               </p>
             </article>
 
-            <article className="tariff-stat-card">
-              <p className="tariff-stat-label">
-                Current tariff block
-              </p>
+            <article className="tariff-redesign-stat">
+              <div className="tariff-redesign-stat-icon">
+                ▦
+              </div>
 
-              <h2>
+              <span>
+                Current block
+              </span>
+
+              <strong>
                 {getBlockLabel()}
-              </h2>
+              </strong>
 
               <p>
                 {formatGroup(
@@ -379,47 +432,55 @@ export default function TariffIntelligence() {
               </p>
             </article>
 
-            <article className="tariff-stat-card">
-              <p className="tariff-stat-label">
-                Current unit rate
-              </p>
+            <article className="tariff-redesign-stat">
+              <div className="tariff-redesign-stat-icon tariff-redesign-stat-icon-green">
+                ⚡
+              </div>
 
-              <h2>
+              <span>
+                Unit rate
+              </span>
+
+              <strong>
                 {formatMoney(
                   intelligence
                     .currentRatePerUnit
                 )}
-              </h2>
+              </strong>
 
               <p>
-                Per kWh in the current
-                block.
+                Current block price per
+                kWh.
               </p>
             </article>
 
-            <article className="tariff-stat-card">
-              <p className="tariff-stat-label">
-                Fixed charge
-              </p>
+            <article className="tariff-redesign-stat">
+              <div className="tariff-redesign-stat-icon">
+                ◫
+              </div>
 
-              <h2>
+              <span>
+                Fixed charge
+              </span>
+
+              <strong>
                 {formatMoney(
                   intelligence
                     .currentFixedCharge
                 )}
-              </h2>
+              </strong>
 
               <p>
                 Applied to the current
-                consumption band.
+                usage band.
               </p>
             </article>
-          </div>
+          </section>
 
-          <div className="tariff-threshold-card">
+          <section className="tariff-redesign-threshold">
             <div>
-              <p className="eyebrow">
-                Next threshold
+              <p className="dashboard-kicker dashboard-kicker-light">
+                Next tariff threshold
               </p>
 
               {intelligence
@@ -463,12 +524,25 @@ export default function TariffIntelligence() {
                 </>
               )}
             </div>
-          </div>
 
-          <div className="tariff-section">
-            <div className="section-heading">
+            <div className="tariff-redesign-threshold-visual">
+              <span>
+                {
+                  intelligence
+                    .currentUnits
+                }
+              </span>
+
+              <small>
+                current kWh
+              </small>
+            </div>
+          </section>
+
+          <section className="tariff-redesign-section">
+            <div className="tariff-redesign-section-head">
               <div>
-                <p className="eyebrow">
+                <p className="dashboard-kicker">
                   Cost scenarios
                 </p>
 
@@ -476,13 +550,26 @@ export default function TariffIntelligence() {
                   Estimated bill by usage
                 </h2>
               </div>
+
+              <p>
+                Compare how your estimated
+                bill changes as electricity
+                consumption increases.
+              </p>
             </div>
 
-            <div className="tariff-scenario-grid">
+            <div className="tariff-redesign-scenarios">
               {intelligence.scenarios?.map(
-                (scenario) => (
+                (
+                  scenario,
+                  index
+                ) => (
                   <article
-                    className="tariff-scenario-card"
+                    className={`tariff-redesign-scenario ${
+                      index === 0
+                        ? "tariff-redesign-scenario-green"
+                        : ""
+                    }`}
                     key={
                       scenario.units
                     }
@@ -500,34 +587,42 @@ export default function TariffIntelligence() {
                           .estimatedBill
                       )}
                     </strong>
+
+                    <div className="tariff-redesign-scenario-line" />
                   </article>
                 )
               )}
             </div>
-          </div>
+          </section>
 
-          <div className="tariff-section">
-            <div className="section-heading">
-              <div>
-                <p className="eyebrow">
-                  What-if calculator
-                </p>
+          <section className="tariff-redesign-whatif">
+            <div className="tariff-redesign-whatif-copy">
+              <p className="dashboard-kicker dashboard-kicker-light">
+                What-if calculator
+              </p>
 
-                <h2>
-                  See the impact of changing
-                  your usage
-                </h2>
-              </div>
+              <h2>
+                See what happens if you use
+                less electricity.
+              </h2>
+
+              <p>
+                Compare your current
+                estimated bill with a
+                different monthly usage
+                target before making a
+                decision.
+              </p>
             </div>
 
-            <div className="tariff-whatif-card">
-              <div className="tariff-whatif-controls">
+            <div className="tariff-redesign-whatif-card">
+              <div className="tariff-redesign-whatif-controls">
                 <label>
                   <span>
                     Current usage
                   </span>
 
-                  <div className="input-with-unit">
+                  <div className="tariff-redesign-input">
                     <input
                       type="number"
                       value={units}
@@ -545,15 +640,14 @@ export default function TariffIntelligence() {
                     Target usage
                   </span>
 
-                  <div className="input-with-unit">
+                  <div className="tariff-redesign-input">
                     <input
                       type="number"
                       min="0"
                       value={targetUnits}
                       onChange={(event) =>
                         setTargetUnits(
-                          event.target
-                            .value
+                          event.target.value
                         )
                       }
                     />
@@ -566,7 +660,7 @@ export default function TariffIntelligence() {
 
                 <button
                   type="button"
-                  className="primary-button"
+                  className="tariff-redesign-primary"
                   onClick={
                     calculateWhatIf
                   }
@@ -581,7 +675,9 @@ export default function TariffIntelligence() {
               </div>
 
               {whatIf && (
-                <div className="tariff-whatif-results">
+                <div
+                  className={`tariff-redesign-result tariff-redesign-result-${getSavingTone()}`}
+                >
                   <div>
                     <span>
                       Current bill
@@ -633,7 +729,7 @@ export default function TariffIntelligence() {
 
                   <div>
                     <span>
-                      Percentage difference
+                      Difference
                     </span>
 
                     <strong>
@@ -646,9 +742,9 @@ export default function TariffIntelligence() {
                 </div>
               )}
             </div>
-          </div>
+          </section>
         </>
       )}
-    </section>
+    </div>
   );
 }

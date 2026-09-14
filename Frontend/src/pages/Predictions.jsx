@@ -1,4 +1,8 @@
-import { useEffect, useMemo, useState } from "react";
+import {
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 
 import householdService from "../services/householdService";
 import tariffService from "../services/tariffService";
@@ -20,23 +24,34 @@ const MONTHS = [
 ];
 
 function formatCurrency(value) {
-  if (value === null || value === undefined) {
+  if (
+    value === null ||
+    value === undefined
+  ) {
     return "—";
   }
 
-  return new Intl.NumberFormat("en-LK", {
-    style: "currency",
-    currency: "LKR",
-    minimumFractionDigits: 2,
-  }).format(Number(value));
+  return new Intl.NumberFormat(
+    "en-LK",
+    {
+      style: "currency",
+      currency: "LKR",
+      minimumFractionDigits: 2,
+    }
+  ).format(Number(value));
 }
 
 function formatKwh(value) {
-  if (value === null || value === undefined) {
+  if (
+    value === null ||
+    value === undefined
+  ) {
     return "—";
   }
 
-  return `${Number(value).toFixed(3)} kWh`;
+  return `${Number(value).toFixed(
+    3
+  )} kWh`;
 }
 
 function formatTargetMonth(value) {
@@ -44,16 +59,20 @@ function formatTargetMonth(value) {
     return "—";
   }
 
-  const [year, month] = String(value).split("-");
+  const [year, month] =
+    String(value).split("-");
 
   if (!year || !month) {
     return value;
   }
 
-  return new Intl.DateTimeFormat("en", {
-    month: "long",
-    year: "numeric",
-  }).format(
+  return new Intl.DateTimeFormat(
+    "en",
+    {
+      month: "long",
+      year: "numeric",
+    }
+  ).format(
     new Date(
       Number(year),
       Number(month) - 1,
@@ -65,8 +84,15 @@ function formatTargetMonth(value) {
 export default function Predictions() {
   const currentDate = new Date();
 
-  const [households, setHouseholds] = useState([]);
-  const [tariffs, setTariffs] = useState([]);
+  const [
+    households,
+    setHouseholds,
+  ] = useState([]);
+
+  const [
+    tariffs,
+    setTariffs,
+  ] = useState([]);
 
   const [
     selectedHouseholdId,
@@ -78,22 +104,49 @@ export default function Predictions() {
     setSelectedTariffId,
   ] = useState("");
 
-  const [year, setYear] = useState(
+  const [
+    year,
+    setYear,
+  ] = useState(
     currentDate.getFullYear()
   );
 
-  const [month, setMonth] = useState(
+  const [
+    month,
+    setMonth,
+  ] = useState(
     currentDate.getMonth() + 1
   );
 
-  const [latest, setLatest] = useState(null);
-  const [history, setHistory] = useState([]);
+  const [
+    latest,
+    setLatest,
+  ] = useState(null);
 
-  const [loading, setLoading] = useState(true);
-  const [predicting, setPredicting] = useState(false);
+  const [
+    history,
+    setHistory,
+  ] = useState([]);
 
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+  const [
+    loading,
+    setLoading,
+  ] = useState(true);
+
+  const [
+    predicting,
+    setPredicting,
+  ] = useState(false);
+
+  const [
+    error,
+    setError,
+  ] = useState("");
+
+  const [
+    success,
+    setSuccess,
+  ] = useState("");
 
   useEffect(() => {
     initialise();
@@ -101,7 +154,9 @@ export default function Predictions() {
 
   useEffect(() => {
     if (selectedHouseholdId) {
-      loadPredictionData(selectedHouseholdId);
+      loadPredictionData(
+        selectedHouseholdId
+      );
     } else {
       setLatest(null);
       setHistory([]);
@@ -122,12 +177,16 @@ export default function Predictions() {
       ]);
 
       const householdList =
-        Array.isArray(householdData)
+        Array.isArray(
+          householdData
+        )
           ? householdData
           : [];
 
       const tariffList =
-        Array.isArray(tariffData)
+        Array.isArray(
+          tariffData
+        )
           ? tariffData
           : [];
 
@@ -135,25 +194,40 @@ export default function Predictions() {
         tariffList.filter(
           (tariff) =>
             String(
-              tariff.status || ""
-            ).toUpperCase() === "ACTIVE"
+              tariff.status ||
+                ""
+            ).toUpperCase() ===
+            "ACTIVE"
         );
 
-      setHouseholds(householdList);
-      setTariffs(activeTariffs);
+      setHouseholds(
+        householdList
+      );
 
-      if (householdList.length > 0) {
+      setTariffs(
+        activeTariffs
+      );
+
+      if (
+        householdList.length >
+        0
+      ) {
         setSelectedHouseholdId(
           String(
-            householdList[0].householdId
+            householdList[0]
+              .householdId
           )
         );
       }
 
-      if (activeTariffs.length > 0) {
+      if (
+        activeTariffs.length >
+        0
+      ) {
         setSelectedTariffId(
           String(
-            activeTariffs[0].tariffId
+            activeTariffs[0]
+              .tariffId
           )
         );
       }
@@ -164,8 +238,10 @@ export default function Predictions() {
       );
 
       setError(
-        err?.response?.data?.error ||
-          err?.response?.data?.message ||
+        err?.response?.data
+          ?.error ||
+          err?.response?.data
+            ?.message ||
           "Failed to load prediction information."
       );
     } finally {
@@ -190,7 +266,8 @@ export default function Predictions() {
           .latest(householdId)
           .catch((err) => {
             if (
-              err?.response?.status === 404
+              err?.response
+                ?.status === 404
             ) {
               return null;
             }
@@ -207,12 +284,16 @@ export default function Predictions() {
       ]);
 
       setHistory(
-        Array.isArray(historyData)
+        Array.isArray(
+          historyData
+        )
           ? historyData
           : []
       );
 
-      setLatest(latestData || null);
+      setLatest(
+        latestData || null
+      );
     } catch (err) {
       console.error(
         "Failed to load prediction history:",
@@ -220,8 +301,10 @@ export default function Predictions() {
       );
 
       setError(
-        err?.response?.data?.error ||
-          err?.response?.data?.message ||
+        err?.response?.data
+          ?.error ||
+          err?.response?.data
+            ?.message ||
           "Failed to load prediction history."
       );
     } finally {
@@ -230,7 +313,9 @@ export default function Predictions() {
   }
 
   function validatePrediction() {
-    if (!selectedHouseholdId) {
+    if (
+      !selectedHouseholdId
+    ) {
       setError(
         "Please select a household."
       );
@@ -283,13 +368,17 @@ export default function Predictions() {
     return true;
   }
 
-  async function handlePredict(event) {
+  async function handlePredict(
+    event
+  ) {
     event.preventDefault();
 
     setError("");
     setSuccess("");
 
-    if (!validatePrediction()) {
+    if (
+      !validatePrediction()
+    ) {
       return;
     }
 
@@ -297,19 +386,24 @@ export default function Predictions() {
       setPredicting(true);
 
       const result =
-        await predictionService.predict({
-          householdId: Number(
-            selectedHouseholdId
-          ),
+        await predictionService
+          .predict({
+            householdId:
+              Number(
+                selectedHouseholdId
+              ),
 
-          tariffId: Number(
-            selectedTariffId
-          ),
+            tariffId:
+              Number(
+                selectedTariffId
+              ),
 
-          year: Number(year),
+            year:
+              Number(year),
 
-          month: Number(month),
-        });
+            month:
+              Number(month),
+          });
 
       setLatest(result);
 
@@ -337,8 +431,10 @@ export default function Predictions() {
         status === 400
       ) {
         setError(
-          err?.response?.data?.error ||
-            err?.response?.data?.message ||
+          err?.response?.data
+            ?.error ||
+            err?.response?.data
+              ?.message ||
             "The prediction could not be created. Check that enough historical usage data exists for the selected household and month."
         );
       } else if (
@@ -351,8 +447,10 @@ export default function Predictions() {
         );
       } else {
         setError(
-          err?.response?.data?.error ||
-            err?.response?.data?.message ||
+          err?.response?.data
+            ?.error ||
+            err?.response?.data
+              ?.message ||
             "Failed to generate the bill prediction."
         );
       }
@@ -385,446 +483,542 @@ export default function Predictions() {
     }, [history]);
 
   return (
-    <div style={styles.page}>
-      <div style={styles.header}>
-        <p style={styles.eyebrow}>
-          INSIGHT
-        </p>
+    <div className="prediction-redesign">
+      <section className="prediction-redesign-hero">
+        <div className="prediction-redesign-orb prediction-redesign-orb-one" />
+        <div className="prediction-redesign-orb prediction-redesign-orb-two" />
 
-        <h1 style={styles.title}>
-          Predictions
-        </h1>
+        <div className="prediction-redesign-hero-copy">
+          <p className="dashboard-kicker dashboard-kicker-light">
+            Machine learning forecast
+          </p>
 
-        <p style={styles.lead}>
-          Predict upcoming household
-          electricity consumption and the
-          estimated bill using the trained
-          machine-learning model and the
-          selected Sri Lankan electricity
-          tariff.
-        </p>
-      </div>
+          <h1>
+            Predict your next
+            electricity bill.
+          </h1>
+
+          <p>
+            Use your household energy
+            history and our trained
+            XGBoost model to forecast
+            upcoming electricity
+            consumption and estimate the
+            bill using your selected
+            tariff.
+          </p>
+        </div>
+
+        <div className="prediction-redesign-model-badge">
+          <span>
+            ML
+          </span>
+
+          <div>
+            <small>
+              Forecast engine
+            </small>
+
+            <strong>
+              XGBoost
+            </strong>
+          </div>
+        </div>
+
+        <form
+          className="prediction-redesign-form"
+          onSubmit={
+            handlePredict
+          }
+        >
+          <label>
+            <span>
+              Household
+            </span>
+
+            <select
+              value={
+                selectedHouseholdId
+              }
+              onChange={(event) =>
+                setSelectedHouseholdId(
+                  event.target.value
+                )
+              }
+            >
+              <option value="">
+                Select household
+              </option>
+
+              {households.map(
+                (household) => (
+                  <option
+                    key={
+                      household.householdId
+                    }
+                    value={
+                      household.householdId
+                    }
+                  >
+                    {
+                      household.householdName
+                    }
+                  </option>
+                )
+              )}
+            </select>
+          </label>
+
+          <label>
+            <span>
+              Tariff
+            </span>
+
+            <select
+              value={
+                selectedTariffId
+              }
+              onChange={(event) =>
+                setSelectedTariffId(
+                  event.target.value
+                )
+              }
+            >
+              <option value="">
+                Select tariff
+              </option>
+
+              {tariffs.map(
+                (tariff) => (
+                  <option
+                    key={
+                      tariff.tariffId
+                    }
+                    value={
+                      tariff.tariffId
+                    }
+                  >
+                    {
+                      tariff.tariffName
+                    }
+                  </option>
+                )
+              )}
+            </select>
+          </label>
+
+          <label>
+            <span>
+              Year
+            </span>
+
+            <input
+              type="number"
+              min="2000"
+              max="2100"
+              value={year}
+              onChange={(event) =>
+                setYear(
+                  event.target.value
+                )
+              }
+            />
+          </label>
+
+          <label>
+            <span>
+              Month
+            </span>
+
+            <select
+              value={month}
+              onChange={(event) =>
+                setMonth(
+                  event.target.value
+                )
+              }
+            >
+              {MONTHS.map(
+                (item) => (
+                  <option
+                    key={
+                      item.value
+                    }
+                    value={
+                      item.value
+                    }
+                  >
+                    {
+                      item.label
+                    }
+                  </option>
+                )
+              )}
+            </select>
+          </label>
+
+          <button
+            type="submit"
+            className="prediction-redesign-primary"
+            disabled={
+              predicting ||
+              loading ||
+              !selectedHouseholdId ||
+              !selectedTariffId
+            }
+          >
+            {predicting
+              ? "Predicting..."
+              : "Run prediction"}
+          </button>
+        </form>
+      </section>
 
       {error && (
-        <div style={styles.error}>
+        <div className="dashboard-error">
           {error}
         </div>
       )}
 
       {success && (
-        <div style={styles.success}>
+        <div className="prediction-redesign-success">
+          <span>
+            ✓
+          </span>
+
           {success}
         </div>
       )}
 
-      <section style={styles.formCard}>
-        <form
-          onSubmit={handlePredict}
-        >
-          <div style={styles.formGrid}>
-            <div>
-              <label style={styles.label}>
-                Household
-              </label>
-
-              <select
-                value={
-                  selectedHouseholdId
-                }
-                onChange={(event) =>
-                  setSelectedHouseholdId(
-                    event.target.value
-                  )
-                }
-                style={styles.input}
-              >
-                <option value="">
-                  Select household
-                </option>
-
-                {households.map(
-                  (household) => (
-                    <option
-                      key={
-                        household.householdId
-                      }
-                      value={
-                        household.householdId
-                      }
-                    >
-                      {
-                        household.householdName
-                      }
-                    </option>
-                  )
-                )}
-              </select>
-            </div>
-
-            <div>
-              <label style={styles.label}>
-                Tariff
-              </label>
-
-              <select
-                value={
-                  selectedTariffId
-                }
-                onChange={(event) =>
-                  setSelectedTariffId(
-                    event.target.value
-                  )
-                }
-                style={styles.input}
-              >
-                <option value="">
-                  Select active tariff
-                </option>
-
-                {tariffs.map(
-                  (tariff) => (
-                    <option
-                      key={
-                        tariff.tariffId
-                      }
-                      value={
-                        tariff.tariffId
-                      }
-                    >
-                      {tariff.tariffName}
-                    </option>
-                  )
-                )}
-              </select>
-            </div>
-
-            <div>
-              <label style={styles.label}>
-                Target year
-              </label>
-
-              <input
-                type="number"
-                min="2000"
-                max="2100"
-                value={year}
-                onChange={(event) =>
-                  setYear(
-                    event.target.value
-                  )
-                }
-                style={styles.input}
-              />
-            </div>
-
-            <div>
-              <label style={styles.label}>
-                Target month
-              </label>
-
-              <select
-                value={month}
-                onChange={(event) =>
-                  setMonth(
-                    event.target.value
-                  )
-                }
-                style={styles.input}
-              >
-                {MONTHS.map(
-                  (item) => (
-                    <option
-                      key={item.value}
-                      value={item.value}
-                    >
-                      {item.label}
-                    </option>
-                  )
-                )}
-              </select>
-            </div>
+      <section className="prediction-redesign-summary">
+        <article className="prediction-redesign-stat prediction-redesign-stat-feature">
+          <div className="prediction-redesign-stat-icon">
+            ⚡
           </div>
 
-          <div style={styles.predictArea}>
-            <p style={styles.formNote}>
-              The frontend sends this request
-              to Spring Boot. Spring Boot
-              builds the ML input, calls the
-              FastAPI/XGBoost service,
-              calculates the tariff bill and
-              saves the result.
-            </p>
-
-            <button
-              type="submit"
-              style={styles.primaryButton}
-              disabled={
-                predicting ||
-                loading ||
-                !selectedHouseholdId ||
-                !selectedTariffId
-              }
-            >
-              {predicting
-                ? "Running prediction..."
-                : "Run prediction"}
-            </button>
-          </div>
-        </form>
-      </section>
-
-      <div style={styles.summaryGrid}>
-        <section style={styles.summaryCard}>
-          <p style={styles.summaryLabel}>
+          <span>
             Predicted consumption
-          </p>
+          </span>
 
-          <h2 style={styles.summaryValue}>
+          <strong>
             {latest
               ? formatKwh(
                   latest.predictedConsumptionKwh
                 )
               : "—"}
-          </h2>
+          </strong>
 
-          <p style={styles.summarySub}>
+          <p>
             {latest
               ? formatTargetMonth(
                   latest.targetMonth
                 )
               : "No prediction yet"}
           </p>
-        </section>
+        </article>
 
-        <section style={styles.summaryCard}>
-          <p style={styles.summaryLabel}>
+        <article className="prediction-redesign-stat prediction-redesign-stat-burgundy">
+          <div className="prediction-redesign-stat-icon">
+            ₨
+          </div>
+
+          <span>
             Predicted bill
-          </p>
+          </span>
 
-          <h2 style={styles.summaryValue}>
+          <strong>
             {latest
               ? formatCurrency(
                   latest.predictedBillAmount
                 )
               : "—"}
-          </h2>
+          </strong>
 
-          <p style={styles.summarySub}>
-            Estimated electricity bill
+          <p>
+            Estimated electricity cost.
           </p>
-        </section>
+        </article>
 
-        <section style={styles.summaryCard}>
-          <p style={styles.summaryLabel}>
+        <article className="prediction-redesign-stat">
+          <div className="prediction-redesign-stat-icon prediction-redesign-stat-icon-green">
+            ↓
+          </div>
+
+          <span>
             Lower estimate
-          </p>
+          </span>
 
-          <h2 style={styles.summaryValue}>
+          <strong>
             {latest?.lowerEstimate !==
-            null &&
+              null &&
             latest?.lowerEstimate !==
               undefined
               ? formatKwh(
                   latest.lowerEstimate
                 )
               : "—"}
-          </h2>
+          </strong>
 
-          <p style={styles.summarySub}>
-            Prediction range
+          <p>
+            Lower prediction range.
           </p>
-        </section>
+        </article>
 
-        <section style={styles.summaryCard}>
-          <p style={styles.summaryLabel}>
+        <article className="prediction-redesign-stat">
+          <div className="prediction-redesign-stat-icon">
+            ↑
+          </div>
+
+          <span>
             Upper estimate
-          </p>
+          </span>
 
-          <h2 style={styles.summaryValue}>
+          <strong>
             {latest?.upperEstimate !==
-            null &&
+              null &&
             latest?.upperEstimate !==
               undefined
               ? formatKwh(
                   latest.upperEstimate
                 )
               : "—"}
-          </h2>
+          </strong>
 
-          <p style={styles.summarySub}>
-            Prediction range
+          <p>
+            Upper prediction range.
           </p>
-        </section>
-      </div>
-
-      <section style={styles.card}>
-        <div style={styles.cardHeader}>
-          <div>
-            <p style={styles.cardEyebrow}>
-              LATEST
-            </p>
-
-            <h2 style={styles.cardTitle}>
-              Latest prediction
-            </h2>
-          </div>
-
-          {latest && (
-            <span style={styles.statusBadge}>
-              {latest.predictionStatus}
-            </span>
-          )}
-        </div>
-
-        {loading ? (
-          <p style={styles.muted}>
-            Loading prediction...
-          </p>
-        ) : !latest ? (
-          <p style={styles.muted}>
-            No saved prediction exists for
-            this household yet.
-          </p>
-        ) : (
-          <div style={styles.detailGrid}>
-            <div>
-              <p style={styles.detailLabel}>
-                Target month
-              </p>
-
-              <strong>
-                {formatTargetMonth(
-                  latest.targetMonth
-                )}
-              </strong>
-            </div>
-
-            <div>
-              <p style={styles.detailLabel}>
-                Prediction date
-              </p>
-
-              <strong>
-                {latest.predictionDate ||
-                  "—"}
-              </strong>
-            </div>
-
-            <div>
-              <p style={styles.detailLabel}>
-                Tariff
-              </p>
-
-              <strong>
-                {latest.tariff?.tariffName ||
-                  `Tariff ${
-                    latest.tariff?.tariffId ??
-                    ""
-                  }`}
-              </strong>
-            </div>
-
-            <div>
-              <p style={styles.detailLabel}>
-                Prediction ID
-              </p>
-
-              <strong>
-                {latest.predictionId}
-              </strong>
-            </div>
-          </div>
-        )}
+        </article>
       </section>
 
-      <section
-        style={{
-          ...styles.card,
-          marginTop: "22px",
-        }}
-      >
-        <div style={styles.cardHeader}>
+      <section className="prediction-redesign-latest">
+        <div className="prediction-redesign-latest-copy">
+          <p className="dashboard-kicker dashboard-kicker-light">
+            Latest prediction
+          </p>
+
+          <h2>
+            Your newest energy
+            forecast.
+          </h2>
+
+          <p>
+            The latest saved prediction
+            generated for the selected
+            household.
+          </p>
+        </div>
+
+        <div className="prediction-redesign-latest-card">
+          {loading ? (
+            <div className="prediction-redesign-empty">
+              Loading prediction...
+            </div>
+          ) : !latest ? (
+            <div className="prediction-redesign-empty">
+              <strong>
+                No saved prediction
+              </strong>
+
+              <span>
+                Run your first prediction
+                to see the forecast here.
+              </span>
+            </div>
+          ) : (
+            <>
+              <div className="prediction-redesign-latest-head">
+                <div>
+                  <span>
+                    Target month
+                  </span>
+
+                  <h3>
+                    {formatTargetMonth(
+                      latest.targetMonth
+                    )}
+                  </h3>
+                </div>
+
+                <span className="prediction-redesign-status">
+                  {
+                    latest.predictionStatus
+                  }
+                </span>
+              </div>
+
+              <div className="prediction-redesign-latest-values">
+                <div>
+                  <span>
+                    Consumption
+                  </span>
+
+                  <strong>
+                    {formatKwh(
+                      latest.predictedConsumptionKwh
+                    )}
+                  </strong>
+                </div>
+
+                <div>
+                  <span>
+                    Estimated bill
+                  </span>
+
+                  <strong>
+                    {formatCurrency(
+                      latest.predictedBillAmount
+                    )}
+                  </strong>
+                </div>
+              </div>
+
+              <div className="prediction-redesign-meta">
+                <div>
+                  <span>
+                    Prediction date
+                  </span>
+
+                  <strong>
+                    {latest.predictionDate ||
+                      "—"}
+                  </strong>
+                </div>
+
+                <div>
+                  <span>
+                    Tariff
+                  </span>
+
+                  <strong>
+                    {latest.tariff
+                      ?.tariffName ||
+                      `Tariff ${
+                        latest.tariff
+                          ?.tariffId ??
+                        ""
+                      }`}
+                  </strong>
+                </div>
+
+                <div>
+                  <span>
+                    Prediction ID
+                  </span>
+
+                  <strong>
+                    {
+                      latest.predictionId
+                    }
+                  </strong>
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+      </section>
+
+      <section className="prediction-redesign-history">
+        <div className="prediction-redesign-section-head">
           <div>
-            <p style={styles.cardEyebrow}>
-              HISTORY
+            <p className="dashboard-kicker">
+              History
             </p>
 
-            <h2 style={styles.cardTitle}>
+            <h2>
               Prediction history
             </h2>
           </div>
 
-          <span style={styles.historyCount}>
-            {sortedHistory.length}
+          <span className="prediction-redesign-history-count">
+            {
+              sortedHistory.length
+            }
           </span>
         </div>
 
         {loading ? (
-          <p style={styles.muted}>
-            Loading prediction history...
-          </p>
-        ) : sortedHistory.length === 0 ? (
-          <p style={styles.muted}>
-            No prediction history exists for
-            this household.
-          </p>
+          <div className="prediction-redesign-history-empty">
+            Loading prediction
+            history...
+          </div>
+        ) : sortedHistory.length ===
+          0 ? (
+          <div className="prediction-redesign-history-empty">
+            No prediction history
+            exists for this household.
+          </div>
         ) : (
-          <div style={styles.historyList}>
+          <div className="prediction-redesign-history-grid">
             {sortedHistory.map(
-              (prediction) => (
-                <div
+              (
+                prediction
+              ) => (
+                <article
+                  className="prediction-redesign-history-card"
                   key={
                     prediction.predictionId
                   }
-                  style={styles.historyItem}
                 >
-                  <div>
-                    <h3 style={styles.historyTitle}>
-                      {formatTargetMonth(
-                        prediction.targetMonth
-                      )}
-                    </h3>
+                  <div className="prediction-redesign-history-head">
+                    <div>
+                      <span>
+                        Forecast
+                      </span>
 
-                    <p style={styles.detail}>
-                      <strong>
-                        Consumption:
-                      </strong>{" "}
-                      {formatKwh(
-                        prediction.predictedConsumptionKwh
-                      )}
-                    </p>
+                      <h3>
+                        {formatTargetMonth(
+                          prediction.targetMonth
+                        )}
+                      </h3>
+                    </div>
 
-                    <p style={styles.detail}>
-                      <strong>
-                        Predicted bill:
-                      </strong>{" "}
-                      {formatCurrency(
-                        prediction.predictedBillAmount
-                      )}
-                    </p>
-
-                    <p style={styles.detail}>
-                      <strong>
-                        Prediction date:
-                      </strong>{" "}
-                      {prediction.predictionDate}
-                    </p>
-
-                    <p style={styles.detail}>
-                      <strong>
-                        Tariff:
-                      </strong>{" "}
-                      {prediction.tariff?.tariffName ||
-                        "—"}
-                    </p>
+                    <span className="prediction-redesign-status">
+                      {
+                        prediction.predictionStatus
+                      }
+                    </span>
                   </div>
 
-                  <span style={styles.statusBadge}>
-                    {
-                      prediction.predictionStatus
-                    }
-                  </span>
-                </div>
+                  <div className="prediction-redesign-history-values">
+                    <div>
+                      <span>
+                        Consumption
+                      </span>
+
+                      <strong>
+                        {formatKwh(
+                          prediction.predictedConsumptionKwh
+                        )}
+                      </strong>
+                    </div>
+
+                    <div>
+                      <span>
+                        Predicted bill
+                      </span>
+
+                      <strong>
+                        {formatCurrency(
+                          prediction.predictedBillAmount
+                        )}
+                      </strong>
+                    </div>
+                  </div>
+
+                  <div className="prediction-redesign-history-foot">
+                    <span>
+                      {
+                        prediction.predictionDate
+                      }
+                    </span>
+
+                    <span>
+                      {prediction.tariff
+                        ?.tariffName ||
+                        "—"}
+                    </span>
+                  </div>
+                </article>
               )
             )}
           </div>
@@ -833,240 +1027,3 @@ export default function Predictions() {
     </div>
   );
 }
-
-const styles = {
-  page: {
-    padding: "32px",
-    maxWidth: "1200px",
-    margin: "0 auto",
-  },
-
-  header: {
-    marginBottom: "24px",
-  },
-
-  eyebrow: {
-    fontSize: "12px",
-    letterSpacing: "0.14em",
-    marginBottom: "8px",
-    color: "#7a5c5c",
-  },
-
-  title: {
-    fontSize: "34px",
-    margin: "0 0 10px 0",
-  },
-
-  lead: {
-    maxWidth: "800px",
-    lineHeight: 1.6,
-    color: "#765f5f",
-  },
-
-  error: {
-    padding: "14px 16px",
-    marginBottom: "20px",
-    border: "1px solid #e5b4b4",
-    borderRadius: "10px",
-    background: "#fff0f0",
-    color: "#9a1f1f",
-  },
-
-  success: {
-    padding: "14px 16px",
-    marginBottom: "20px",
-    border: "1px solid #b9d8b9",
-    borderRadius: "10px",
-    background: "#effbef",
-    color: "#286428",
-  },
-
-  formCard: {
-    background: "#ffffff",
-    border: "1px solid #e6dcdc",
-    borderRadius: "14px",
-    padding: "22px",
-    marginBottom: "22px",
-    boxShadow:
-      "0 2px 8px rgba(0, 0, 0, 0.04)",
-  },
-
-  formGrid: {
-    display: "grid",
-    gridTemplateColumns:
-      "repeat(auto-fit, minmax(180px, 1fr))",
-    gap: "14px",
-  },
-
-  label: {
-    display: "block",
-    fontWeight: 600,
-    marginBottom: "7px",
-  },
-
-  input: {
-    width: "100%",
-    boxSizing: "border-box",
-    padding: "11px 12px",
-    border: "1px solid #d8caca",
-    borderRadius: "8px",
-    fontSize: "15px",
-  },
-
-  predictArea: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    gap: "20px",
-    flexWrap: "wrap",
-    marginTop: "18px",
-  },
-
-  formNote: {
-    margin: 0,
-    maxWidth: "700px",
-    color: "#806d6d",
-    fontSize: "13px",
-    lineHeight: 1.5,
-  },
-
-  primaryButton: {
-    padding: "11px 20px",
-    border: "none",
-    borderRadius: "8px",
-    background: "#7f0000",
-    color: "#ffffff",
-    fontWeight: 600,
-    cursor: "pointer",
-  },
-
-  summaryGrid: {
-    display: "grid",
-    gridTemplateColumns:
-      "repeat(auto-fit, minmax(210px, 1fr))",
-    gap: "16px",
-    marginBottom: "22px",
-  },
-
-  summaryCard: {
-    background: "#ffffff",
-    border: "1px solid #e6dcdc",
-    borderRadius: "14px",
-    padding: "20px",
-    boxShadow:
-      "0 2px 8px rgba(0, 0, 0, 0.04)",
-  },
-
-  summaryLabel: {
-    margin: "0 0 10px",
-    color: "#7a5c5c",
-    fontSize: "13px",
-    fontWeight: 600,
-  },
-
-  summaryValue: {
-    margin: "0 0 8px",
-    color: "#3f1515",
-    fontSize: "24px",
-  },
-
-  summarySub: {
-    margin: 0,
-    color: "#806d6d",
-    fontSize: "13px",
-  },
-
-  card: {
-    background: "#ffffff",
-    border: "1px solid #e6dcdc",
-    borderRadius: "14px",
-    padding: "24px",
-    boxShadow:
-      "0 2px 8px rgba(0, 0, 0, 0.04)",
-  },
-
-  cardHeader: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    gap: "14px",
-    marginBottom: "18px",
-  },
-
-  cardEyebrow: {
-    margin: "0 0 5px",
-    fontSize: "11px",
-    letterSpacing: "0.12em",
-    color: "#8a6e6e",
-  },
-
-  cardTitle: {
-    margin: 0,
-    fontSize: "20px",
-  },
-
-  statusBadge: {
-    borderRadius: "999px",
-    padding: "6px 11px",
-    background: "#fff1d7",
-    color: "#765b16",
-    fontSize: "11px",
-    fontWeight: 700,
-    letterSpacing: "0.04em",
-  },
-
-  detailGrid: {
-    display: "grid",
-    gridTemplateColumns:
-      "repeat(auto-fit, minmax(180px, 1fr))",
-    gap: "16px",
-  },
-
-  detailLabel: {
-    margin: "0 0 5px",
-    color: "#806d6d",
-    fontSize: "13px",
-  },
-
-  historyCount: {
-    minWidth: "28px",
-    height: "28px",
-    display: "grid",
-    placeItems: "center",
-    borderRadius: "999px",
-    background: "#7f0000",
-    color: "#ffffff",
-    fontSize: "12px",
-    fontWeight: 700,
-  },
-
-  historyList: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "12px",
-  },
-
-  historyItem: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "flex-start",
-    gap: "20px",
-    padding: "18px",
-    border: "1px solid #eadede",
-    borderRadius: "10px",
-    background: "#fffafa",
-  },
-
-  historyTitle: {
-    margin: "0 0 10px",
-  },
-
-  detail: {
-    margin: "6px 0",
-    color: "#5f5050",
-  },
-
-  muted: {
-    color: "#806d6d",
-  },
-};

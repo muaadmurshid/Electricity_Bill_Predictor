@@ -8,9 +8,7 @@ import { Link } from "react-router-dom";
 
 import { useAuth } from "../context/AuthContext";
 
-import PageHeader from "../components/common/PageHeader";
 import Card from "../components/common/Card";
-import StatCard from "../components/common/StatCard";
 import BlockMeter from "../components/common/BlockMeter";
 import EmptyState from "../components/common/EmptyState";
 import Button from "../components/common/Button";
@@ -25,32 +23,32 @@ import notificationService from "../services/notificationService";
 const STEPS = [
   {
     title: "Create your household",
-    text: "Name, location, house type and how many people live there.",
+    text: "Add your home details and household information.",
     to: "/households",
   },
   {
     title: "Add your rooms",
-    text: "Living room, kitchen, bedrooms — whatever your home has.",
+    text: "Organise your appliances by room.",
     to: "/rooms",
   },
   {
     title: "Add your appliances",
-    text: "Rated power in watts, quantity, and the room each one is in.",
+    text: "Add appliance power information or identify devices using AI.",
     to: "/appliances",
   },
   {
     title: "Record daily usage",
-    text: "How many hours each appliance ran. Consumption is worked out for you.",
+    text: "Track how long your appliances are used each day.",
     to: "/usage",
   },
   {
     title: "Add your past bills",
-    text: "Older bills help build your household energy history.",
+    text: "Build your household electricity history.",
     to: "/bills",
   },
   {
-    title: "Set a budget and a goal",
-    text: "Monitor your predicted bill and monthly energy target.",
+    title: "Set your targets",
+    text: "Create a monthly budget and energy-saving goal.",
     to: "/budget",
   },
 ];
@@ -72,32 +70,23 @@ function toDateString(date) {
 function currentMonthRange() {
   const now = new Date();
 
-  const start =
-    new Date(
-      now.getFullYear(),
-      now.getMonth(),
-      1
-    );
+  const start = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    1
+  );
 
-  const end =
-    new Date(
-      now.getFullYear(),
-      now.getMonth() + 1,
-      0
-    );
+  const end = new Date(
+    now.getFullYear(),
+    now.getMonth() + 1,
+    0
+  );
 
   return {
-    startDate:
-      toDateString(start),
-
-    endDate:
-      toDateString(end),
-
-    year:
-      now.getFullYear(),
-
-    month:
-      now.getMonth() + 1,
+    startDate: toDateString(start),
+    endDate: toDateString(end),
+    year: now.getFullYear(),
+    month: now.getMonth() + 1,
   };
 }
 
@@ -528,7 +517,7 @@ export default function Dashboard() {
   const recentRecommendations =
     recommendations.slice(
       0,
-      3
+      2
     );
 
   const recentNotifications =
@@ -537,67 +526,76 @@ export default function Dashboard() {
       3
     );
 
-  return (
-    <>
-      <PageHeader
-        eyebrow="Overview"
-        title={`Hello, ${
-          user?.firstName ||
-          "there"
-        }`}
-        lead="Your electricity at a glance — recent consumption, predicted cost, budget position and energy goal progress."
-        action={
-          <Link to="/predictions">
-            <Button variant="secondary">
-              Run a prediction
-            </Button>
-          </Link>
-        }
-      />
+  const latestRecommendation =
+    recentRecommendations.length > 0
+      ? recentRecommendations[0]
+      : null;
 
-      <div className="stack">
-        {error && (
-          <div
-            style={{
-              padding:
-                "14px 16px",
-              borderRadius: "10px",
-              background:
-                "#fff0f0",
-              color:
-                "#9a1f1f",
-            }}
-          >
-            {error}
+  return (
+    <div className="energy-dashboard">
+      <section className="dashboard-hero">
+        <div className="dashboard-hero-orb dashboard-hero-orb-one" />
+        <div className="dashboard-hero-orb dashboard-hero-orb-two" />
+
+        <div className="dashboard-hero-content">
+          <div>
+            <p className="dashboard-kicker">
+              Home energy overview
+            </p>
+
+            <h1>
+              Good to see you,{" "}
+              {user?.firstName ||
+                "there"}.
+            </h1>
+
+            <p className="dashboard-hero-text">
+              Track your electricity,
+              understand your spending
+              and make smarter energy
+              decisions from one place.
+            </p>
           </div>
-        )}
+
+          <div className="dashboard-hero-actions">
+            <Link
+              to="/predictions"
+              className="dashboard-primary-action"
+            >
+              Run prediction
+              <span>→</span>
+            </Link>
+
+            <Link
+              to="/tariff-intelligence"
+              className="dashboard-glass-action"
+            >
+              Tariff intelligence
+            </Link>
+          </div>
+        </div>
 
         {households.length > 0 && (
-          <Card
-            title="Household"
-            subtitle="Choose the home shown on your dashboard"
-          >
+          <div className="dashboard-household-switcher">
+            <div>
+              <span className="dashboard-small-label">
+                Active household
+              </span>
+
+              <strong>
+                {selectedHousehold
+                  ?.householdName ||
+                  "Household"}
+              </strong>
+            </div>
+
             <select
-              value={
-                householdId
-              }
+              value={householdId}
               onChange={(event) =>
                 setHouseholdId(
                   event.target.value
                 )
               }
-              style={{
-                width:
-                  "min(100%, 420px)",
-                padding:
-                  "11px 12px",
-                border:
-                  "1px solid #d8caca",
-                borderRadius:
-                  "8px",
-                background:
-                  "#ffffff",
-              }}
             >
               {households.map(
                 (household) => (
@@ -616,478 +614,711 @@ export default function Dashboard() {
                 )
               )}
             </select>
-          </Card>
+          </div>
         )}
+      </section>
 
-        {loading ? (
-          <Card>
-            <p className="muted">
-              Loading dashboard...
-            </p>
-          </Card>
-        ) : households.length ===
-          0 ? (
-          <Card>
-            <EmptyState
-              title="Create your first household"
-              message="Your dashboard will start showing electricity information after you create a household."
-              action={
-                <Link to="/households">
-                  <Button
-                    variant="secondary"
-                    size="sm"
-                  >
-                    Create household
-                  </Button>
+      {error && (
+        <div className="dashboard-error">
+          {error}
+        </div>
+      )}
+
+      {loading ? (
+        <div className="dashboard-glass-panel dashboard-loading">
+          <div className="spinner" />
+
+          <p>
+            Loading your energy
+            overview...
+          </p>
+        </div>
+      ) : households.length ===
+        0 ? (
+        <div className="dashboard-glass-panel">
+          <EmptyState
+            title="Create your first household"
+            message="Your dashboard will start showing electricity insights after you create a household."
+            action={
+              <Link to="/households">
+                <Button
+                  variant="secondary"
+                  size="sm"
+                >
+                  Create household
+                </Button>
+              </Link>
+            }
+          />
+        </div>
+      ) : (
+        <>
+          <section className="dashboard-metric-grid">
+            <article className="dashboard-metric-card">
+              <div className="dashboard-metric-icon">
+                ⚡
+              </div>
+
+              <span className="dashboard-small-label">
+                This month
+              </span>
+
+              <div className="dashboard-metric-value">
+                {analytics
+                  ? formatKwh(
+                      analytics.totalConsumptionKwh
+                    )
+                  : "—"}
+
+                <span>
+                  kWh
+                </span>
+              </div>
+
+              <p>
+                Recorded household
+                consumption.
+              </p>
+            </article>
+
+            <article className="dashboard-metric-card dashboard-metric-card-burgundy">
+              <div className="dashboard-metric-icon">
+                ₨
+              </div>
+
+              <span className="dashboard-small-label">
+                Predicted bill
+              </span>
+
+              <div className="dashboard-metric-value dashboard-metric-value-currency">
+                {latestPrediction
+                  ? formatCurrency(
+                      latestPrediction.predictedBillAmount
+                    )
+                  : "—"}
+              </div>
+
+              <p>
+                {latestPrediction
+                  ? "Latest saved prediction."
+                  : "Run your first prediction."}
+              </p>
+            </article>
+
+            <article
+              className={`dashboard-metric-card dashboard-tone-${budgetTone(
+                currentBudget?.status
+              )}`}
+            >
+              <div className="dashboard-metric-icon">
+                ◔
+              </div>
+
+              <span className="dashboard-small-label">
+                Monthly budget
+              </span>
+
+              <div className="dashboard-metric-value dashboard-metric-value-currency">
+                {currentBudget
+                  ? formatCurrency(
+                      currentBudget.budgetAmount
+                    )
+                  : "—"}
+              </div>
+
+              <p>
+                {currentBudget
+                  ? budgetStatusText(
+                      currentBudget.status
+                    )
+                  : "No budget set yet."}
+              </p>
+            </article>
+
+            <article
+              className={`dashboard-metric-card dashboard-tone-${goalTone(
+                activeGoal?.status
+              )}`}
+            >
+              <div className="dashboard-metric-icon">
+                ◎
+              </div>
+
+              <span className="dashboard-small-label">
+                Energy goal
+              </span>
+
+              <div className="dashboard-metric-value">
+                {activeGoal
+                  ? formatKwh(
+                      activeGoal.targetValue
+                    )
+                  : "—"}
+
+                {activeGoal && (
+                  <span>
+                    kWh
+                  </span>
+                )}
+              </div>
+
+              <p>
+                {activeGoal
+                  ? goalStatusText(
+                      activeGoal.status
+                    )
+                  : "No active energy goal."}
+              </p>
+            </article>
+          </section>
+
+          <section className="dashboard-main-grid">
+            <article className="dashboard-glass-panel dashboard-budget-panel">
+              <div className="dashboard-panel-header">
+                <div>
+                  <p className="dashboard-kicker">
+                    Monthly budget
+                  </p>
+
+                  <h2>
+                    Budget position
+                  </h2>
+                </div>
+
+                <Link
+                  to="/budget"
+                  className="dashboard-text-link"
+                >
+                  View budget
                 </Link>
-              }
-            />
-          </Card>
-        ) : (
-          <>
-            <div className="grid grid-4">
-              <StatCard
-                label="This month"
-                value={
-                  analytics
-                    ? formatKwh(
-                        analytics.totalConsumptionKwh
-                      )
-                    : "—"
-                }
-                unit="kWh"
-                note={
-                  analytics
-                    ? "Recorded consumption this month."
-                    : "Record daily usage to see this."
-                }
-                tone="neutral"
-              />
+              </div>
 
-              <StatCard
-                label="Predicted bill"
-                value={
-                  latestPrediction
-                    ? formatCurrency(
-                        latestPrediction.predictedBillAmount
-                      )
-                    : "—"
-                }
-                note={
-                  latestPrediction
-                    ? "Latest saved prediction."
-                    : "Available after your first prediction."
-                }
-                tone="neutral"
-              />
+              {currentBudget ? (
+                <>
+                  <div className="dashboard-budget-summary">
+                    <div>
+                      <span>
+                        Estimated
+                      </span>
 
-              <StatCard
-                label="Monthly budget"
-                value={
-                  currentBudget
-                    ? formatCurrency(
-                        currentBudget.budgetAmount
-                      )
-                    : "—"
-                }
-                note={
-                  currentBudget
-                    ? budgetStatusText(
-                        currentBudget.status
-                      )
-                    : "No budget set for this month."
-                }
-                tone={
-                  currentBudget
-                    ? budgetTone(
-                        currentBudget.status
-                      )
-                    : "neutral"
-                }
-              />
-
-              <StatCard
-                label="Energy goal"
-                value={
-                  activeGoal
-                    ? formatKwh(
-                        activeGoal.targetValue
-                      )
-                    : "—"
-                }
-                unit={
-                  activeGoal
-                    ? "kWh"
-                    : ""
-                }
-                note={
-                  activeGoal
-                    ? goalStatusText(
-                        activeGoal.status
-                      )
-                    : "No active goal."
-                }
-                tone={
-                  activeGoal
-                    ? goalTone(
-                        activeGoal.status
-                      )
-                    : "neutral"
-                }
-              />
-            </div>
-
-            <div className="grid grid-2">
-              <Card
-                title="Budget usage"
-                subtitle="Predicted bill against your monthly budget"
-                action={
-                  <Link
-                    to="/budget"
-                    className="text-sm"
-                  >
-                    View budget
-                  </Link>
-                }
-              >
-                {currentBudget ? (
-                  <>
-                    <BlockMeter
-                      percent={
-                        budgetPercent
-                      }
-                      thresholdPercent={
-                        Number(
-                          currentBudget.warningThreshold ||
-                            80
-                        )
-                      }
-                      leftLabel={formatCurrency(
-                        currentBudget.currentEstimatedAmount ||
-                          0
-                      )}
-                      rightLabel={formatCurrency(
-                        currentBudget.budgetAmount
-                      )}
-                    />
-
-                    <p
-                      className="text-sm muted"
-                      style={{
-                        marginTop:
-                          "var(--space-4)",
-                      }}
-                    >
-                      Status:{" "}
                       <strong>
-                        {budgetStatusText(
-                          currentBudget.status
+                        {formatCurrency(
+                          currentBudget.currentEstimatedAmount ||
+                            0
                         )}
                       </strong>
-                    </p>
-                  </>
-                ) : (
-                  <EmptyState
-                    title="No budget this month"
-                    message="Set a monthly budget to compare it with your predicted bill."
-                    action={
-                      <Link to="/budget">
-                        <Button
-                          variant="secondary"
-                          size="sm"
-                        >
-                          Set budget
-                        </Button>
-                      </Link>
-                    }
-                  />
-                )}
-              </Card>
+                    </div>
 
-              <Card
-                title="Highest consuming appliance"
-                subtitle="Where most of your recorded electricity goes this month"
-              >
-                {highestAppliance ? (
+                    <div>
+                      <span>
+                        Limit
+                      </span>
+
+                      <strong>
+                        {formatCurrency(
+                          currentBudget.budgetAmount
+                        )}
+                      </strong>
+                    </div>
+                  </div>
+
+                  <BlockMeter
+                    percent={
+                      budgetPercent
+                    }
+                    thresholdPercent={
+                      Number(
+                        currentBudget.warningThreshold ||
+                          80
+                      )
+                    }
+                    leftLabel=""
+                    rightLabel=""
+                  />
+
+                  <div className="dashboard-budget-foot">
+                    <span>
+                      {budgetPercent.toFixed(
+                        0
+                      )}
+                      % of budget
+                    </span>
+
+                    <strong>
+                      {budgetStatusText(
+                        currentBudget.status
+                      )}
+                    </strong>
+                  </div>
+                </>
+              ) : (
+                <EmptyState
+                  title="No budget this month"
+                  message="Set a monthly budget to compare it with your predicted electricity bill."
+                  action={
+                    <Link to="/budget">
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                      >
+                        Set budget
+                      </Button>
+                    </Link>
+                  }
+                />
+              )}
+            </article>
+
+            <article className="dashboard-glass-panel dashboard-appliance-panel">
+              <div className="dashboard-panel-header">
+                <div>
+                  <p className="dashboard-kicker">
+                    Usage insight
+                  </p>
+
+                  <h2>
+                    Highest consumer
+                  </h2>
+                </div>
+
+                <Link
+                  to="/analytics"
+                  className="dashboard-text-link"
+                >
+                  Analytics
+                </Link>
+              </div>
+
+              {highestAppliance ? (
+                <div className="dashboard-appliance-content">
+                  <div className="dashboard-appliance-icon">
+                    ⚡
+                  </div>
+
                   <div>
-                    <p
-                      style={{
-                        margin:
-                          "0 0 8px",
-                        fontSize:
-                          "20px",
-                        fontWeight:
-                          700,
-                      }}
-                    >
+                    <span className="dashboard-small-label">
+                      Appliance
+                    </span>
+
+                    <h3>
                       {
                         highestAppliance.applianceName
                       }
-                    </p>
+                    </h3>
 
-                    <p className="muted">
-                      Consumption:{" "}
-                      <strong>
-                        {formatKwh(
-                          highestAppliance.totalConsumptionKwh
-                        )}{" "}
-                        kWh
-                      </strong>
-                    </p>
+                    <div className="dashboard-appliance-stats">
+                      <div>
+                        <span>
+                          Consumption
+                        </span>
 
-                    {highestAppliance.percentageShare !==
-                      null &&
-                      highestAppliance.percentageShare !==
-                        undefined && (
-                      <p className="muted">
-                        Share:{" "}
                         <strong>
-                          {Number(
-                            highestAppliance.percentageShare
-                          ).toFixed(
-                            1
-                          )}
-                          %
+                          {formatKwh(
+                            highestAppliance.totalConsumptionKwh
+                          )}{" "}
+                          kWh
                         </strong>
-                      </p>
-                    )}
-                  </div>
-                ) : (
-                  <EmptyState
-                    title="Nothing to compare yet"
-                    message="Record appliance usage and the highest consumer will appear here."
-                    action={
-                      <Link to="/usage">
-                        <Button
-                          variant="secondary"
-                          size="sm"
-                        >
-                          Record usage
-                        </Button>
-                      </Link>
-                    }
-                  />
-                )}
-              </Card>
-            </div>
-
-            <Card
-              title={
-                selectedHousehold
-                  ? `${selectedHousehold.householdName} setup`
-                  : "Getting started"
-              }
-              subtitle="Main steps for building your household electricity profile"
-            >
-              <ol className="steps">
-                {STEPS.map(
-                  (
-                    step,
-                    index
-                  ) => (
-                    <li
-                      className="step"
-                      key={
-                        step.title
-                      }
-                    >
-                      <span className="step-num">
-                        {index +
-                          1}
-                      </span>
+                      </div>
 
                       <div>
-                        <Link
-                          to={
-                            step.to
-                          }
-                          className="step-title"
-                        >
-                          {
-                            step.title
-                          }
-                        </Link>
+                        <span>
+                          Share
+                        </span>
 
-                        <p className="step-text">
-                          {
-                            step.text
-                          }
-                        </p>
+                        <strong>
+                          {highestAppliance.percentageShare !==
+                            null &&
+                          highestAppliance.percentageShare !==
+                            undefined
+                            ? `${Number(
+                                highestAppliance.percentageShare
+                              ).toFixed(
+                                1
+                              )}%`
+                            : "—"}
+                        </strong>
                       </div>
-                    </li>
-                  )
-                )}
-              </ol>
-            </Card>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <EmptyState
+                  title="Nothing to compare yet"
+                  message="Record appliance usage and the highest consumer will appear here."
+                  action={
+                    <Link to="/usage">
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                      >
+                        Record usage
+                      </Button>
+                    </Link>
+                  }
+                />
+              )}
+            </article>
+          </section>
 
-            <div className="grid grid-2">
-              <Card
-                title="Recent recommendations"
-                action={
+          <section className="dashboard-feature-grid">
+            <article className="dashboard-recommendation-card">
+              <div className="dashboard-recommendation-head">
+                <div>
+                  <p className="dashboard-kicker dashboard-kicker-light">
+                    Smart recommendation
+                  </p>
+
+                  <h2>
+                    Energy advice for your home
+                  </h2>
+                </div>
+
+                <span className="dashboard-ai-pill">
+                  AI + ML
+                </span>
+              </div>
+
+              {latestRecommendation ? (
+                <>
+                  <h3>
+                    {
+                      latestRecommendation.recommendationTitle
+                    }
+                  </h3>
+
+                  <p>
+                    {
+                      latestRecommendation.recommendationDescription
+                    }
+                  </p>
+
                   <Link
                     to="/recommendations"
-                    className="text-sm"
+                    className="dashboard-light-link"
                   >
-                    View all
+                    View recommendations
+                    <span>→</span>
                   </Link>
-                }
-              >
-                {recentRecommendations.length >
-                0 ? (
-                  <div
-                    style={{
-                      display:
-                        "flex",
-                      flexDirection:
-                        "column",
-                      gap: "14px",
-                    }}
-                  >
-                    {recentRecommendations.map(
-                      (
-                        recommendation
-                      ) => (
-                        <div
-                          key={
-                            recommendation.recommendationId
-                          }
-                          style={{
-                            padding:
-                              "14px",
-                            border:
-                              "1px solid #eadede",
-                            borderRadius:
-                              "10px",
-                            background:
-                              "#fffafa",
-                          }}
-                        >
-                          <strong>
-                            {
-                              recommendation.recommendationTitle
-                            }
-                          </strong>
+                </>
+              ) : (
+                <>
+                  <h3>
+                    No recommendation yet
+                  </h3>
 
-                          <p
-                            className="text-sm muted"
-                            style={{
-                              margin:
-                                "6px 0 0",
-                            }}
-                          >
-                            {
-                              recommendation.recommendationDescription
-                            }
-                          </p>
-                        </div>
-                      )
-                    )}
-                  </div>
-                ) : (
-                  <EmptyState
-                    title="No recommendations yet"
-                    message="Saved energy-saving recommendations will appear here."
-                    action={
-                      <Link to="/recommendations">
-                        <Button
-                          variant="secondary"
-                          size="sm"
-                        >
-                          Open recommendations
-                        </Button>
-                      </Link>
-                    }
-                  />
-                )}
-              </Card>
+                  <p>
+                    Generate personalized
+                    energy-saving advice
+                    from your household
+                    data.
+                  </p>
 
-              <Card
-                title="Recent notifications"
-                action={
                   <Link
-                    to="/notifications"
-                    className="text-sm"
+                    to="/recommendations"
+                    className="dashboard-light-link"
                   >
-                    View all
+                    Open recommendations
+                    <span>→</span>
                   </Link>
-                }
-              >
-                {recentNotifications.length >
-                0 ? (
-                  <div
-                    style={{
-                      display:
-                        "flex",
-                      flexDirection:
-                        "column",
-                      gap: "12px",
-                    }}
-                  >
-                    {recentNotifications.map(
-                      (
-                        notification
-                      ) => (
-                        <div
-                          key={
-                            notification.notificationId
-                          }
-                          style={{
-                            padding:
-                              "14px",
-                            border:
-                              "1px solid #eadede",
-                            borderLeft:
-                              notification.isRead
-                                ? "1px solid #eadede"
-                                : "4px solid #7f0000",
-                            borderRadius:
-                              "10px",
-                            background:
-                              notification.isRead
-                                ? "#ffffff"
-                                : "#fffafa",
-                          }}
-                        >
+                </>
+              )}
+            </article>
+
+            <article className="dashboard-glass-panel dashboard-goal-panel">
+              <div className="dashboard-panel-header">
+                <div>
+                  <p className="dashboard-kicker">
+                    Energy target
+                  </p>
+
+                  <h2>
+                    Goal status
+                  </h2>
+                </div>
+
+                <Link
+                  to="/goals"
+                  className="dashboard-text-link"
+                >
+                  View goals
+                </Link>
+              </div>
+
+              {activeGoal ? (
+                <div className="dashboard-goal-content">
+                  <div className="dashboard-goal-ring">
+                    <div>
+                      <strong>
+                        {formatKwh(
+                          activeGoal.targetValue
+                        )}
+                      </strong>
+
+                      <span>
+                        kWh target
+                      </span>
+                    </div>
+                  </div>
+
+                  <div>
+                    <span className="dashboard-small-label">
+                      Current status
+                    </span>
+
+                    <h3>
+                      {goalStatusText(
+                        activeGoal.status
+                      )}
+                    </h3>
+
+                    <p>
+                      Keep monitoring your
+                      electricity usage to
+                      stay within your
+                      target.
+                    </p>
+                  </div>
+                </div>
+              ) : (
+                <EmptyState
+                  title="No active goal"
+                  message="Create an energy target to monitor your monthly consumption."
+                  action={
+                    <Link to="/goals">
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                      >
+                        Create goal
+                      </Button>
+                    </Link>
+                  }
+                />
+              )}
+            </article>
+          </section>
+
+          <section className="dashboard-bottom-grid">
+            <article className="dashboard-glass-panel">
+              <div className="dashboard-panel-header">
+                <div>
+                  <p className="dashboard-kicker">
+                    Alerts
+                  </p>
+
+                  <h2>
+                    Recent notifications
+                  </h2>
+                </div>
+
+                <Link
+                  to="/notifications"
+                  className="dashboard-text-link"
+                >
+                  View all
+                </Link>
+              </div>
+
+              {recentNotifications.length >
+              0 ? (
+                <div className="dashboard-notification-list">
+                  {recentNotifications.map(
+                    (
+                      notification
+                    ) => (
+                      <div
+                        key={
+                          notification.notificationId
+                        }
+                        className={`dashboard-notification-item ${
+                          notification.isRead
+                            ? ""
+                            : "dashboard-notification-unread"
+                        }`}
+                      >
+                        <div className="dashboard-notification-dot" />
+
+                        <div>
                           <strong>
                             {
                               notification.notificationTitle
                             }
                           </strong>
 
-                          <p
-                            className="text-sm muted"
-                            style={{
-                              margin:
-                                "5px 0",
-                            }}
-                          >
+                          <p>
                             {notificationTypeLabel(
                               notification.notificationType
                             )}
                           </p>
 
-                          <span
-                            className="text-sm muted"
-                          >
+                          <span>
                             {formatDate(
                               notification.createdDate
                             )}
                           </span>
                         </div>
-                      )
-                    )}
+                      </div>
+                    )
+                  )}
+                </div>
+              ) : (
+                <EmptyState
+                  title="Nothing to report"
+                  message="Budget and energy-goal alerts will appear here."
+                />
+              )}
+            </article>
+
+            <article className="dashboard-glass-panel">
+              <div className="dashboard-panel-header">
+                <div>
+                  <p className="dashboard-kicker">
+                    Quick access
+                  </p>
+
+                  <h2>
+                    Energy tools
+                  </h2>
+                </div>
+              </div>
+
+              <div className="dashboard-tool-grid">
+                <Link
+                  to="/predictions"
+                  className="dashboard-tool-card"
+                >
+                  <span>
+                    ◈
+                  </span>
+
+                  <div>
+                    <strong>
+                      Predictions
+                    </strong>
+
+                    <p>
+                      Forecast next month.
+                    </p>
                   </div>
-                ) : (
-                  <EmptyState
-                    title="Nothing to report"
-                    message="Budget and energy-goal alerts will appear here."
-                  />
-                )}
-              </Card>
+                </Link>
+
+                <Link
+                  to="/tariff-intelligence"
+                  className="dashboard-tool-card"
+                >
+                  <span>
+                    ₨
+                  </span>
+
+                  <div>
+                    <strong>
+                      Tariff intelligence
+                    </strong>
+
+                    <p>
+                      Explore tariff blocks.
+                    </p>
+                  </div>
+                </Link>
+
+                <Link
+                  to="/analytics"
+                  className="dashboard-tool-card"
+                >
+                  <span>
+                    ◔
+                  </span>
+
+                  <div>
+                    <strong>
+                      Analytics
+                    </strong>
+
+                    <p>
+                      Understand your usage.
+                    </p>
+                  </div>
+                </Link>
+
+                <Link
+                  to="/recommendations"
+                  className="dashboard-tool-card"
+                >
+                  <span>
+                    ✦
+                  </span>
+
+                  <div>
+                    <strong>
+                      Recommendations
+                    </strong>
+
+                    <p>
+                      Get saving advice.
+                    </p>
+                  </div>
+                </Link>
+              </div>
+            </article>
+          </section>
+
+          <section className="dashboard-setup-section">
+            <div className="dashboard-section-heading">
+              <div>
+                <p className="dashboard-kicker">
+                  Household profile
+                </p>
+
+                <h2>
+                  Complete your energy setup
+                </h2>
+              </div>
             </div>
-          </>
-        )}
-      </div>
-    </>
+
+            <div className="dashboard-setup-grid">
+              {STEPS.map(
+                (
+                  step,
+                  index
+                ) => (
+                  <Link
+                    to={step.to}
+                    className="dashboard-setup-card"
+                    key={
+                      step.title
+                    }
+                  >
+                    <span className="dashboard-setup-number">
+                      {String(
+                        index + 1
+                      ).padStart(
+                        2,
+                        "0"
+                      )}
+                    </span>
+
+                    <strong>
+                      {
+                        step.title
+                      }
+                    </strong>
+
+                    <p>
+                      {
+                        step.text
+                      }
+                    </p>
+
+                    <span className="dashboard-setup-arrow">
+                      →
+                    </span>
+                  </Link>
+                )
+              )}
+            </div>
+          </section>
+        </>
+      )}
+    </div>
   );
 }

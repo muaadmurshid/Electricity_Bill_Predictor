@@ -16,7 +16,6 @@ const USER_NAV_GROUPS = [
       },
     ],
   },
-
   {
     label: "My home",
     items: [
@@ -37,7 +36,6 @@ const USER_NAV_GROUPS = [
       },
     ],
   },
-
   {
     label: "Records",
     items: [
@@ -53,7 +51,6 @@ const USER_NAV_GROUPS = [
       },
     ],
   },
-
   {
     label: "Insight",
     items: [
@@ -79,7 +76,6 @@ const USER_NAV_GROUPS = [
       },
     ],
   },
-
   {
     label: "Targets",
     items: [
@@ -148,10 +144,7 @@ export default function Sidebar({
   }
 
   const groups = isAdmin
-    ? [
-        ...ADMIN_NAV_GROUPS,
-        ...USER_NAV_GROUPS,
-      ]
+    ? ADMIN_NAV_GROUPS
     : USER_NAV_GROUPS;
 
   return (
@@ -261,8 +254,9 @@ export default function Sidebar({
                           item.label
                         }
 
-                        {item.to ===
-                          "/notifications" &&
+                        {!isAdmin &&
+                          item.to ===
+                            "/notifications" &&
                           unreadCount >
                             0 && (
                             <span className="nav-count">

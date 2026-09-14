@@ -121,11 +121,15 @@ export default function Analytics() {
     setMonthlyData,
   ] = useState([]);
 
-  const [loading, setLoading] =
-    useState(true);
+  const [
+    loading,
+    setLoading,
+  ] = useState(true);
 
-  const [error, setError] =
-    useState("");
+  const [
+    error,
+    setError,
+  ] = useState("");
 
   useEffect(() => {
     loadHouseholds();
@@ -348,8 +352,29 @@ export default function Analytics() {
                   )
               ),
 
-            borderWidth: 2,
-            tension: 0.25,
+            borderColor:
+              "#6c151e",
+
+            backgroundColor:
+              "rgba(108, 21, 30, 0.10)",
+
+            pointBackgroundColor:
+              "#6c151e",
+
+            pointBorderColor:
+              "#f5dabf",
+
+            pointBorderWidth:
+              2,
+
+            borderWidth:
+              3,
+
+            tension:
+              0.35,
+
+            fill:
+              true,
           },
         ],
       }),
@@ -379,7 +404,17 @@ export default function Analytics() {
                   )
               ),
 
-            borderWidth: 1,
+            backgroundColor:
+              "rgba(15, 61, 58, 0.78)",
+
+            borderColor:
+              "#0f3d3a",
+
+            borderWidth:
+              1,
+
+            borderRadius:
+              8,
           },
         ],
       }),
@@ -409,7 +444,20 @@ export default function Analytics() {
                   )
               ),
 
-            borderWidth: 1,
+            backgroundColor: [
+              "#6c151e",
+              "#0f3d3a",
+              "#d6a63d",
+              "#6d2932",
+              "#c7b7a3",
+              "#8f6f62",
+            ],
+
+            borderColor:
+              "#fffaf6",
+
+            borderWidth:
+              3,
           },
         ],
       }),
@@ -424,58 +472,154 @@ export default function Analytics() {
     plugins: {
       legend: {
         position: "bottom",
+
+        labels: {
+          boxWidth: 12,
+          boxHeight: 12,
+          padding: 18,
+          color: "#7a6661",
+          font: {
+            size: 11,
+          },
+        },
+      },
+
+      tooltip: {
+        backgroundColor:
+          "#3b080c",
+
+        titleColor:
+          "#ffffff",
+
+        bodyColor:
+          "#f5dabf",
+
+        padding:
+          11,
+
+        cornerRadius:
+          10,
+      },
+    },
+
+    scales: {
+      x: {
+        grid: {
+          display:
+            false,
+        },
+
+        ticks: {
+          color:
+            "#8d7470",
+        },
+      },
+
+      y: {
+        grid: {
+          color:
+            "rgba(108, 21, 30, 0.06)",
+        },
+
+        ticks: {
+          color:
+            "#8d7470",
+        },
+      },
+    },
+  };
+
+  const doughnutOptions = {
+    responsive: true,
+    maintainAspectRatio:
+      false,
+
+    cutout:
+      "67%",
+
+    plugins: {
+      legend: {
+        position: "bottom",
+
+        labels: {
+          boxWidth: 12,
+          padding: 16,
+          color: "#7a6661",
+          font: {
+            size: 11,
+          },
+        },
+      },
+
+      tooltip: {
+        backgroundColor:
+          "#3b080c",
+
+        titleColor:
+          "#ffffff",
+
+        bodyColor:
+          "#f5dabf",
+
+        padding:
+          11,
+
+        cornerRadius:
+          10,
       },
     },
   };
 
   return (
-    <div style={styles.page}>
-      <div style={styles.header}>
-        <p style={styles.eyebrow}>
-          INSIGHT
-        </p>
+    <div className="analytics-redesign">
+      <section className="analytics-redesign-hero">
+        <div className="analytics-redesign-orb analytics-redesign-orb-one" />
+        <div className="analytics-redesign-orb analytics-redesign-orb-two" />
 
-        <h1 style={styles.title}>
-          Analytics
-        </h1>
+        <div className="analytics-redesign-hero-copy">
+          <p className="dashboard-kicker dashboard-kicker-light">
+            Energy analytics
+          </p>
 
-        <p style={styles.lead}>
-          Understand where your
-          household electricity is
-          being used. Compare total
-          consumption, appliances,
-          categories and recent
-          monthly usage.
-        </p>
-      </div>
+          <h1>
+            See where your electricity
+            is really going.
+          </h1>
 
-      {error && (
-        <div style={styles.error}>
-          {error}
+          <p>
+            Explore household consumption,
+            appliance behaviour, category
+            usage and recent energy trends
+            in one clear view.
+          </p>
         </div>
-      )}
 
-      <section
-        style={
-          styles.filterCard
-        }
-      >
+        <div className="analytics-redesign-hero-badge">
+          <span>
+            ◔
+          </span>
+
+          <div>
+            <small>
+              Live insight
+            </small>
+
+            <strong>
+              Usage analytics
+            </strong>
+          </div>
+        </div>
+
         <form
+          className="analytics-redesign-filter"
           onSubmit={
             handleSubmit
           }
-          style={
-            styles.filterGrid
-          }
         >
-          <div>
-            <label
-              style={
-                styles.label
-              }
-            >
+          <label>
+            <span>
               Household
-            </label>
+            </span>
 
             <select
               value={
@@ -483,12 +627,8 @@ export default function Analytics() {
               }
               onChange={(event) =>
                 setSelectedHouseholdId(
-                  event.target
-                    .value
+                  event.target.value
                 )
-              }
-              style={
-                styles.input
               }
             >
               <option value="">
@@ -512,151 +652,101 @@ export default function Analytics() {
                 )
               )}
             </select>
-          </div>
+          </label>
 
-          <div>
-            <label
-              style={
-                styles.label
-              }
-            >
+          <label>
+            <span>
               Start date
-            </label>
+            </span>
 
             <input
               type="date"
-              value={startDate}
+              value={
+                startDate
+              }
               onChange={(event) =>
                 setStartDate(
-                  event.target
-                    .value
+                  event.target.value
                 )
               }
-              style={
-                styles.input
-              }
             />
-          </div>
+          </label>
 
-          <div>
-            <label
-              style={
-                styles.label
-              }
-            >
+          <label>
+            <span>
               End date
-            </label>
+            </span>
 
             <input
               type="date"
-              value={endDate}
+              value={
+                endDate
+              }
               onChange={(event) =>
                 setEndDate(
-                  event.target
-                    .value
+                  event.target.value
                 )
               }
-              style={
-                styles.input
-              }
             />
-          </div>
+          </label>
 
-          <div
-            style={
-              styles.filterButtonArea
+          <button
+            type="submit"
+            className="analytics-redesign-primary"
+            disabled={
+              loading ||
+              !selectedHouseholdId
             }
           >
-            <button
-              type="submit"
-              style={
-                styles.primaryButton
-              }
-              disabled={
-                loading ||
-                !selectedHouseholdId
-              }
-            >
-              {loading
-                ? "Loading..."
-                : "Apply"}
-            </button>
-          </div>
+            {loading
+              ? "Loading..."
+              : "Apply range"}
+          </button>
         </form>
       </section>
 
+      {error && (
+        <div className="dashboard-error">
+          {error}
+        </div>
+      )}
+
       {loading &&
       !analytics ? (
-        <section
-          style={styles.card}
-        >
-          <p
-            style={
-              styles.muted
-            }
-          >
-            Loading household
-            analytics...
-          </p>
-        </section>
+        <div className="analytics-redesign-loading">
+          Loading household analytics...
+        </div>
       ) : !selectedHouseholdId ? (
-        <section
-          style={styles.card}
-        >
-          <p
-            style={
-              styles.muted
-            }
-          >
-            Select a household to
-            view analytics.
-          </p>
-        </section>
+        <div className="analytics-redesign-loading">
+          Select a household to view
+          analytics.
+        </div>
       ) : (
         <>
-          <div
-            style={
-              styles.summaryGrid
-            }
-          >
-            <section
-              style={
-                styles.summaryCard
-              }
-            >
-              <p
-                style={
-                  styles.summaryLabel
-                }
-              >
-                Total consumption
-              </p>
+          <section className="analytics-redesign-summary">
+            <article className="analytics-redesign-stat analytics-redesign-stat-feature">
+              <div className="analytics-redesign-stat-icon">
+                ⚡
+              </div>
 
-              <h2
-                style={
-                  styles.summaryValue
-                }
-              >
+              <span>
+                Total consumption
+              </span>
+
+              <strong>
                 {Number(
                   analytics
                     ?.totalConsumptionKwh ||
                     0
-                ).toFixed(3)}
-                <span
-                  style={
-                    styles.unit
-                  }
-                >
-                  {" "}
+                ).toFixed(
+                  3
+                )}
+                <small>
                   kWh
-                </span>
-              </h2>
+                </small>
+              </strong>
 
-              <p
-                style={
-                  styles.summarySub
-                }
-              >
+              <p>
                 {analytics
                   ?.startDate ||
                   startDate}{" "}
@@ -665,36 +755,24 @@ export default function Analytics() {
                   ?.endDate ||
                   endDate}
               </p>
-            </section>
+            </article>
 
-            <section
-              style={
-                styles.summaryCard
-              }
-            >
-              <p
-                style={
-                  styles.summaryLabel
-                }
-              >
+            <article className="analytics-redesign-stat analytics-redesign-stat-burgundy">
+              <div className="analytics-redesign-stat-icon">
+                ◈
+              </div>
+
+              <span>
                 Highest consumer
-              </p>
+              </span>
 
-              <h2
-                style={
-                  styles.summaryValue
-                }
-              >
+              <strong>
                 {highest
                   ?.applianceName ||
                   "No data"}
-              </h2>
+              </strong>
 
-              <p
-                style={
-                  styles.summarySub
-                }
-              >
+              <p>
                 {highest
                   ? `${Number(
                       highest.totalConsumptionKwh ||
@@ -704,115 +782,71 @@ export default function Analytics() {
                     )} kWh`
                   : "No usage recorded"}
               </p>
-            </section>
+            </article>
 
-            <section
-              style={
-                styles.summaryCard
-              }
-            >
-              <p
-                style={
-                  styles.summaryLabel
-                }
-              >
+            <article className="analytics-redesign-stat">
+              <div className="analytics-redesign-stat-icon analytics-redesign-stat-icon-green">
+                ⏻
+              </div>
+
+              <span>
                 Appliances tracked
-              </p>
+              </span>
 
-              <h2
-                style={
-                  styles.summaryValue
-                }
-              >
+              <strong>
                 {
                   applianceBreakdown.length
                 }
-              </h2>
+              </strong>
 
-              <p
-                style={
-                  styles.summarySub
-                }
-              >
-                With recorded usage
-                in this period
+              <p>
+                Appliances with recorded
+                usage.
               </p>
-            </section>
+            </article>
 
-            <section
-              style={
-                styles.summaryCard
-              }
-            >
-              <p
-                style={
-                  styles.summaryLabel
-                }
-              >
+            <article className="analytics-redesign-stat">
+              <div className="analytics-redesign-stat-icon">
+                ▦
+              </div>
+
+              <span>
                 Categories active
-              </p>
+              </span>
 
-              <h2
-                style={
-                  styles.summaryValue
-                }
-              >
+              <strong>
                 {
                   categoryBreakdown.length
                 }
-              </h2>
+              </strong>
 
-              <p
-                style={
-                  styles.summarySub
-                }
-              >
-                Consumption
-                categories represented
+              <p>
+                Energy categories
+                represented.
               </p>
-            </section>
-          </div>
+            </article>
+          </section>
 
-          <div
-            style={
-              styles.chartGrid
-            }
-          >
-            <section
-              style={
-                styles.card
-              }
-            >
-              <div
-                style={
-                  styles.cardHeader
-                }
-              >
+          <section className="analytics-redesign-main-grid">
+            <article className="analytics-redesign-chart-card analytics-redesign-chart-card-wide">
+              <div className="analytics-redesign-card-head">
                 <div>
-                  <p
-                    style={
-                      styles.cardEyebrow
-                    }
-                  >
-                    TREND
+                  <p className="dashboard-kicker">
+                    Consumption trend
                   </p>
 
-                  <h2
-                    style={
-                      styles.cardTitle
-                    }
-                  >
-                    Six-month
-                    consumption
+                  <h2>
+                    Six-month energy
+                    pattern
                   </h2>
                 </div>
+
+                <span className="analytics-redesign-chip">
+                  6 months
+                </span>
               </div>
 
-              <div
-                style={
-                  styles.chart
-                }
-              >
+              <div className="analytics-redesign-chart analytics-redesign-chart-line">
                 <Line
                   data={
                     monthlyChartData
@@ -822,32 +856,85 @@ export default function Analytics() {
                   }
                 />
               </div>
-            </section>
+            </article>
 
-            <section
-              style={
-                styles.card
-              }
-            >
-              <div
-                style={
-                  styles.cardHeader
-                }
-              >
-                <div>
-                  <p
-                    style={
-                      styles.cardEyebrow
+            <article className="analytics-redesign-insight-card">
+              <p className="dashboard-kicker dashboard-kicker-light">
+                Highest consumer
+              </p>
+
+              {highest ? (
+                <>
+                  <div className="analytics-redesign-insight-icon">
+                    ⚡
+                  </div>
+
+                  <h2>
+                    {
+                      highest.applianceName
                     }
-                  >
-                    APPLIANCES
+                  </h2>
+
+                  <p>
+                    This appliance used
+                    the most electricity
+                    during the selected
+                    period.
                   </p>
 
-                  <h2
-                    style={
-                      styles.cardTitle
-                    }
-                  >
+                  <div className="analytics-redesign-insight-values">
+                    <div>
+                      <span>
+                        Consumption
+                      </span>
+
+                      <strong>
+                        {Number(
+                          highest.totalConsumptionKwh ||
+                            0
+                        ).toFixed(
+                          3
+                        )}{" "}
+                        kWh
+                      </strong>
+                    </div>
+
+                    <div>
+                      <span>
+                        Share
+                      </span>
+
+                      <strong>
+                        {Number(
+                          highest.percentageShare ||
+                            0
+                        ).toFixed(
+                          1
+                        )}
+                        %
+                      </strong>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <div className="analytics-redesign-insight-empty">
+                  No appliance usage
+                  recorded for this
+                  period.
+                </div>
+              )}
+            </article>
+          </section>
+
+          <section className="analytics-redesign-chart-grid">
+            <article className="analytics-redesign-chart-card">
+              <div className="analytics-redesign-card-head">
+                <div>
+                  <p className="dashboard-kicker">
+                    Appliances
+                  </p>
+
+                  <h2>
                     Consumption by
                     appliance
                   </h2>
@@ -856,22 +943,13 @@ export default function Analytics() {
 
               {applianceBreakdown.length ===
               0 ? (
-                <p
-                  style={
-                    styles.muted
-                  }
-                >
+                <div className="analytics-redesign-empty">
                   No appliance
-                  consumption data
-                  exists for this
-                  period.
-                </p>
+                  consumption data exists
+                  for this period.
+                </div>
               ) : (
-                <div
-                  style={
-                    styles.chart
-                  }
-                >
+                <div className="analytics-redesign-chart">
                   <Bar
                     data={
                       applianceChartData
@@ -882,32 +960,16 @@ export default function Analytics() {
                   />
                 </div>
               )}
-            </section>
+            </article>
 
-            <section
-              style={
-                styles.card
-              }
-            >
-              <div
-                style={
-                  styles.cardHeader
-                }
-              >
+            <article className="analytics-redesign-chart-card">
+              <div className="analytics-redesign-card-head">
                 <div>
-                  <p
-                    style={
-                      styles.cardEyebrow
-                    }
-                  >
-                    CATEGORIES
+                  <p className="dashboard-kicker">
+                    Categories
                   </p>
 
-                  <h2
-                    style={
-                      styles.cardTitle
-                    }
-                  >
+                  <h2>
                     Consumption by
                     category
                   </h2>
@@ -916,328 +978,107 @@ export default function Analytics() {
 
               {categoryBreakdown.length ===
               0 ? (
-                <p
-                  style={
-                    styles.muted
-                  }
-                >
+                <div className="analytics-redesign-empty">
                   No category
-                  consumption data
-                  exists for this
-                  period.
-                </p>
+                  consumption data exists
+                  for this period.
+                </div>
               ) : (
-                <div
-                  style={
-                    styles.chart
-                  }
-                >
+                <div className="analytics-redesign-chart">
                   <Doughnut
                     data={
                       categoryChartData
                     }
                     options={
-                      chartOptions
+                      doughnutOptions
                     }
                   />
                 </div>
               )}
-            </section>
+            </article>
+          </section>
 
-            <section
-              style={
-                styles.card
-              }
-            >
-              <p
-                style={
-                  styles.cardEyebrow
-                }
-              >
-                BREAKDOWN
-              </p>
-
-              <h2
-                style={
-                  styles.cardTitle
-                }
-              >
-                Appliance details
-              </h2>
-
-              {applianceBreakdown.length ===
-              0 ? (
-                <p
-                  style={
-                    styles.muted
-                  }
-                >
-                  No data available.
+          <section className="analytics-redesign-breakdown">
+            <div className="analytics-redesign-section-head">
+              <div>
+                <p className="dashboard-kicker">
+                  Breakdown
                 </p>
-              ) : (
-                <div
-                  style={
-                    styles.list
-                  }
-                >
-                  {applianceBreakdown.map(
-                    (
-                      appliance
-                    ) => (
-                      <div
-                        key={
-                          appliance.applianceId
-                        }
-                        style={
-                          styles.listItem
-                        }
-                      >
-                        <div>
-                          <strong>
-                            {
-                              appliance.applianceName
-                            }
-                          </strong>
 
-                          <p
-                            style={
-                              styles.detail
-                            }
-                          >
-                            {Number(
-                              appliance.totalConsumptionKwh ||
-                                0
-                            ).toFixed(
-                              3
-                            )}{" "}
-                            kWh
-                          </p>
-                        </div>
+                <h2>
+                  Appliance details
+                </h2>
+              </div>
 
-                        <span
-                          style={
-                            styles.percent
+              <span>
+                {
+                  applianceBreakdown.length
+                }{" "}
+                tracked
+              </span>
+            </div>
+
+            {applianceBreakdown.length ===
+            0 ? (
+              <div className="analytics-redesign-empty">
+                No appliance data
+                available.
+              </div>
+            ) : (
+              <div className="analytics-redesign-appliance-grid">
+                {applianceBreakdown.map(
+                  (
+                    appliance
+                  ) => (
+                    <article
+                      className="analytics-redesign-appliance-item"
+                      key={
+                        appliance.applianceId
+                      }
+                    >
+                      <div className="analytics-redesign-appliance-icon">
+                        ⚡
+                      </div>
+
+                      <div className="analytics-redesign-appliance-copy">
+                        <span>
+                          Appliance
+                        </span>
+
+                        <strong>
+                          {
+                            appliance.applianceName
                           }
-                        >
+                        </strong>
+
+                        <p>
                           {Number(
-                            appliance.percentageShare ||
+                            appliance.totalConsumptionKwh ||
                               0
                           ).toFixed(
-                            1
-                          )}
-                          %
-                        </span>
+                            3
+                          )}{" "}
+                          kWh
+                        </p>
                       </div>
-                    )
-                  )}
-                </div>
-              )}
-            </section>
-          </div>
+
+                      <div className="analytics-redesign-percent">
+                        {Number(
+                          appliance.percentageShare ||
+                            0
+                        ).toFixed(
+                          1
+                        )}
+                        %
+                      </div>
+                    </article>
+                  )
+                )}
+              </div>
+            )}
+          </section>
         </>
       )}
     </div>
   );
 }
-
-const styles = {
-  page: {
-    padding: "32px",
-    maxWidth: "1200px",
-    margin: "0 auto",
-  },
-
-  header: {
-    marginBottom: "24px",
-  },
-
-  eyebrow: {
-    fontSize: "12px",
-    letterSpacing: "0.14em",
-    marginBottom: "8px",
-    color: "#7a5c5c",
-  },
-
-  title: {
-    fontSize: "34px",
-    margin: "0 0 10px 0",
-  },
-
-  lead: {
-    maxWidth: "760px",
-    lineHeight: 1.6,
-    color: "#765f5f",
-  },
-
-  error: {
-    padding: "14px 16px",
-    marginBottom: "20px",
-    border: "1px solid #e5b4b4",
-    borderRadius: "10px",
-    background: "#fff0f0",
-    color: "#9a1f1f",
-  },
-
-  filterCard: {
-    background: "#ffffff",
-    border: "1px solid #e6dcdc",
-    borderRadius: "14px",
-    padding: "20px",
-    marginBottom: "22px",
-    boxShadow:
-      "0 2px 8px rgba(0, 0, 0, 0.04)",
-  },
-
-  filterGrid: {
-    display: "grid",
-    gridTemplateColumns:
-      "repeat(auto-fit, minmax(180px, 1fr))",
-    gap: "14px",
-    alignItems: "end",
-  },
-
-  filterButtonArea: {
-    display: "flex",
-    alignItems: "end",
-  },
-
-  label: {
-    display: "block",
-    fontWeight: 600,
-    marginBottom: "7px",
-  },
-
-  input: {
-    width: "100%",
-    boxSizing: "border-box",
-    padding: "11px 12px",
-    border: "1px solid #d8caca",
-    borderRadius: "8px",
-    fontSize: "15px",
-  },
-
-  primaryButton: {
-    width: "100%",
-    padding: "11px 18px",
-    border: "none",
-    borderRadius: "8px",
-    background: "#7f0000",
-    color: "#ffffff",
-    fontWeight: 600,
-    cursor: "pointer",
-  },
-
-  summaryGrid: {
-    display: "grid",
-    gridTemplateColumns:
-      "repeat(auto-fit, minmax(210px, 1fr))",
-    gap: "16px",
-    marginBottom: "22px",
-  },
-
-  summaryCard: {
-    background: "#ffffff",
-    border: "1px solid #e6dcdc",
-    borderRadius: "14px",
-    padding: "20px",
-    boxShadow:
-      "0 2px 8px rgba(0, 0, 0, 0.04)",
-  },
-
-  summaryLabel: {
-    margin: "0 0 10px",
-    color: "#7a5c5c",
-    fontSize: "13px",
-    fontWeight: 600,
-  },
-
-  summaryValue: {
-    margin: "0 0 8px",
-    color: "#3f1515",
-    fontSize: "25px",
-  },
-
-  summarySub: {
-    margin: 0,
-    fontSize: "13px",
-    color: "#806d6d",
-  },
-
-  unit: {
-    fontSize: "14px",
-    fontWeight: 500,
-  },
-
-  chartGrid: {
-    display: "grid",
-    gridTemplateColumns:
-      "repeat(auto-fit, minmax(400px, 1fr))",
-    gap: "22px",
-  },
-
-  card: {
-    background: "#ffffff",
-    border: "1px solid #e6dcdc",
-    borderRadius: "14px",
-    padding: "24px",
-    boxShadow:
-      "0 2px 8px rgba(0, 0, 0, 0.04)",
-  },
-
-  cardHeader: {
-    display: "flex",
-    justifyContent: "space-between",
-    marginBottom: "18px",
-  },
-
-  cardEyebrow: {
-    margin: "0 0 5px",
-    fontSize: "11px",
-    letterSpacing: "0.12em",
-    color: "#8a6e6e",
-  },
-
-  cardTitle: {
-    margin: 0,
-    fontSize: "20px",
-  },
-
-  chart: {
-    position: "relative",
-    width: "100%",
-    height: "320px",
-  },
-
-  list: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "10px",
-    marginTop: "18px",
-  },
-
-  listItem: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    gap: "16px",
-    padding: "13px 14px",
-    border: "1px solid #eadede",
-    borderRadius: "9px",
-    background: "#fffafa",
-  },
-
-  detail: {
-    margin: "5px 0 0",
-    color: "#786565",
-    fontSize: "13px",
-  },
-
-  percent: {
-    fontWeight: 700,
-    color: "#7f0000",
-  },
-
-  muted: {
-    color: "#806d6d",
-  },
-};

@@ -4,9 +4,6 @@ import {
   useState,
 } from "react";
 
-import PageHeader from "../components/common/PageHeader";
-import Card from "../components/common/Card";
-
 import adminUserService from "../services/adminUserService";
 
 function formatDate(value) {
@@ -14,9 +11,14 @@ function formatDate(value) {
     return "—";
   }
 
-  const date = new Date(value);
+  const date =
+    new Date(value);
 
-  if (Number.isNaN(date.getTime())) {
+  if (
+    Number.isNaN(
+      date.getTime()
+    )
+  ) {
     return value;
   }
 
@@ -28,52 +30,36 @@ function formatDate(value) {
   ).format(date);
 }
 
-function statusStyle(status) {
-  if (status === "ACTIVE") {
-    return {
-      background: "#e9f7e9",
-      color: "#286428",
-    };
-  }
-
-  return {
-    background: "#fff0f0",
-    color: "#9a1f1f",
-  };
-}
-
-function roleStyle(role) {
-  if (role === "ADMIN") {
-    return {
-      background: "#f5e8e8",
-      color: "#7f0000",
-    };
-  }
-
-  return {
-    background: "#eeeeee",
-    color: "#5f5050",
-  };
-}
-
 export default function AdminUsers() {
-  const [users, setUsers] =
-    useState([]);
+  const [
+    users,
+    setUsers,
+  ] = useState([]);
 
-  const [loading, setLoading] =
-    useState(true);
+  const [
+    loading,
+    setLoading,
+  ] = useState(true);
 
-  const [updatingId, setUpdatingId] =
-    useState(null);
+  const [
+    updatingId,
+    setUpdatingId,
+  ] = useState(null);
 
-  const [error, setError] =
-    useState("");
+  const [
+    error,
+    setError,
+  ] = useState("");
 
-  const [success, setSuccess] =
-    useState("");
+  const [
+    success,
+    setSuccess,
+  ] = useState("");
 
-  const [search, setSearch] =
-    useState("");
+  const [
+    search,
+    setSearch,
+  ] = useState("");
 
   useEffect(() => {
     loadUsers();
@@ -99,10 +85,13 @@ export default function AdminUsers() {
       );
 
       setError(
-        err?.response?.status === 403
+        err?.response?.status ===
+          403
           ? "You do not have permission to manage users."
-          : err?.response?.data?.error ||
-              err?.response?.data?.message ||
+          : err?.response?.data
+              ?.error ||
+              err?.response?.data
+                ?.message ||
               "Failed to load users."
       );
     } finally {
@@ -115,7 +104,8 @@ export default function AdminUsers() {
     newStatus
   ) {
     if (
-      user.accountStatus === newStatus
+      user.accountStatus ===
+      newStatus
     ) {
       return;
     }
@@ -130,7 +120,10 @@ export default function AdminUsers() {
     }
 
     try {
-      setUpdatingId(user.userId);
+      setUpdatingId(
+        user.userId
+      );
+
       setError("");
       setSuccess("");
 
@@ -140,12 +133,15 @@ export default function AdminUsers() {
           newStatus
         );
 
-      setUsers((previous) =>
-        previous.map((item) =>
-          item.userId === user.userId
-            ? updated
-            : item
-        )
+      setUsers(
+        (previous) =>
+          previous.map(
+            (item) =>
+              item.userId ===
+              user.userId
+                ? updated
+                : item
+          )
       );
 
       setSuccess(
@@ -158,8 +154,10 @@ export default function AdminUsers() {
       );
 
       setError(
-        err?.response?.data?.error ||
-          err?.response?.data?.message ||
+        err?.response?.data
+          ?.error ||
+          err?.response?.data
+            ?.message ||
           "Failed to update account status."
       );
     } finally {
@@ -167,11 +165,16 @@ export default function AdminUsers() {
     }
   }
 
-  async function handleDelete(user) {
-    if (user.role === "ADMIN") {
+  async function handleDelete(
+    user
+  ) {
+    if (
+      user.role === "ADMIN"
+    ) {
       setError(
         "Deleting an administrator from this screen is disabled for safety."
       );
+
       return;
     }
 
@@ -185,7 +188,10 @@ export default function AdminUsers() {
     }
 
     try {
-      setUpdatingId(user.userId);
+      setUpdatingId(
+        user.userId
+      );
+
       setError("");
       setSuccess("");
 
@@ -193,11 +199,13 @@ export default function AdminUsers() {
         user.userId
       );
 
-      setUsers((previous) =>
-        previous.filter(
-          (item) =>
-            item.userId !== user.userId
-        )
+      setUsers(
+        (previous) =>
+          previous.filter(
+            (item) =>
+              item.userId !==
+              user.userId
+          )
       );
 
       setSuccess(
@@ -210,8 +218,10 @@ export default function AdminUsers() {
       );
 
       setError(
-        err?.response?.data?.error ||
-          err?.response?.data?.message ||
+        err?.response?.data
+          ?.error ||
+          err?.response?.data
+            ?.message ||
           "Unable to delete this user. The account may still have related household records."
       );
     } finally {
@@ -222,408 +232,477 @@ export default function AdminUsers() {
   const filteredUsers =
     useMemo(() => {
       const query =
-        search.trim().toLowerCase();
+        search
+          .trim()
+          .toLowerCase();
 
       if (!query) {
         return users;
       }
 
-      return users.filter((user) => {
-        const text = [
-          user.firstName,
-          user.lastName,
-          user.email,
-          user.phoneNumber,
-          user.role,
-          user.accountStatus,
-        ]
-          .filter(Boolean)
-          .join(" ")
-          .toLowerCase();
+      return users.filter(
+        (user) => {
+          const text = [
+            user.firstName,
+            user.lastName,
+            user.email,
+            user.phoneNumber,
+            user.role,
+            user.accountStatus,
+          ]
+            .filter(Boolean)
+            .join(" ")
+            .toLowerCase();
 
-        return text.includes(query);
-      });
+          return text.includes(
+            query
+          );
+        }
+      );
     }, [users, search]);
 
   const activeCount =
-    users.filter(
-      (user) =>
-        user.accountStatus === "ACTIVE"
-    ).length;
+    useMemo(
+      () =>
+        users.filter(
+          (user) =>
+            user.accountStatus ===
+            "ACTIVE"
+        ).length,
+      [users]
+    );
 
   const inactiveCount =
-    users.filter(
-      (user) =>
-        user.accountStatus === "INACTIVE"
-    ).length;
+    useMemo(
+      () =>
+        users.filter(
+          (user) =>
+            user.accountStatus ===
+            "INACTIVE"
+        ).length,
+      [users]
+    );
+
+  const adminCount =
+    useMemo(
+      () =>
+        users.filter(
+          (user) =>
+            user.role ===
+            "ADMIN"
+        ).length,
+      [users]
+    );
 
   return (
-    <>
-      <PageHeader
-        eyebrow="Administration"
-        title="User management"
-        lead="View registered accounts and control whether users are allowed to sign in."
-      />
+    <div className="admin-users-redesign">
+      <section className="admin-users-hero">
+        <div className="admin-users-orb admin-users-orb-one" />
+        <div className="admin-users-orb admin-users-orb-two" />
 
-      <div className="stack">
-        {error && (
-          <div style={styles.error}>
-            {error}
-          </div>
-        )}
+        <div className="admin-users-hero-copy">
+          <p className="dashboard-kicker dashboard-kicker-light">
+            Administration
+          </p>
 
-        {success && (
-          <div style={styles.success}>
-            {success}
-          </div>
-        )}
+          <h1>
+            Manage who can access the
+            platform.
+          </h1>
 
-        <div className="grid grid-3">
-          <Card>
-            <p style={styles.statLabel}>
-              Total users
-            </p>
-            <h2 style={styles.statValue}>
-              {users.length}
-            </h2>
-          </Card>
-
-          <Card>
-            <p style={styles.statLabel}>
-              Active
-            </p>
-            <h2 style={styles.statValue}>
-              {activeCount}
-            </h2>
-          </Card>
-
-          <Card>
-            <p style={styles.statLabel}>
-              Inactive
-            </p>
-            <h2 style={styles.statValue}>
-              {inactiveCount}
-            </h2>
-          </Card>
+          <p>
+            Review registered accounts,
+            search users, control account
+            availability and remove
+            standard user accounts when
+            necessary.
+          </p>
         </div>
 
-        <Card
-          title="Registered users"
-          subtitle="Passwords are never returned or displayed."
-        >
-          <input
-            type="search"
-            placeholder="Search by name, email, role or status..."
-            value={search}
-            onChange={(event) =>
-              setSearch(
-                event.target.value
-              )
-            }
-            style={styles.search}
-          />
+        <div className="admin-users-hero-badge">
+          <span>
+            ◯
+          </span>
 
-          {loading ? (
-            <p className="muted">
-              Loading users...
-            </p>
-          ) : filteredUsers.length === 0 ? (
-            <p className="muted">
-              No matching users found.
-            </p>
-          ) : (
-            <div
-              style={
-                styles.tableWrapper
+          <div>
+            <small>
+              Access control
+            </small>
+
+            <strong>
+              User management
+            </strong>
+          </div>
+        </div>
+
+        <div className="admin-users-search-panel">
+          <label>
+            <span>
+              Search users
+            </span>
+
+            <input
+              type="search"
+              placeholder="Search by name, email, role, phone or status..."
+              value={search}
+              onChange={(event) =>
+                setSearch(
+                  event.target.value
+                )
               }
-            >
-              <table
-                style={styles.table}
-              >
-                <thead>
-                  <tr>
-                    <th style={styles.th}>
-                      User
-                    </th>
+            />
+          </label>
 
-                    <th style={styles.th}>
-                      Contact
-                    </th>
+          <div className="admin-users-search-result">
+            <span>
+              Showing
+            </span>
 
-                    <th style={styles.th}>
-                      Role
-                    </th>
+            <strong>
+              {
+                filteredUsers.length
+              }
+            </strong>
+          </div>
+        </div>
+      </section>
 
-                    <th style={styles.th}>
-                      Status
-                    </th>
+      {error && (
+        <div className="dashboard-error">
+          {error}
+        </div>
+      )}
 
-                    <th style={styles.th}>
-                      Created
-                    </th>
+      {success && (
+        <div className="prediction-redesign-success">
+          <span>
+            ✓
+          </span>
 
-                    <th style={styles.th}>
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
+          {success}
+        </div>
+      )}
 
-                <tbody>
-                  {filteredUsers.map(
-                    (user) => (
-                      <tr
-                        key={user.userId}
-                      >
-                        <td style={styles.td}>
-                          <strong>
-                            {user.firstName}{" "}
-                            {user.lastName}
-                          </strong>
+      <section className="admin-users-summary">
+        <article className="admin-users-stat admin-users-stat-feature">
+          <div className="admin-users-stat-icon">
+            ◯
+          </div>
 
-                          <div
-                            style={
-                              styles.userId
-                            }
-                          >
-                            ID: {user.userId}
-                          </div>
-                        </td>
+          <span>
+            Total users
+          </span>
 
-                        <td style={styles.td}>
-                          <div>
-                            {user.email}
-                          </div>
+          <strong>
+            {
+              users.length
+            }
+          </strong>
 
-                          <div
-                            style={
-                              styles.secondaryText
-                            }
-                          >
-                            {user.phoneNumber ||
-                              "No phone number"}
-                          </div>
-                        </td>
+          <p>
+            Registered system accounts.
+          </p>
+        </article>
 
-                        <td style={styles.td}>
-                          <span
-                            style={{
-                              ...styles.badge,
-                              ...roleStyle(
-                                user.role
-                              ),
-                            }}
-                          >
-                            {user.role}
+        <article className="admin-users-stat">
+          <div className="admin-users-stat-icon admin-users-stat-icon-green">
+            ✓
+          </div>
+
+          <span>
+            Active
+          </span>
+
+          <strong>
+            {
+              activeCount
+            }
+          </strong>
+
+          <p>
+            Accounts currently allowed
+            to sign in.
+          </p>
+        </article>
+
+        <article className="admin-users-stat">
+          <div className="admin-users-stat-icon">
+            !
+          </div>
+
+          <span>
+            Inactive
+          </span>
+
+          <strong>
+            {
+              inactiveCount
+            }
+          </strong>
+
+          <p>
+            Accounts currently blocked
+            from signing in.
+          </p>
+        </article>
+
+        <article className="admin-users-stat">
+          <div className="admin-users-stat-icon">
+            A
+          </div>
+
+          <span>
+            Administrators
+          </span>
+
+          <strong>
+            {
+              adminCount
+            }
+          </strong>
+
+          <p>
+            Accounts with administrative
+            access.
+          </p>
+        </article>
+      </section>
+
+      <section className="admin-users-panel">
+        <div className="admin-users-panel-head">
+          <div>
+            <p className="dashboard-kicker">
+              Registered accounts
+            </p>
+
+            <h2>
+              Platform users
+            </h2>
+
+            <p>
+              Passwords are never
+              returned or displayed in
+              this administration view.
+            </p>
+          </div>
+
+          <span className="admin-users-panel-count">
+            {
+              filteredUsers.length
+            }
+          </span>
+        </div>
+
+        {loading ? (
+          <div className="admin-users-empty">
+            Loading users...
+          </div>
+        ) : filteredUsers.length ===
+          0 ? (
+          <div className="admin-users-empty">
+            <div className="admin-users-empty-icon">
+              ◯
+            </div>
+
+            <strong>
+              No matching users
+            </strong>
+
+            <span>
+              Try another search term.
+            </span>
+          </div>
+        ) : (
+          <div className="admin-users-list">
+            {filteredUsers.map(
+              (user) => (
+                <article
+                  key={
+                    user.userId
+                  }
+                  className={`admin-users-item ${
+                    user.role ===
+                    "ADMIN"
+                      ? "admin-users-item-admin"
+                      : ""
+                  }`}
+                >
+                  <div className="admin-users-item-main">
+                    <div className="admin-users-avatar">
+                      {(
+                        user.firstName?.[0] ||
+                        "U"
+                      ).toUpperCase()}
+
+                      {(
+                        user.lastName?.[0] ||
+                        ""
+                      ).toUpperCase()}
+                    </div>
+
+                    <div className="admin-users-identity">
+                      <div className="admin-users-badges">
+                        <span
+                          className={`admin-users-role ${
+                            user.role ===
+                            "ADMIN"
+                              ? "admin-users-role-admin"
+                              : "admin-users-role-user"
+                          }`}
+                        >
+                          {
+                            user.role
+                          }
+                        </span>
+
+                        <span
+                          className={`admin-users-status ${
+                            user.accountStatus ===
+                            "ACTIVE"
+                              ? "admin-users-status-active"
+                              : "admin-users-status-inactive"
+                          }`}
+                        >
+                          {
+                            user.accountStatus
+                          }
+                        </span>
+                      </div>
+
+                      <h3>
+                        {user.firstName}{" "}
+                        {user.lastName}
+                      </h3>
+
+                      <p>
+                        {user.email}
+                      </p>
+                    </div>
+
+                    <div className="admin-users-id">
+                      <span>
+                        User ID
+                      </span>
+
+                      <strong>
+                        #
+                        {
+                          user.userId
+                        }
+                      </strong>
+                    </div>
+                  </div>
+
+                  <div className="admin-users-item-details">
+                    <div>
+                      <span>
+                        Phone
+                      </span>
+
+                      <strong>
+                        {user.phoneNumber ||
+                          "Not provided"}
+                      </strong>
+                    </div>
+
+                    <div>
+                      <span>
+                        Created
+                      </span>
+
+                      <strong>
+                        {formatDate(
+                          user.createdDate
+                        )}
+                      </strong>
+                    </div>
+
+                    <div>
+                      <span>
+                        Account type
+                      </span>
+
+                      <strong>
+                        {user.role ===
+                        "ADMIN"
+                          ? "Administrator"
+                          : "Standard user"}
+                      </strong>
+                    </div>
+                  </div>
+
+                  <div className="admin-users-item-actions">
+                    {user.role ===
+                    "ADMIN" ? (
+                      <div className="admin-users-protected">
+                        <span>
+                          ◈
+                        </span>
+
+                        Administrator account
+                        protected
+                      </div>
+                    ) : (
+                      <>
+                        <label>
+                          <span>
+                            Account status
                           </span>
-                        </td>
 
-                        <td style={styles.td}>
-                          <span
-                            style={{
-                              ...styles.badge,
-                              ...statusStyle(
-                                user.accountStatus
-                              ),
-                            }}
-                          >
-                            {
+                          <select
+                            value={
                               user.accountStatus
                             }
-                          </span>
-                        </td>
-
-                        <td style={styles.td}>
-                          {formatDate(
-                            user.createdDate
-                          )}
-                        </td>
-
-                        <td style={styles.td}>
-                          <div
-                            style={
-                              styles.actions
+                            disabled={
+                              updatingId ===
+                              user.userId
+                            }
+                            onChange={(event) =>
+                              handleStatusChange(
+                                user,
+                                event
+                                  .target
+                                  .value
+                              )
                             }
                           >
-                            <select
-                              value={
-                                user.accountStatus
-                              }
-                              disabled={
-                                updatingId ===
-                                  user.userId ||
-                                user.role ===
-                                  "ADMIN"
-                              }
-                              onChange={(event) =>
-                                handleStatusChange(
-                                  user,
-                                  event.target
-                                    .value
-                                )
-                              }
-                              style={
-                                styles.statusSelect
-                              }
-                            >
-                              <option value="ACTIVE">
-                                Active
-                              </option>
+                            <option value="ACTIVE">
+                              Active
+                            </option>
 
-                              <option value="INACTIVE">
-                                Inactive
-                              </option>
-                            </select>
+                            <option value="INACTIVE">
+                              Inactive
+                            </option>
+                          </select>
+                        </label>
 
-                            <button
-                              type="button"
-                              disabled={
-                                updatingId ===
-                                  user.userId ||
-                                user.role ===
-                                  "ADMIN"
-                              }
-                              onClick={() =>
-                                handleDelete(
-                                  user
-                                )
-                              }
-                              style={{
-                                ...styles.deleteButton,
-
-                                ...(user.role ===
-                                "ADMIN"
-                                  ? styles.disabled
-                                  : {}),
-                              }}
-                            >
-                              Delete
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    )
-                  )}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </Card>
-      </div>
-    </>
+                        <button
+                          type="button"
+                          className="admin-users-delete"
+                          disabled={
+                            updatingId ===
+                            user.userId
+                          }
+                          onClick={() =>
+                            handleDelete(
+                              user
+                            )
+                          }
+                        >
+                          {updatingId ===
+                          user.userId
+                            ? "Updating..."
+                            : "Delete user"}
+                        </button>
+                      </>
+                    )}
+                  </div>
+                </article>
+              )
+            )}
+          </div>
+        )}
+      </section>
+    </div>
   );
 }
-
-const styles = {
-  error: {
-    padding: "14px 16px",
-    border: "1px solid #e5b4b4",
-    borderRadius: "10px",
-    background: "#fff0f0",
-    color: "#9a1f1f",
-  },
-
-  success: {
-    padding: "14px 16px",
-    border: "1px solid #b9d8b9",
-    borderRadius: "10px",
-    background: "#effbef",
-    color: "#286428",
-  },
-
-  statLabel: {
-    margin: "0 0 8px",
-    color: "#806d6d",
-    fontSize: "13px",
-    textTransform: "uppercase",
-    letterSpacing: "0.08em",
-  },
-
-  statValue: {
-    margin: 0,
-    fontSize: "32px",
-    color: "#351414",
-  },
-
-  search: {
-    width: "100%",
-    maxWidth: "500px",
-    padding: "11px 12px",
-    marginBottom: "20px",
-    border: "1px solid #d8caca",
-    borderRadius: "8px",
-    fontSize: "14px",
-  },
-
-  tableWrapper: {
-    width: "100%",
-    overflowX: "auto",
-  },
-
-  table: {
-    width: "100%",
-    borderCollapse: "collapse",
-    minWidth: "900px",
-  },
-
-  th: {
-    padding: "12px",
-    textAlign: "left",
-    borderBottom: "1px solid #ded1d1",
-    color: "#765f5f",
-    fontSize: "12px",
-    textTransform: "uppercase",
-    letterSpacing: "0.07em",
-  },
-
-  td: {
-    padding: "14px 12px",
-    borderBottom: "1px solid #eee3e3",
-    verticalAlign: "middle",
-  },
-
-  userId: {
-    marginTop: "4px",
-    color: "#947d7d",
-    fontSize: "11px",
-  },
-
-  secondaryText: {
-    marginTop: "4px",
-    color: "#947d7d",
-    fontSize: "12px",
-  },
-
-  badge: {
-    display: "inline-block",
-    padding: "5px 9px",
-    borderRadius: "999px",
-    fontSize: "11px",
-    fontWeight: 700,
-  },
-
-  actions: {
-    display: "flex",
-    gap: "8px",
-  },
-
-  statusSelect: {
-    padding: "7px 9px",
-    border: "1px solid #cbbbbb",
-    borderRadius: "7px",
-    background: "#ffffff",
-  },
-
-  deleteButton: {
-    padding: "7px 11px",
-    border: "none",
-    borderRadius: "7px",
-    background: "#a22323",
-    color: "#ffffff",
-    cursor: "pointer",
-  },
-
-  disabled: {
-    opacity: 0.45,
-    cursor: "not-allowed",
-  },
-};

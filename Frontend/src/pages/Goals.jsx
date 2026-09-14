@@ -1,4 +1,8 @@
-import { useEffect, useMemo, useState } from "react";
+import {
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 
 import householdService from "../services/householdService";
 import goalService from "../services/goalService";
@@ -22,67 +26,99 @@ function statusLabel(status) {
   }
 }
 
-function statusStyle(status) {
+function statusClass(status) {
   switch (status) {
     case "ON_TRACK":
-      return {
-        background: "#e9f7e9",
-        color: "#286428",
-      };
+      return "goal-status-good";
 
     case "AT_RISK":
-      return {
-        background: "#fff4d7",
-        color: "#795d12",
-      };
+      return "goal-status-warning";
 
     case "ACHIEVED":
-      return {
-        background: "#e8f2ff",
-        color: "#285f8f",
-      };
+      return "goal-status-achieved";
 
     case "MISSED":
-      return {
-        background: "#fff0f0",
-        color: "#9a1f1f",
-      };
+      return "goal-status-danger";
 
     default:
-      return {
-        background: "#f1eaea",
-        color: "#765f5f",
-      };
+      return "goal-status-neutral";
   }
 }
 
 function formatKwh(value) {
-  if (value === null || value === undefined) {
+  if (
+    value === null ||
+    value === undefined
+  ) {
     return "—";
   }
 
-  return `${Number(value).toFixed(3)} kWh`;
+  return `${Number(value).toFixed(
+    3
+  )} kWh`;
+}
+
+function formatGoalType(value) {
+  switch (value) {
+    case "MONTHLY_CONSUMPTION":
+      return "Monthly consumption";
+
+    case "ENERGY_REDUCTION":
+      return "Energy reduction";
+
+    case "CUSTOM":
+      return "Custom";
+
+    default:
+      return value || "—";
+  }
 }
 
 export default function Goals() {
-  const [households, setHouseholds] = useState([]);
+  const [
+    households,
+    setHouseholds,
+  ] = useState([]);
 
-  const [selectedHouseholdId, setSelectedHouseholdId] =
-    useState("");
+  const [
+    selectedHouseholdId,
+    setSelectedHouseholdId,
+  ] = useState("");
 
-  const [goals, setGoals] = useState([]);
+  const [
+    goals,
+    setGoals,
+  ] = useState([]);
 
-  const [loading, setLoading] = useState(true);
+  const [
+    loading,
+    setLoading,
+  ] = useState(true);
 
-  const [saving, setSaving] = useState(false);
+  const [
+    saving,
+    setSaving,
+  ] = useState(false);
 
-  const [error, setError] = useState("");
+  const [
+    error,
+    setError,
+  ] = useState("");
 
-  const [success, setSuccess] = useState("");
+  const [
+    success,
+    setSuccess,
+  ] = useState("");
 
-  const [editingId, setEditingId] = useState(null);
+  const [
+    editingId,
+    setEditingId,
+  ] = useState(null);
 
-  const [formData, setFormData] = useState({
+  const [
+    formData,
+    setFormData,
+  ] = useState({
     goalName: "",
     goalType: "MONTHLY_CONSUMPTION",
     targetValue: "",
@@ -96,7 +132,9 @@ export default function Goals() {
 
   useEffect(() => {
     if (selectedHouseholdId) {
-      loadGoals(selectedHouseholdId);
+      loadGoals(
+        selectedHouseholdId
+      );
     } else {
       setGoals([]);
     }
@@ -111,16 +149,24 @@ export default function Goals() {
         await householdService.list();
 
       const householdList =
-        Array.isArray(householdData)
+        Array.isArray(
+          householdData
+        )
           ? householdData
           : [];
 
-      setHouseholds(householdList);
+      setHouseholds(
+        householdList
+      );
 
-      if (householdList.length > 0) {
+      if (
+        householdList.length >
+        0
+      ) {
         setSelectedHouseholdId(
           String(
-            householdList[0].householdId
+            householdList[0]
+              .householdId
           )
         );
       }
@@ -131,8 +177,10 @@ export default function Goals() {
       );
 
       setError(
-        err?.response?.data?.error ||
-          err?.response?.data?.message ||
+        err?.response?.data
+          ?.error ||
+          err?.response?.data
+            ?.message ||
           "Failed to load households."
       );
     } finally {
@@ -140,7 +188,9 @@ export default function Goals() {
     }
   }
 
-  async function loadGoals(householdId) {
+  async function loadGoals(
+    householdId
+  ) {
     try {
       setLoading(true);
       setError("");
@@ -162,8 +212,10 @@ export default function Goals() {
       );
 
       setError(
-        err?.response?.data?.error ||
-          err?.response?.data?.message ||
+        err?.response?.data
+          ?.error ||
+          err?.response?.data
+            ?.message ||
           "Failed to load energy goals."
       );
     } finally {
@@ -171,18 +223,26 @@ export default function Goals() {
     }
   }
 
-  function handleChange(event) {
-    const { name, value } =
-      event.target;
+  function handleChange(
+    event
+  ) {
+    const {
+      name,
+      value,
+    } = event.target;
 
-    setFormData((previous) => ({
-      ...previous,
-      [name]: value,
-    }));
+    setFormData(
+      (previous) => ({
+        ...previous,
+        [name]: value,
+      })
+    );
   }
 
   function validateForm() {
-    if (!selectedHouseholdId) {
+    if (
+      !selectedHouseholdId
+    ) {
       setError(
         "Please select a household."
       );
@@ -190,7 +250,9 @@ export default function Goals() {
       return false;
     }
 
-    if (!formData.goalName.trim()) {
+    if (
+      !formData.goalName.trim()
+    ) {
       setError(
         "Please enter a goal name."
       );
@@ -198,7 +260,9 @@ export default function Goals() {
       return false;
     }
 
-    if (!formData.goalType.trim()) {
+    if (
+      !formData.goalType.trim()
+    ) {
       setError(
         "Please select a goal type."
       );
@@ -207,8 +271,11 @@ export default function Goals() {
     }
 
     if (
-      formData.targetValue === "" ||
-      Number(formData.targetValue) < 0
+      formData.targetValue ===
+        "" ||
+      Number(
+        formData.targetValue
+      ) < 0
     ) {
       setError(
         "Target value cannot be negative."
@@ -247,7 +314,9 @@ export default function Goals() {
     return true;
   }
 
-  async function handleSubmit(event) {
+  async function handleSubmit(
+    event
+  ) {
     event.preventDefault();
 
     setError("");
@@ -261,15 +330,17 @@ export default function Goals() {
       editingId
         ? goals.find(
             (goal) =>
-              goal.goalId === editingId
+              goal.goalId ===
+              editingId
           )
         : null;
 
     const payload = {
       household: {
-        householdId: Number(
-          selectedHouseholdId
-        ),
+        householdId:
+          Number(
+            selectedHouseholdId
+          ),
       },
 
       goalName:
@@ -290,12 +361,12 @@ export default function Goals() {
         formData.endDate,
 
       currentValue:
-        existingGoal?.currentValue ??
-        0,
+        existingGoal
+          ?.currentValue ?? 0,
 
       status:
-        existingGoal?.status ||
-        "ON_TRACK",
+        existingGoal
+          ?.status || "ON_TRACK",
     };
 
     try {
@@ -332,8 +403,10 @@ export default function Goals() {
       );
 
       setError(
-        err?.response?.data?.error ||
-          err?.response?.data?.message ||
+        err?.response?.data
+          ?.error ||
+          err?.response?.data
+            ?.message ||
           "Failed to save energy goal."
       );
     } finally {
@@ -342,14 +415,18 @@ export default function Goals() {
   }
 
   function startEdit(goal) {
-    setEditingId(goal.goalId);
+    setEditingId(
+      goal.goalId
+    );
 
     if (
-      goal.household?.householdId
+      goal.household
+        ?.householdId
     ) {
       setSelectedHouseholdId(
         String(
-          goal.household.householdId
+          goal.household
+            .householdId
         )
       );
     }
@@ -363,9 +440,13 @@ export default function Goals() {
         "MONTHLY_CONSUMPTION",
 
       targetValue:
-        goal.targetValue !== null &&
-        goal.targetValue !== undefined
-          ? String(goal.targetValue)
+        goal.targetValue !==
+          null &&
+        goal.targetValue !==
+          undefined
+          ? String(
+              goal.targetValue
+            )
           : "",
 
       startDate:
@@ -392,7 +473,9 @@ export default function Goals() {
     });
   }
 
-  async function handleDelete(goalId) {
+  async function handleDelete(
+    goalId
+  ) {
     const confirmed =
       window.confirm(
         "Are you sure you want to delete this energy goal?"
@@ -410,7 +493,9 @@ export default function Goals() {
         goalId
       );
 
-      if (editingId === goalId) {
+      if (
+        editingId === goalId
+      ) {
         resetForm();
       }
 
@@ -428,27 +513,43 @@ export default function Goals() {
       );
 
       setError(
-        err?.response?.data?.error ||
-          err?.response?.data?.message ||
+        err?.response?.data
+          ?.error ||
+          err?.response?.data
+            ?.message ||
           "Failed to delete energy goal."
       );
     }
   }
 
-  const sortedGoals = useMemo(() => {
-    return [...goals].sort(
-      (a, b) =>
-        new Date(b.createdDate || 0) -
-        new Date(a.createdDate || 0)
-    );
-  }, [goals]);
+  const sortedGoals =
+    useMemo(() => {
+      return [...goals].sort(
+        (a, b) =>
+          new Date(
+            b.createdDate || 0
+          ) -
+          new Date(
+            a.createdDate || 0
+          )
+      );
+    }, [goals]);
 
-  function progressPercent(goal) {
+  const latestGoal =
+    sortedGoals[0] || null;
+
+  function progressPercent(
+    goal
+  ) {
     const target =
-      Number(goal.targetValue || 0);
+      Number(
+        goal.targetValue || 0
+      );
 
     const current =
-      Number(goal.currentValue || 0);
+      Number(
+        goal.currentValue || 0
+      );
 
     if (target <= 0) {
       return 0;
@@ -458,104 +559,281 @@ export default function Goals() {
       100,
       Math.max(
         0,
-        (current / target) * 100
+        (current / target) *
+          100
       )
     );
   }
 
   return (
-    <div style={styles.page}>
-      <div style={styles.header}>
-        <p style={styles.eyebrow}>
-          TARGETS
-        </p>
+    <div className="goal-redesign">
+      <section className="goal-redesign-hero">
+        <div className="goal-redesign-orb goal-redesign-orb-one" />
+        <div className="goal-redesign-orb goal-redesign-orb-two" />
 
-        <h1 style={styles.title}>
-          Energy goals
-        </h1>
+        <div className="goal-redesign-hero-copy">
+          <p className="dashboard-kicker dashboard-kicker-light">
+            Energy targets
+          </p>
 
-        <p style={styles.lead}>
-          Set a household consumption target
-          for a specific date range. When an
-          ML prediction falls inside that goal
-          period, the backend updates the
-          current value and status automatically.
-        </p>
-      </div>
+          <h1>
+            Turn lower electricity use
+            into a measurable goal.
+          </h1>
+
+          <p>
+            Set household consumption
+            targets for a defined period
+            and track your progress as
+            predictions update your
+            current energy position.
+          </p>
+        </div>
+
+        <div className="goal-redesign-hero-badge">
+          <span>
+            ◎
+          </span>
+
+          <div>
+            <small>
+              Energy target
+            </small>
+
+            <strong>
+              Goal tracking
+            </strong>
+          </div>
+        </div>
+
+        <div className="goal-redesign-household">
+          <label>
+            <span>
+              Household
+            </span>
+
+            <select
+              value={
+                selectedHouseholdId
+              }
+              onChange={(event) => {
+                setSelectedHouseholdId(
+                  event.target.value
+                );
+
+                resetForm();
+                setError("");
+                setSuccess("");
+              }}
+            >
+              <option value="">
+                Select household
+              </option>
+
+              {households.map(
+                (household) => (
+                  <option
+                    key={
+                      household.householdId
+                    }
+                    value={
+                      household.householdId
+                    }
+                  >
+                    {
+                      household.householdName
+                    }
+                  </option>
+                )
+              )}
+            </select>
+          </label>
+        </div>
+      </section>
 
       {error && (
-        <div style={styles.error}>
+        <div className="dashboard-error">
           {error}
         </div>
       )}
 
       {success && (
-        <div style={styles.success}>
+        <div className="prediction-redesign-success">
+          <span>
+            ✓
+          </span>
+
           {success}
         </div>
       )}
 
-      <section style={styles.selectorCard}>
-        <label style={styles.label}>
-          Household
-        </label>
+      {latestGoal && (
+        <section className="goal-redesign-overview">
+          <div className="goal-redesign-overview-main">
+            <div className="goal-redesign-overview-head">
+              <div>
+                <p className="dashboard-kicker dashboard-kicker-light">
+                  Current goal
+                </p>
 
-        <select
-          value={
-            selectedHouseholdId
-          }
-          onChange={(event) => {
-            setSelectedHouseholdId(
-              event.target.value
-            );
+                <h2>
+                  {
+                    latestGoal.goalName
+                  }
+                </h2>
+              </div>
 
-            resetForm();
-
-            setError("");
-            setSuccess("");
-          }}
-          style={styles.input}
-        >
-          <option value="">
-            Select household
-          </option>
-
-          {households.map(
-            (household) => (
-              <option
-                key={
-                  household.householdId
-                }
-                value={
-                  household.householdId
-                }
+              <span
+                className={`goal-redesign-status ${statusClass(
+                  latestGoal.status
+                )}`}
               >
-                {
-                  household.householdName
-                }
-              </option>
-            )
-          )}
-        </select>
-      </section>
+                {statusLabel(
+                  latestGoal.status
+                )}
+              </span>
+            </div>
 
-      <div style={styles.grid}>
-        <section style={styles.card}>
-          <h2 style={styles.cardTitle}>
-            {editingId
-              ? "Edit energy goal"
-              : "Create energy goal"}
-          </h2>
+            <div className="goal-redesign-overview-values">
+              <div>
+                <span>
+                  Target
+                </span>
+
+                <strong>
+                  {formatKwh(
+                    latestGoal.targetValue
+                  )}
+                </strong>
+              </div>
+
+              <div>
+                <span>
+                  Current
+                </span>
+
+                <strong>
+                  {formatKwh(
+                    latestGoal.currentValue
+                  )}
+                </strong>
+              </div>
+
+              <div>
+                <span>
+                  Goal type
+                </span>
+
+                <strong>
+                  {formatGoalType(
+                    latestGoal.goalType
+                  )}
+                </strong>
+              </div>
+            </div>
+
+            <div className="goal-redesign-period">
+              <span>
+                Goal period
+              </span>
+
+              <strong>
+                {
+                  latestGoal.startDate
+                }{" "}
+                →{" "}
+                {
+                  latestGoal.endDate
+                }
+              </strong>
+            </div>
+
+            <div className="goal-redesign-progress">
+              <div className="goal-redesign-progress-track">
+                <div
+                  className="goal-redesign-progress-fill"
+                  style={{
+                    width: `${progressPercent(
+                      latestGoal
+                    )}%`,
+                  }}
+                />
+              </div>
+
+              <div className="goal-redesign-progress-foot">
+                <span>
+                  {progressPercent(
+                    latestGoal
+                  ).toFixed(1)}
+                  % of target
+                </span>
+
+                <strong>
+                  {statusLabel(
+                    latestGoal.status
+                  )}
+                </strong>
+              </div>
+            </div>
+          </div>
+
+          <div className="goal-redesign-gauge">
+            <div
+              className="goal-redesign-gauge-ring"
+              style={{
+                "--goal-progress":
+                  `${progressPercent(
+                    latestGoal
+                  ) * 3.6}deg`,
+              }}
+            >
+              <div>
+                <strong>
+                  {progressPercent(
+                    latestGoal
+                  ).toFixed(0)}
+                  %
+                </strong>
+
+                <span>
+                  progress
+                </span>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      <section className="goal-redesign-grid">
+        <article className="goal-redesign-form-card">
+          <div className="goal-redesign-card-head">
+            <div>
+              <p className="dashboard-kicker">
+                Goal setup
+              </p>
+
+              <h2>
+                {editingId
+                  ? "Edit energy goal"
+                  : "Create energy goal"}
+              </h2>
+            </div>
+
+            <span className="goal-redesign-form-icon">
+              ◎
+            </span>
+          </div>
 
           <form
+            className="goal-redesign-form"
             onSubmit={
               handleSubmit
             }
           >
-            <div style={styles.field}>
-              <label style={styles.label}>
+            <label>
+              <span>
                 Goal name
-              </label>
+              </span>
 
               <input
                 type="text"
@@ -567,15 +845,14 @@ export default function Goals() {
                   handleChange
                 }
                 required
-                placeholder="Example: Reduce July consumption"
-                style={styles.input}
+                placeholder="Example: Reduce September consumption"
               />
-            </div>
+            </label>
 
-            <div style={styles.field}>
-              <label style={styles.label}>
+            <label>
+              <span>
                 Goal type
-              </label>
+              </span>
 
               <select
                 name="goalType"
@@ -585,7 +862,6 @@ export default function Goals() {
                 onChange={
                   handleChange
                 }
-                style={styles.input}
               >
                 <option value="MONTHLY_CONSUMPTION">
                   Monthly consumption
@@ -599,35 +875,40 @@ export default function Goals() {
                   Custom
                 </option>
               </select>
-            </div>
+            </label>
 
-            <div style={styles.field}>
-              <label style={styles.label}>
-                Target value (kWh)
-              </label>
+            <label>
+              <span>
+                Target value
+              </span>
 
-              <input
-                type="number"
-                name="targetValue"
-                value={
-                  formData.targetValue
-                }
-                onChange={
-                  handleChange
-                }
-                min="0"
-                step="0.001"
-                required
-                placeholder="Example: 150"
-                style={styles.input}
-              />
-            </div>
+              <div className="goal-redesign-value-input">
+                <input
+                  type="number"
+                  name="targetValue"
+                  value={
+                    formData.targetValue
+                  }
+                  onChange={
+                    handleChange
+                  }
+                  min="0"
+                  step="0.001"
+                  required
+                  placeholder="150"
+                />
 
-            <div style={styles.twoColumn}>
-              <div style={styles.field}>
-                <label style={styles.label}>
+                <span>
+                  kWh
+                </span>
+              </div>
+            </label>
+
+            <div className="goal-redesign-two-column">
+              <label>
+                <span>
                   Start date
-                </label>
+                </span>
 
                 <input
                   type="date"
@@ -639,14 +920,13 @@ export default function Goals() {
                     handleChange
                   }
                   required
-                  style={styles.input}
                 />
-              </div>
+              </label>
 
-              <div style={styles.field}>
-                <label style={styles.label}>
+              <label>
+                <span>
                   End date
-                </label>
+                </span>
 
                 <input
                   type="date"
@@ -658,17 +938,14 @@ export default function Goals() {
                     handleChange
                   }
                   required
-                  style={styles.input}
                 />
-              </div>
+              </label>
             </div>
 
-            <div style={styles.actions}>
+            <div className="goal-redesign-actions">
               <button
                 type="submit"
-                style={
-                  styles.primaryButton
-                }
+                className="goal-redesign-primary"
                 disabled={
                   saving ||
                   !selectedHouseholdId
@@ -687,105 +964,153 @@ export default function Goals() {
                   onClick={
                     resetForm
                   }
-                  style={
-                    styles.secondaryButton
-                  }
+                  className="goal-redesign-secondary"
                 >
                   Cancel
                 </button>
               )}
             </div>
           </form>
-        </section>
+        </article>
 
-        <section style={styles.card}>
-          <h2 style={styles.cardTitle}>
-            Goal history
-          </h2>
+        <article className="goal-redesign-history">
+          <div className="goal-redesign-card-head">
+            <div>
+              <p className="dashboard-kicker">
+                History
+              </p>
+
+              <h2>
+                Goal history
+              </h2>
+            </div>
+
+            <span className="goal-redesign-count">
+              {
+                sortedGoals.length
+              }
+            </span>
+          </div>
 
           {!selectedHouseholdId ? (
-            <p style={styles.muted}>
-              Select a household to view goals.
-            </p>
+            <div className="goal-redesign-empty">
+              Select a household to view
+              goals.
+            </div>
           ) : loading ? (
-            <p style={styles.muted}>
+            <div className="goal-redesign-empty">
               Loading energy goals...
-            </p>
-          ) : sortedGoals.length === 0 ? (
-            <p style={styles.muted}>
-              No energy goals found for this household.
-            </p>
+            </div>
+          ) : sortedGoals.length ===
+            0 ? (
+            <div className="goal-redesign-empty">
+              <div className="goal-redesign-empty-icon">
+                ◎
+              </div>
+
+              <strong>
+                No energy goals yet
+              </strong>
+
+              <span>
+                Create your first goal
+                using the form.
+              </span>
+            </div>
           ) : (
-            <div style={styles.list}>
+            <div className="goal-redesign-list">
               {sortedGoals.map(
                 (goal) => (
-                  <div
-                    key={goal.goalId}
-                    style={
-                      styles.goalItem
+                  <article
+                    key={
+                      goal.goalId
                     }
+                    className="goal-redesign-item"
                   >
-                    <div style={{ flex: 1 }}>
-                      <div style={styles.itemHeading}>
-                        <h3 style={styles.goalName}>
-                          {goal.goalName}
-                        </h3>
-
-                        <span
-                          style={{
-                            ...styles.statusBadge,
-                            ...statusStyle(
-                              goal.status
-                            ),
-                          }}
-                        >
-                          {statusLabel(
-                            goal.status
-                          )}
+                    <div className="goal-redesign-item-top">
+                      <div>
+                        <span>
+                          Energy goal
                         </span>
+
+                        <h3>
+                          {
+                            goal.goalName
+                          }
+                        </h3>
                       </div>
 
-                      <p style={styles.detail}>
-                        <strong>
-                          Goal type:
-                        </strong>{" "}
-                        {goal.goalType}
-                      </p>
-
-                      <p style={styles.detail}>
-                        <strong>
-                          Target:
-                        </strong>{" "}
-                        {formatKwh(
-                          goal.targetValue
-                        )}
-                      </p>
-
-                      <p style={styles.detail}>
-                        <strong>
-                          Current:
-                        </strong>{" "}
-                        {formatKwh(
-                          goal.currentValue
-                        )}
-                      </p>
-
-                      <p style={styles.detail}>
-                        <strong>
-                          Period:
-                        </strong>{" "}
-                        {goal.startDate} to{" "}
-                        {goal.endDate}
-                      </p>
-
-                      <div
-                        style={
-                          styles.meterTrack
-                        }
+                      <span
+                        className={`goal-redesign-status ${statusClass(
+                          goal.status
+                        )}`}
                       >
-                        <div
+                        {statusLabel(
+                          goal.status
+                        )}
+                      </span>
+                    </div>
+
+                    <div className="goal-redesign-item-values">
+                      <div>
+                        <span>
+                          Target
+                        </span>
+
+                        <strong>
+                          {formatKwh(
+                            goal.targetValue
+                          )}
+                        </strong>
+                      </div>
+
+                      <div>
+                        <span>
+                          Current
+                        </span>
+
+                        <strong>
+                          {formatKwh(
+                            goal.currentValue
+                          )}
+                        </strong>
+                      </div>
+
+                      <div>
+                        <span>
+                          Type
+                        </span>
+
+                        <strong>
+                          {formatGoalType(
+                            goal.goalType
+                          )}
+                        </strong>
+                      </div>
+                    </div>
+
+                    <div className="goal-redesign-item-period">
+                      <span>
+                        {
+                          goal.startDate
+                        }
+                      </span>
+
+                      <span>
+                        →
+                      </span>
+
+                      <span>
+                        {
+                          goal.endDate
+                        }
+                      </span>
+                    </div>
+
+                    <div className="goal-redesign-item-progress">
+                      <div>
+                        <span
                           style={{
-                            ...styles.meterFill,
                             width: `${progressPercent(
                               goal
                             )}%`,
@@ -793,22 +1118,21 @@ export default function Goals() {
                         />
                       </div>
 
-                      <p style={styles.meterText}>
+                      <small>
                         {progressPercent(
                           goal
                         ).toFixed(1)}
-                        % of target value
-                      </p>
+                        %
+                      </small>
                     </div>
 
-                    <div style={styles.itemActions}>
+                    <div className="goal-redesign-item-actions">
                       <button
                         type="button"
                         onClick={() =>
-                          startEdit(goal)
-                        }
-                        style={
-                          styles.editButton
+                          startEdit(
+                            goal
+                          )
                         }
                       >
                         Edit
@@ -816,240 +1140,23 @@ export default function Goals() {
 
                       <button
                         type="button"
+                        className="goal-redesign-delete"
                         onClick={() =>
                           handleDelete(
                             goal.goalId
                           )
                         }
-                        style={
-                          styles.deleteButton
-                        }
                       >
                         Delete
                       </button>
                     </div>
-                  </div>
+                  </article>
                 )
               )}
             </div>
           )}
-        </section>
-      </div>
+        </article>
+      </section>
     </div>
   );
 }
-
-const styles = {
-  page: {
-    padding: "32px",
-    maxWidth: "1200px",
-    margin: "0 auto",
-  },
-
-  header: {
-    marginBottom: "24px",
-  },
-
-  eyebrow: {
-    fontSize: "12px",
-    letterSpacing: "0.14em",
-    marginBottom: "8px",
-    color: "#7a5c5c",
-  },
-
-  title: {
-    fontSize: "34px",
-    margin: "0 0 10px 0",
-  },
-
-  lead: {
-    maxWidth: "800px",
-    lineHeight: 1.6,
-    color: "#765f5f",
-  },
-
-  error: {
-    padding: "14px 16px",
-    marginBottom: "20px",
-    border: "1px solid #e5b4b4",
-    borderRadius: "10px",
-    background: "#fff0f0",
-    color: "#9a1f1f",
-  },
-
-  success: {
-    padding: "14px 16px",
-    marginBottom: "20px",
-    border: "1px solid #b9d8b9",
-    borderRadius: "10px",
-    background: "#effbef",
-    color: "#286428",
-  },
-
-  selectorCard: {
-    background: "#ffffff",
-    border: "1px solid #e6dcdc",
-    borderRadius: "12px",
-    padding: "18px",
-    marginBottom: "22px",
-  },
-
-  grid: {
-    display: "grid",
-    gridTemplateColumns:
-      "repeat(auto-fit, minmax(380px, 1fr))",
-    gap: "22px",
-  },
-
-  card: {
-    background: "#ffffff",
-    border: "1px solid #e6dcdc",
-    borderRadius: "14px",
-    padding: "24px",
-    boxShadow:
-      "0 2px 8px rgba(0,0,0,0.04)",
-  },
-
-  cardTitle: {
-    margin: "0 0 20px",
-  },
-
-  field: {
-    marginBottom: "16px",
-  },
-
-  label: {
-    display: "block",
-    fontWeight: 600,
-    marginBottom: "7px",
-  },
-
-  input: {
-    width: "100%",
-    boxSizing: "border-box",
-    padding: "11px 12px",
-    border: "1px solid #d8caca",
-    borderRadius: "8px",
-    fontSize: "15px",
-  },
-
-  twoColumn: {
-    display: "grid",
-    gridTemplateColumns:
-      "repeat(auto-fit, minmax(170px, 1fr))",
-    gap: "14px",
-  },
-
-  actions: {
-    display: "flex",
-    gap: "10px",
-    marginTop: "18px",
-  },
-
-  primaryButton: {
-    padding: "11px 18px",
-    border: "none",
-    borderRadius: "8px",
-    background: "#7f0000",
-    color: "#ffffff",
-    fontWeight: 600,
-    cursor: "pointer",
-  },
-
-  secondaryButton: {
-    padding: "11px 18px",
-    border: "1px solid #cbbbbb",
-    borderRadius: "8px",
-    background: "#ffffff",
-    cursor: "pointer",
-  },
-
-  list: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "14px",
-  },
-
-  goalItem: {
-    display: "flex",
-    justifyContent: "space-between",
-    gap: "20px",
-    padding: "18px",
-    border: "1px solid #eadede",
-    borderRadius: "10px",
-    background: "#fffafa",
-  },
-
-  itemHeading: {
-    display: "flex",
-    alignItems: "center",
-    gap: "10px",
-    flexWrap: "wrap",
-    marginBottom: "10px",
-  },
-
-  goalName: {
-    margin: 0,
-  },
-
-  statusBadge: {
-    borderRadius: "999px",
-    padding: "5px 10px",
-    fontSize: "11px",
-    fontWeight: 700,
-  },
-
-  detail: {
-    margin: "6px 0",
-    color: "#5f5050",
-  },
-
-  meterTrack: {
-    width: "100%",
-    maxWidth: "420px",
-    height: "10px",
-    borderRadius: "999px",
-    overflow: "hidden",
-    background: "#eee4e4",
-    marginTop: "12px",
-  },
-
-  meterFill: {
-    height: "100%",
-    borderRadius: "999px",
-    background: "#7f0000",
-  },
-
-  meterText: {
-    margin: "7px 0 0",
-    fontSize: "12px",
-    color: "#806d6d",
-  },
-
-  itemActions: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "8px",
-  },
-
-  editButton: {
-    padding: "8px 14px",
-    border: "1px solid #a88",
-    borderRadius: "7px",
-    background: "#ffffff",
-    cursor: "pointer",
-  },
-
-  deleteButton: {
-    padding: "8px 14px",
-    border: "none",
-    borderRadius: "7px",
-    background: "#a22323",
-    color: "#ffffff",
-    cursor: "pointer",
-  },
-
-  muted: {
-    color: "#806d6d",
-  },
-};

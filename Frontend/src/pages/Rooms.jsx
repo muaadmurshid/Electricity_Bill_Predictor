@@ -1,18 +1,110 @@
-import { useEffect, useState } from "react";
+import {
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+
 import roomService from "../services/roomService";
 import householdService from "../services/householdService";
 
+function formatRoomType(value) {
+  switch (value) {
+    case "LIVING_ROOM":
+      return "Living Room";
+
+    case "BEDROOM":
+      return "Bedroom";
+
+    case "KITCHEN":
+      return "Kitchen";
+
+    case "BATHROOM":
+      return "Bathroom";
+
+    case "DINING_ROOM":
+      return "Dining Room";
+
+    case "OFFICE":
+      return "Office";
+
+    case "OTHER":
+      return "Other";
+
+    default:
+      return value || "—";
+  }
+}
+
+function roomIcon(type) {
+  switch (type) {
+    case "LIVING_ROOM":
+      return "◫";
+
+    case "BEDROOM":
+      return "▭";
+
+    case "KITCHEN":
+      return "▦";
+
+    case "BATHROOM":
+      return "◌";
+
+    case "DINING_ROOM":
+      return "◈";
+
+    case "OFFICE":
+      return "□";
+
+    default:
+      return "▤";
+  }
+}
+
 export default function Rooms() {
-  const [households, setHouseholds] = useState([]);
-  const [selectedHouseholdId, setSelectedHouseholdId] = useState("");
-  const [rooms, setRooms] = useState([]);
+  const [
+    households,
+    setHouseholds,
+  ] = useState([]);
 
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [
+    selectedHouseholdId,
+    setSelectedHouseholdId,
+  ] = useState("");
 
-  const [editingId, setEditingId] = useState(null);
+  const [
+    rooms,
+    setRooms,
+  ] = useState([]);
 
-  const [formData, setFormData] = useState({
+  const [
+    loading,
+    setLoading,
+  ] = useState(true);
+
+  const [
+    saving,
+    setSaving,
+  ] = useState(false);
+
+  const [
+    error,
+    setError,
+  ] = useState("");
+
+  const [
+    success,
+    setSuccess,
+  ] = useState("");
+
+  const [
+    editingId,
+    setEditingId,
+  ] = useState(null);
+
+  const [
+    formData,
+    setFormData,
+  ] = useState({
     roomName: "",
     roomType: "",
     description: "",
@@ -23,34 +115,58 @@ export default function Rooms() {
   }, []);
 
   useEffect(() => {
-    if (selectedHouseholdId) {
-      loadRooms(selectedHouseholdId);
+    if (
+      selectedHouseholdId
+    ) {
+      loadRooms(
+        selectedHouseholdId
+      );
     } else {
       setRooms([]);
     }
-  }, [selectedHouseholdId]);
+  }, [
+    selectedHouseholdId,
+  ]);
 
   async function loadHouseholds() {
     try {
       setLoading(true);
       setError("");
 
-      const data = await householdService.list();
-      const householdList = Array.isArray(data) ? data : [];
+      const data =
+        await householdService.list();
 
-      setHouseholds(householdList);
+      const householdList =
+        Array.isArray(data)
+          ? data
+          : [];
 
-      if (householdList.length > 0) {
+      setHouseholds(
+        householdList
+      );
+
+      if (
+        householdList.length >
+        0
+      ) {
         setSelectedHouseholdId(
-          String(householdList[0].householdId)
+          String(
+            householdList[0]
+              .householdId
+          )
         );
       }
     } catch (err) {
-      console.error("Failed to load households:", err);
+      console.error(
+        "Failed to load households:",
+        err
+      );
 
       setError(
-        err?.response?.data?.error ||
-          err?.response?.data?.message ||
+        err?.response?.data
+          ?.error ||
+          err?.response?.data
+            ?.message ||
           "Failed to load households."
       );
     } finally {
@@ -58,21 +174,34 @@ export default function Rooms() {
     }
   }
 
-  async function loadRooms(householdId) {
+  async function loadRooms(
+    householdId
+  ) {
     try {
       setLoading(true);
       setError("");
 
       const data =
-        await roomService.listByHousehold(householdId);
+        await roomService.listByHousehold(
+          householdId
+        );
 
-      setRooms(Array.isArray(data) ? data : []);
+      setRooms(
+        Array.isArray(data)
+          ? data
+          : []
+      );
     } catch (err) {
-      console.error("Failed to load rooms:", err);
+      console.error(
+        "Failed to load rooms:",
+        err
+      );
 
       setError(
-        err?.response?.data?.error ||
-          err?.response?.data?.message ||
+        err?.response?.data
+          ?.error ||
+          err?.response?.data
+            ?.message ||
           "Failed to load rooms."
       );
     } finally {
@@ -80,49 +209,120 @@ export default function Rooms() {
     }
   }
 
-  function handleHouseholdChange(event) {
-    const value = event.target.value;
+  function handleHouseholdChange(
+    event
+  ) {
+    const value =
+      event.target.value;
 
-    setSelectedHouseholdId(value);
+    setSelectedHouseholdId(
+      value
+    );
+
     resetForm();
+
+    setError("");
+    setSuccess("");
   }
 
   function handleChange(event) {
-    const { name, value } = event.target;
+    const {
+      name,
+      value,
+    } = event.target;
 
-    setFormData((previous) => ({
-      ...previous,
-      [name]: value,
-    }));
+    setFormData(
+      (previous) => ({
+        ...previous,
+        [name]: value,
+      })
+    );
   }
 
-  async function handleSubmit(event) {
+  function validateForm() {
+    if (
+      !selectedHouseholdId
+    ) {
+      setError(
+        "Please select a household first."
+      );
+
+      return false;
+    }
+
+    if (
+      !formData.roomName.trim()
+    ) {
+      setError(
+        "Please enter a room name."
+      );
+
+      return false;
+    }
+
+    if (
+      !formData.roomType
+    ) {
+      setError(
+        "Please select a room type."
+      );
+
+      return false;
+    }
+
+    return true;
+  }
+
+  async function handleSubmit(
+    event
+  ) {
     event.preventDefault();
 
-    if (!selectedHouseholdId) {
-      setError("Please select a household first.");
+    setError("");
+    setSuccess("");
+
+    if (!validateForm()) {
       return;
     }
 
     const payload = {
       household: {
-        householdId: Number(selectedHouseholdId),
+        householdId:
+          Number(
+            selectedHouseholdId
+          ),
       },
-      roomName: formData.roomName.trim(),
-      roomType: formData.roomType.trim(),
-      description: formData.description.trim(),
+
+      roomName:
+        formData.roomName.trim(),
+
+      roomType:
+        formData.roomType.trim(),
+
+      description:
+        formData.description.trim(),
     };
 
     try {
-      setError("");
+      setSaving(true);
 
       if (editingId) {
         await roomService.update(
           editingId,
           payload
         );
+
+        setSuccess(
+          "Room updated successfully."
+        );
       } else {
-        await roomService.create(payload);
+        await roomService.create(
+          payload
+        );
+
+        setSuccess(
+          "Room created successfully."
+        );
       }
 
       resetForm();
@@ -131,33 +331,53 @@ export default function Rooms() {
         selectedHouseholdId
       );
     } catch (err) {
-      console.error("Failed to save room:", err);
+      console.error(
+        "Failed to save room:",
+        err
+      );
 
       setError(
-        err?.response?.data?.error ||
-          err?.response?.data?.message ||
+        err?.response?.data
+          ?.error ||
+          err?.response?.data
+            ?.message ||
           "Failed to save room."
       );
+    } finally {
+      setSaving(false);
     }
   }
 
   function startEdit(room) {
-    setEditingId(room.roomId);
+    setEditingId(
+      room.roomId
+    );
 
     if (
       room.household &&
       room.household.householdId
     ) {
       setSelectedHouseholdId(
-        String(room.household.householdId)
+        String(
+          room.household
+            .householdId
+        )
       );
     }
 
     setFormData({
-      roomName: room.roomName || "",
-      roomType: room.roomType || "",
-      description: room.description || "",
+      roomName:
+        room.roomName || "",
+
+      roomType:
+        room.roomType || "",
+
+      description:
+        room.description || "",
     });
+
+    setError("");
+    setSuccess("");
   }
 
   function resetForm() {
@@ -170,10 +390,13 @@ export default function Rooms() {
     });
   }
 
-  async function handleDelete(roomId) {
-    const confirmed = window.confirm(
-      "Are you sure you want to delete this room?"
-    );
+  async function handleDelete(
+    roomId
+  ) {
+    const confirmed =
+      window.confirm(
+        "Are you sure you want to delete this room?"
+      );
 
     if (!confirmed) {
       return;
@@ -181,112 +404,290 @@ export default function Rooms() {
 
     try {
       setError("");
+      setSuccess("");
 
-      await roomService.remove(roomId);
+      await roomService.remove(
+        roomId
+      );
 
-      if (editingId === roomId) {
+      if (
+        editingId === roomId
+      ) {
         resetForm();
       }
+
+      setSuccess(
+        "Room deleted successfully."
+      );
 
       await loadRooms(
         selectedHouseholdId
       );
     } catch (err) {
-      console.error("Failed to delete room:", err);
+      console.error(
+        "Failed to delete room:",
+        err
+      );
 
       setError(
-        err?.response?.data?.error ||
-          err?.response?.data?.message ||
+        err?.response?.data
+          ?.error ||
+          err?.response?.data
+            ?.message ||
           "Failed to delete room."
       );
     }
   }
 
+  const selectedHousehold =
+    useMemo(
+      () =>
+        households.find(
+          (household) =>
+            String(
+              household.householdId
+            ) ===
+            String(
+              selectedHouseholdId
+            )
+        ) || null,
+      [
+        households,
+        selectedHouseholdId,
+      ]
+    );
+
+  const roomTypeCount =
+    useMemo(() => {
+      return new Set(
+        rooms
+          .map(
+            (room) =>
+              room.roomType
+          )
+          .filter(Boolean)
+      ).size;
+    }, [rooms]);
+
   return (
-    <div style={styles.page}>
-      <div style={styles.header}>
-        <p style={styles.eyebrow}>
-          MY HOME
-        </p>
+    <div className="rooms-redesign">
+      <section className="rooms-redesign-hero">
+        <div className="rooms-redesign-orb rooms-redesign-orb-one" />
+        <div className="rooms-redesign-orb rooms-redesign-orb-two" />
 
-        <h1 style={styles.title}>
-          Rooms
-        </h1>
+        <div className="rooms-redesign-hero-copy">
+          <p className="dashboard-kicker dashboard-kicker-light">
+            My home
+          </p>
 
-        <p style={styles.lead}>
-          Manage the rooms inside your household.
-          Appliances can then be assigned to the
-          correct room.
-        </p>
-      </div>
+          <h1>
+            Organise your home room by
+            room.
+          </h1>
+
+          <p>
+            Create the spaces inside your
+            household so appliances and
+            electricity usage can be
+            organised in the correct
+            location.
+          </p>
+        </div>
+
+        <div className="rooms-redesign-hero-badge">
+          <span>
+            ▤
+          </span>
+
+          <div>
+            <small>
+              Home structure
+            </small>
+
+            <strong>
+              Rooms
+            </strong>
+          </div>
+        </div>
+
+        <div className="rooms-redesign-household">
+          <label>
+            <span>
+              Household
+            </span>
+
+            <select
+              value={
+                selectedHouseholdId
+              }
+              onChange={
+                handleHouseholdChange
+              }
+            >
+              <option value="">
+                Select household
+              </option>
+
+              {households.map(
+                (household) => (
+                  <option
+                    key={
+                      household.householdId
+                    }
+                    value={
+                      household.householdId
+                    }
+                  >
+                    {
+                      household.householdName
+                    }
+                  </option>
+                )
+              )}
+            </select>
+          </label>
+        </div>
+      </section>
 
       {error && (
-        <div style={styles.error}>
+        <div className="dashboard-error">
           {error}
         </div>
       )}
 
-      <section style={styles.householdSelector}>
-        <label style={styles.label}>
-          Select household
-        </label>
+      {success && (
+        <div className="prediction-redesign-success">
+          <span>
+            ✓
+          </span>
 
-        <select
-          value={selectedHouseholdId}
-          onChange={handleHouseholdChange}
-          style={styles.input}
-        >
-          <option value="">
-            Select household
-          </option>
+          {success}
+        </div>
+      )}
 
-          {households.map((household) => (
-            <option
-              key={household.householdId}
-              value={household.householdId}
-            >
-              {household.householdName}
-            </option>
-          ))}
-        </select>
+      <section className="rooms-redesign-summary">
+        <article className="rooms-redesign-stat rooms-redesign-stat-feature">
+          <div className="rooms-redesign-stat-icon">
+            ▤
+          </div>
+
+          <span>
+            Rooms
+          </span>
+
+          <strong>
+            {
+              rooms.length
+            }
+          </strong>
+
+          <p>
+            Spaces created for this
+            household.
+          </p>
+        </article>
+
+        <article className="rooms-redesign-stat">
+          <div className="rooms-redesign-stat-icon rooms-redesign-stat-icon-green">
+            ◈
+          </div>
+
+          <span>
+            Room types
+          </span>
+
+          <strong>
+            {
+              roomTypeCount
+            }
+          </strong>
+
+          <p>
+            Different room categories in
+            use.
+          </p>
+        </article>
+
+        <article className="rooms-redesign-stat">
+          <div className="rooms-redesign-stat-icon">
+            ⌂
+          </div>
+
+          <span>
+            Household
+          </span>
+
+          <strong>
+            {selectedHousehold
+              ?.householdName ||
+              "—"}
+          </strong>
+
+          <p>
+            Current household profile.
+          </p>
+        </article>
       </section>
 
-      <div style={styles.grid}>
-        <section style={styles.card}>
-          <h2 style={styles.cardTitle}>
-            {editingId
-              ? "Edit room"
-              : "Add room"}
-          </h2>
+      <section className="rooms-redesign-grid">
+        <article className="rooms-redesign-form-card">
+          <div className="rooms-redesign-card-head">
+            <div>
+              <p className="dashboard-kicker">
+                Room setup
+              </p>
 
-          <form onSubmit={handleSubmit}>
-            <div style={styles.field}>
-              <label style={styles.label}>
+              <h2>
+                {editingId
+                  ? "Edit room"
+                  : "Add room"}
+              </h2>
+            </div>
+
+            <span className="rooms-redesign-form-icon">
+              ▤
+            </span>
+          </div>
+
+          <form
+            className="rooms-redesign-form"
+            onSubmit={
+              handleSubmit
+            }
+          >
+            <label>
+              <span>
                 Room name
-              </label>
+              </span>
 
               <input
                 type="text"
                 name="roomName"
-                value={formData.roomName}
-                onChange={handleChange}
+                value={
+                  formData.roomName
+                }
+                onChange={
+                  handleChange
+                }
                 required
                 placeholder="Example: Living Room"
-                style={styles.input}
               />
-            </div>
+            </label>
 
-            <div style={styles.field}>
-              <label style={styles.label}>
+            <label>
+              <span>
                 Room type
-              </label>
+              </span>
 
               <select
                 name="roomType"
-                value={formData.roomType}
-                onChange={handleChange}
+                value={
+                  formData.roomType
+                }
+                onChange={
+                  handleChange
+                }
                 required
-                style={styles.input}
               >
                 <option value="">
                   Select room type
@@ -320,293 +721,196 @@ export default function Rooms() {
                   Other
                 </option>
               </select>
-            </div>
+            </label>
 
-            <div style={styles.field}>
-              <label style={styles.label}>
+            <label>
+              <span>
                 Description
-              </label>
+              </span>
 
               <textarea
                 name="description"
-                value={formData.description}
-                onChange={handleChange}
+                value={
+                  formData.description
+                }
+                onChange={
+                  handleChange
+                }
                 placeholder="Optional room description"
-                rows="4"
-                style={styles.input}
+                rows="5"
               />
-            </div>
+            </label>
 
-            <div style={styles.actions}>
+            <div className="rooms-redesign-actions">
               <button
                 type="submit"
-                style={styles.primaryButton}
+                className="rooms-redesign-primary"
+                disabled={
+                  saving ||
+                  !selectedHouseholdId
+                }
               >
-                {editingId
-                  ? "Update room"
-                  : "Create room"}
+                {saving
+                  ? "Saving..."
+                  : editingId
+                    ? "Update room"
+                    : "Create room"}
               </button>
 
               {editingId && (
                 <button
                   type="button"
-                  onClick={resetForm}
-                  style={styles.secondaryButton}
+                  className="rooms-redesign-secondary"
+                  onClick={
+                    resetForm
+                  }
                 >
                   Cancel
                 </button>
               )}
             </div>
           </form>
-        </section>
+        </article>
 
-        <section style={styles.card}>
-          <h2 style={styles.cardTitle}>
-            Rooms
-          </h2>
+        <article className="rooms-redesign-list-card">
+          <div className="rooms-redesign-card-head">
+            <div>
+              <p className="dashboard-kicker">
+                Household spaces
+              </p>
+
+              <h2>
+                Your rooms
+              </h2>
+            </div>
+
+            <span className="rooms-redesign-count">
+              {
+                rooms.length
+              }
+            </span>
+          </div>
 
           {!selectedHouseholdId ? (
-            <p style={styles.muted}>
-              Select a household to view rooms.
-            </p>
+            <div className="rooms-redesign-empty">
+              Select a household to view
+              rooms.
+            </div>
           ) : loading ? (
-            <p style={styles.muted}>
+            <div className="rooms-redesign-empty">
               Loading rooms...
-            </p>
-          ) : rooms.length === 0 ? (
-            <p style={styles.muted}>
-              No rooms found for this household.
-            </p>
+            </div>
+          ) : rooms.length ===
+            0 ? (
+            <div className="rooms-redesign-empty">
+              <div className="rooms-redesign-empty-icon">
+                ▤
+              </div>
+
+              <strong>
+                No rooms yet
+              </strong>
+
+              <span>
+                Add your first room using
+                the form.
+              </span>
+            </div>
           ) : (
-            <div style={styles.list}>
-              {rooms.map((room) => (
-                <div
-                  key={room.roomId}
-                  style={styles.roomItem}
-                >
-                  <div>
-                    <h3 style={styles.roomName}>
-                      {room.roomName}
-                    </h3>
+            <div className="rooms-redesign-list">
+              {rooms.map(
+                (room) => (
+                  <article
+                    key={
+                      room.roomId
+                    }
+                    className="rooms-redesign-item"
+                  >
+                    <div className="rooms-redesign-item-top">
+                      <div className="rooms-redesign-item-icon">
+                        {roomIcon(
+                          room.roomType
+                        )}
+                      </div>
 
-                    <p style={styles.detail}>
-                      <strong>
-                        Room type:
-                      </strong>{" "}
-                      {room.roomType}
-                    </p>
+                      <div className="rooms-redesign-item-title">
+                        <span>
+                          {formatRoomType(
+                            room.roomType
+                          )}
+                        </span>
 
-                    <p style={styles.detail}>
-                      <strong>
-                        Description:
-                      </strong>{" "}
-                      {room.description ||
-                        "No description"}
-                    </p>
+                        <h3>
+                          {
+                            room.roomName
+                          }
+                        </h3>
 
-                    <p style={styles.detail}>
-                      <strong>
-                        Room ID:
-                      </strong>{" "}
-                      {room.roomId}
-                    </p>
-                  </div>
+                        <p>
+                          {room.description ||
+                            "No description"}
+                        </p>
+                      </div>
+                    </div>
 
-                  <div style={styles.itemActions}>
-                    <button
-                      type="button"
-                      onClick={() =>
-                        startEdit(room)
-                      }
-                      style={styles.editButton}
-                    >
-                      Edit
-                    </button>
+                    <div className="rooms-redesign-item-values">
+                      <div>
+                        <span>
+                          Room type
+                        </span>
 
-                    <button
-                      type="button"
-                      onClick={() =>
-                        handleDelete(
-                          room.roomId
-                        )
-                      }
-                      style={styles.deleteButton}
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </div>
-              ))}
+                        <strong>
+                          {formatRoomType(
+                            room.roomType
+                          )}
+                        </strong>
+                      </div>
+
+                      <div>
+                        <span>
+                          Room ID
+                        </span>
+
+                        <strong>
+                          #
+                          {
+                            room.roomId
+                          }
+                        </strong>
+                      </div>
+                    </div>
+
+                    <div className="rooms-redesign-item-actions">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          startEdit(
+                            room
+                          )
+                        }
+                      >
+                        Edit
+                      </button>
+
+                      <button
+                        type="button"
+                        className="rooms-redesign-delete"
+                        onClick={() =>
+                          handleDelete(
+                            room.roomId
+                          )
+                        }
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </article>
+                )
+              )}
             </div>
           )}
-        </section>
-      </div>
+        </article>
+      </section>
     </div>
   );
 }
-
-const styles = {
-  page: {
-    padding: "32px",
-    maxWidth: "1200px",
-    margin: "0 auto",
-  },
-
-  header: {
-    marginBottom: "24px",
-  },
-
-  eyebrow: {
-    fontSize: "12px",
-    letterSpacing: "0.14em",
-    marginBottom: "8px",
-    color: "#7a5c5c",
-  },
-
-  title: {
-    fontSize: "34px",
-    margin: "0 0 10px 0",
-  },
-
-  lead: {
-    maxWidth: "700px",
-    lineHeight: 1.6,
-    color: "#765f5f",
-  },
-
-  error: {
-    padding: "14px 16px",
-    marginBottom: "20px",
-    border: "1px solid #e5b4b4",
-    borderRadius: "10px",
-    background: "#fff0f0",
-    color: "#9a1f1f",
-  },
-
-  householdSelector: {
-    background: "#ffffff",
-    border: "1px solid #e6dcdc",
-    borderRadius: "12px",
-    padding: "18px",
-    marginBottom: "22px",
-  },
-
-  grid: {
-    display: "grid",
-    gridTemplateColumns:
-      "repeat(auto-fit, minmax(340px, 1fr))",
-    gap: "22px",
-  },
-
-  card: {
-    background: "#ffffff",
-    border: "1px solid #e6dcdc",
-    borderRadius: "14px",
-    padding: "24px",
-    boxShadow:
-      "0 2px 8px rgba(0, 0, 0, 0.04)",
-  },
-
-  cardTitle: {
-    marginTop: 0,
-    marginBottom: "20px",
-  },
-
-  field: {
-    marginBottom: "16px",
-  },
-
-  label: {
-    display: "block",
-    fontWeight: 600,
-    marginBottom: "7px",
-  },
-
-  input: {
-    width: "100%",
-    boxSizing: "border-box",
-    padding: "11px 12px",
-    border: "1px solid #d8caca",
-    borderRadius: "8px",
-    fontSize: "15px",
-  },
-
-  actions: {
-    display: "flex",
-    gap: "10px",
-    marginTop: "18px",
-  },
-
-  primaryButton: {
-    padding: "11px 18px",
-    border: "none",
-    borderRadius: "8px",
-    background: "#7f0000",
-    color: "#ffffff",
-    fontWeight: 600,
-    cursor: "pointer",
-  },
-
-  secondaryButton: {
-    padding: "11px 18px",
-    border:
-      "1px solid #cbbbbb",
-    borderRadius: "8px",
-    background: "#ffffff",
-    cursor: "pointer",
-  },
-
-  list: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "14px",
-  },
-
-  roomItem: {
-    display: "flex",
-    justifyContent: "space-between",
-    gap: "20px",
-    padding: "18px",
-    border:
-      "1px solid #eadede",
-    borderRadius: "10px",
-    background: "#fffafa",
-  },
-
-  roomName: {
-    marginTop: 0,
-    marginBottom: "12px",
-  },
-
-  detail: {
-    margin: "6px 0",
-    color: "#5f5050",
-  },
-
-  itemActions: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "8px",
-  },
-
-  editButton: {
-    padding: "8px 14px",
-    border: "1px solid #a88",
-    borderRadius: "7px",
-    background: "#ffffff",
-    cursor: "pointer",
-  },
-
-  deleteButton: {
-    padding: "8px 14px",
-    border: "none",
-    borderRadius: "7px",
-    background: "#a22323",
-    color: "#ffffff",
-    cursor: "pointer",
-  },
-
-  muted: {
-    color: "#806d6d",
-  },
-};

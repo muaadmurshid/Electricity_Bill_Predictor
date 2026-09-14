@@ -1,19 +1,70 @@
-import { useEffect, useState } from "react";
+import {
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+
 import householdService from "../services/householdService";
 
-export default function Household() {
-  const [households, setHouseholds] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+function formatHouseType(value) {
+  switch (value) {
+    case "HOUSE":
+      return "House";
 
-  const [formData, setFormData] = useState({
+    case "APARTMENT":
+      return "Apartment";
+
+    case "ANNEX":
+      return "Annex";
+
+    case "OTHER":
+      return "Other";
+
+    default:
+      return value || "—";
+  }
+}
+
+export default function Household() {
+  const [
+    households,
+    setHouseholds,
+  ] = useState([]);
+
+  const [
+    loading,
+    setLoading,
+  ] = useState(true);
+
+  const [
+    saving,
+    setSaving,
+  ] = useState(false);
+
+  const [
+    error,
+    setError,
+  ] = useState("");
+
+  const [
+    success,
+    setSuccess,
+  ] = useState("");
+
+  const [
+    editingId,
+    setEditingId,
+  ] = useState(null);
+
+  const [
+    formData,
+    setFormData,
+  ] = useState({
     householdName: "",
     location: "",
     houseType: "",
     numberOfResidents: "",
   });
-
-  const [editingId, setEditingId] = useState(null);
 
   useEffect(() => {
     loadHouseholds();
@@ -24,15 +75,25 @@ export default function Household() {
       setLoading(true);
       setError("");
 
-      const data = await householdService.list();
+      const data =
+        await householdService.list();
 
-      setHouseholds(Array.isArray(data) ? data : []);
+      setHouseholds(
+        Array.isArray(data)
+          ? data
+          : []
+      );
     } catch (err) {
-      console.error("Failed to load households:", err);
+      console.error(
+        "Failed to load households:",
+        err
+      );
 
       setError(
-        err?.response?.data?.error ||
-          err?.response?.data?.message ||
+        err?.response?.data
+          ?.error ||
+          err?.response?.data
+            ?.message ||
           "Failed to load household details."
       );
     } finally {
@@ -41,59 +102,167 @@ export default function Household() {
   }
 
   function handleChange(event) {
-    const { name, value } = event.target;
+    const {
+      name,
+      value,
+    } = event.target;
 
-    setFormData((previous) => ({
-      ...previous,
-      [name]: value,
-    }));
+    setFormData(
+      (previous) => ({
+        ...previous,
+        [name]: value,
+      })
+    );
+  }
+
+  function validateForm() {
+    if (
+      !formData.householdName.trim()
+    ) {
+      setError(
+        "Please enter a household name."
+      );
+
+      return false;
+    }
+
+    if (
+      !formData.location.trim()
+    ) {
+      setError(
+        "Please enter a location."
+      );
+
+      return false;
+    }
+
+    if (
+      !formData.houseType
+    ) {
+      setError(
+        "Please select a house type."
+      );
+
+      return false;
+    }
+
+    if (
+      formData.numberOfResidents ===
+        "" ||
+      Number(
+        formData.numberOfResidents
+      ) < 1
+    ) {
+      setError(
+        "Number of residents must be at least 1."
+      );
+
+      return false;
+    }
+
+    return true;
   }
 
   async function handleSubmit(event) {
     event.preventDefault();
 
     setError("");
+    setSuccess("");
+
+    if (!validateForm()) {
+      return;
+    }
 
     const payload = {
-      householdName: formData.householdName.trim(),
-      location: formData.location.trim(),
-      houseType: formData.houseType.trim(),
-      numberOfResidents: Number(formData.numberOfResidents),
+      householdName:
+        formData.householdName.trim(),
+
+      location:
+        formData.location.trim(),
+
+      houseType:
+        formData.houseType.trim(),
+
+      numberOfResidents:
+        Number(
+          formData.numberOfResidents
+        ),
     };
 
     try {
+      setSaving(true);
+
       if (editingId) {
-        await householdService.update(editingId, payload);
+        await householdService.update(
+          editingId,
+          payload
+        );
+
+        setSuccess(
+          "Household updated successfully."
+        );
       } else {
-        await householdService.create(payload);
+        await householdService.create(
+          payload
+        );
+
+        setSuccess(
+          "Household created successfully."
+        );
       }
 
       resetForm();
+
       await loadHouseholds();
     } catch (err) {
-      console.error("Failed to save household:", err);
+      console.error(
+        "Failed to save household:",
+        err
+      );
 
       setError(
-        err?.response?.data?.error ||
-          err?.response?.data?.message ||
+        err?.response?.data
+          ?.error ||
+          err?.response?.data
+            ?.message ||
           "Failed to save household."
       );
+    } finally {
+      setSaving(false);
     }
   }
 
   function startEdit(household) {
-    setEditingId(household.householdId);
+    setEditingId(
+      household.householdId
+    );
 
     setFormData({
-      householdName: household.householdName || "",
-      location: household.location || "",
-      houseType: household.houseType || "",
+      householdName:
+        household.householdName ||
+        "",
+
+      location:
+        household.location ||
+        "",
+
+      houseType:
+        household.houseType ||
+        "",
+
       numberOfResidents:
-        household.numberOfResidents !== null &&
-        household.numberOfResidents !== undefined
-          ? String(household.numberOfResidents)
+        household.numberOfResidents !==
+          null &&
+        household.numberOfResidents !==
+          undefined
+          ? String(
+              household.numberOfResidents
+            )
           : "",
     });
+
+    setError("");
+    setSuccess("");
   }
 
   function resetForm() {
@@ -107,10 +276,13 @@ export default function Household() {
     });
   }
 
-  async function handleDelete(householdId) {
-    const confirmed = window.confirm(
-      "Are you sure you want to delete this household?"
-    );
+  async function handleDelete(
+    householdId
+  ) {
+    const confirmed =
+      window.confirm(
+        "Are you sure you want to delete this household?"
+      );
 
     if (!confirmed) {
       return;
@@ -118,345 +290,531 @@ export default function Household() {
 
     try {
       setError("");
+      setSuccess("");
 
-      await householdService.remove(householdId);
+      await householdService.remove(
+        householdId
+      );
 
-      if (editingId === householdId) {
+      if (
+        editingId === householdId
+      ) {
         resetForm();
       }
 
+      setSuccess(
+        "Household deleted successfully."
+      );
+
       await loadHouseholds();
     } catch (err) {
-      console.error("Failed to delete household:", err);
+      console.error(
+        "Failed to delete household:",
+        err
+      );
 
       setError(
-        err?.response?.data?.error ||
-          err?.response?.data?.message ||
+        err?.response?.data
+          ?.error ||
+          err?.response?.data
+            ?.message ||
           "Failed to delete household."
       );
     }
   }
 
+  const primaryHousehold =
+    useMemo(
+      () =>
+        households.length > 0
+          ? households[0]
+          : null,
+      [households]
+    );
+
   return (
-    <div style={styles.page}>
-      <div style={styles.header}>
-        <p style={styles.eyebrow}>MY HOME</p>
+    <div className="household-redesign">
+      <section className="household-redesign-hero">
+        <div className="household-redesign-orb household-redesign-orb-one" />
+        <div className="household-redesign-orb household-redesign-orb-two" />
 
-        <h1 style={styles.title}>Household</h1>
+        <div className="household-redesign-hero-copy">
+          <p className="dashboard-kicker dashboard-kicker-light">
+            My home
+          </p>
 
-        <p style={styles.lead}>
-          Manage your household details. Rooms, appliances, electricity usage,
-          bills, predictions and energy targets are connected to your household.
-        </p>
-      </div>
+          <h1>
+            Build the energy profile of
+            your household.
+          </h1>
 
-      {error && <div style={styles.error}>{error}</div>}
+          <p>
+            Your rooms, appliances,
+            electricity usage, bills,
+            predictions, budgets and
+            energy goals are all linked
+            to the household you create
+            here.
+          </p>
+        </div>
 
-      <div style={styles.grid}>
-        <section style={styles.card}>
-          <h2 style={styles.cardTitle}>
-            {editingId ? "Edit household" : "Add household"}
-          </h2>
+        <div className="household-redesign-hero-badge">
+          <span>
+            ⌂
+          </span>
 
-          <form onSubmit={handleSubmit}>
-            <div style={styles.field}>
-              <label style={styles.label}>Household name</label>
+          <div>
+            <small>
+              Home profile
+            </small>
+
+            <strong>
+              Household
+            </strong>
+          </div>
+        </div>
+
+        {primaryHousehold && (
+          <div className="household-redesign-active">
+            <div>
+              <span>
+                Primary household
+              </span>
+
+              <strong>
+                {
+                  primaryHousehold.householdName
+                }
+              </strong>
+            </div>
+
+            <div>
+              <span>
+                Location
+              </span>
+
+              <strong>
+                {
+                  primaryHousehold.location
+                }
+              </strong>
+            </div>
+
+            <div>
+              <span>
+                Residents
+              </span>
+
+              <strong>
+                {
+                  primaryHousehold.numberOfResidents
+                }
+              </strong>
+            </div>
+          </div>
+        )}
+      </section>
+
+      {error && (
+        <div className="dashboard-error">
+          {error}
+        </div>
+      )}
+
+      {success && (
+        <div className="prediction-redesign-success">
+          <span>
+            ✓
+          </span>
+
+          {success}
+        </div>
+      )}
+
+      <section className="household-redesign-summary">
+        <article className="household-redesign-stat household-redesign-stat-feature">
+          <div className="household-redesign-stat-icon">
+            ⌂
+          </div>
+
+          <span>
+            Households
+          </span>
+
+          <strong>
+            {
+              households.length
+            }
+          </strong>
+
+          <p>
+            Home profiles linked to your
+            account.
+          </p>
+        </article>
+
+        <article className="household-redesign-stat">
+          <div className="household-redesign-stat-icon household-redesign-stat-icon-green">
+            ◯
+          </div>
+
+          <span>
+            Residents
+          </span>
+
+          <strong>
+            {households.reduce(
+              (
+                total,
+                household
+              ) =>
+                total +
+                Number(
+                  household.numberOfResidents ||
+                    0
+                ),
+              0
+            )}
+          </strong>
+
+          <p>
+            People across your saved
+            households.
+          </p>
+        </article>
+
+        <article className="household-redesign-stat">
+          <div className="household-redesign-stat-icon">
+            ▦
+          </div>
+
+          <span>
+            Home type
+          </span>
+
+          <strong>
+            {primaryHousehold
+              ? formatHouseType(
+                  primaryHousehold.houseType
+                )
+              : "—"}
+          </strong>
+
+          <p>
+            Primary household type.
+          </p>
+        </article>
+      </section>
+
+      <section className="household-redesign-grid">
+        <article className="household-redesign-form-card">
+          <div className="household-redesign-card-head">
+            <div>
+              <p className="dashboard-kicker">
+                Household setup
+              </p>
+
+              <h2>
+                {editingId
+                  ? "Edit household"
+                  : "Add household"}
+              </h2>
+            </div>
+
+            <span className="household-redesign-form-icon">
+              ⌂
+            </span>
+          </div>
+
+          <form
+            className="household-redesign-form"
+            onSubmit={
+              handleSubmit
+            }
+          >
+            <label>
+              <span>
+                Household name
+              </span>
 
               <input
                 type="text"
                 name="householdName"
-                value={formData.householdName}
-                onChange={handleChange}
+                value={
+                  formData.householdName
+                }
+                onChange={
+                  handleChange
+                }
                 required
-                style={styles.input}
                 placeholder="Example: My Home"
               />
-            </div>
+            </label>
 
-            <div style={styles.field}>
-              <label style={styles.label}>Location</label>
+            <label>
+              <span>
+                Location
+              </span>
 
               <input
                 type="text"
                 name="location"
-                value={formData.location}
-                onChange={handleChange}
+                value={
+                  formData.location
+                }
+                onChange={
+                  handleChange
+                }
                 required
-                style={styles.input}
                 placeholder="Example: Colombo"
               />
+            </label>
+
+            <div className="household-redesign-two-column">
+              <label>
+                <span>
+                  House type
+                </span>
+
+                <select
+                  name="houseType"
+                  value={
+                    formData.houseType
+                  }
+                  onChange={
+                    handleChange
+                  }
+                  required
+                >
+                  <option value="">
+                    Select house type
+                  </option>
+
+                  <option value="HOUSE">
+                    House
+                  </option>
+
+                  <option value="APARTMENT">
+                    Apartment
+                  </option>
+
+                  <option value="ANNEX">
+                    Annex
+                  </option>
+
+                  <option value="OTHER">
+                    Other
+                  </option>
+                </select>
+              </label>
+
+              <label>
+                <span>
+                  Residents
+                </span>
+
+                <input
+                  type="number"
+                  name="numberOfResidents"
+                  value={
+                    formData.numberOfResidents
+                  }
+                  onChange={
+                    handleChange
+                  }
+                  required
+                  min="1"
+                  placeholder="4"
+                />
+              </label>
             </div>
 
-            <div style={styles.field}>
-              <label style={styles.label}>House type</label>
-
-              <select
-                name="houseType"
-                value={formData.houseType}
-                onChange={handleChange}
-                required
-                style={styles.input}
+            <div className="household-redesign-actions">
+              <button
+                type="submit"
+                className="household-redesign-primary"
+                disabled={
+                  saving
+                }
               >
-                <option value="">Select house type</option>
-                <option value="HOUSE">House</option>
-                <option value="APARTMENT">Apartment</option>
-                <option value="ANNEX">Annex</option>
-                <option value="OTHER">Other</option>
-              </select>
-            </div>
-
-            <div style={styles.field}>
-              <label style={styles.label}>Number of residents</label>
-
-              <input
-                type="number"
-                name="numberOfResidents"
-                value={formData.numberOfResidents}
-                onChange={handleChange}
-                required
-                min="1"
-                style={styles.input}
-                placeholder="Example: 4"
-              />
-            </div>
-
-            <div style={styles.actions}>
-              <button type="submit" style={styles.primaryButton}>
-                {editingId ? "Update household" : "Create household"}
+                {saving
+                  ? "Saving..."
+                  : editingId
+                    ? "Update household"
+                    : "Create household"}
               </button>
 
               {editingId && (
                 <button
                   type="button"
-                  onClick={resetForm}
-                  style={styles.secondaryButton}
+                  className="household-redesign-secondary"
+                  onClick={
+                    resetForm
+                  }
                 >
                   Cancel
                 </button>
               )}
             </div>
           </form>
-        </section>
+        </article>
 
-        <section style={styles.card}>
-          <h2 style={styles.cardTitle}>Your household</h2>
+        <article className="household-redesign-list-card">
+          <div className="household-redesign-card-head">
+            <div>
+              <p className="dashboard-kicker">
+                Home profiles
+              </p>
+
+              <h2>
+                Your households
+              </h2>
+            </div>
+
+            <span className="household-redesign-count">
+              {
+                households.length
+              }
+            </span>
+          </div>
 
           {loading ? (
-            <p style={styles.muted}>Loading household...</p>
-          ) : households.length === 0 ? (
-            <p style={styles.muted}>
-              No household found. Create your household using the form.
-            </p>
+            <div className="household-redesign-empty">
+              Loading households...
+            </div>
+          ) : households.length ===
+            0 ? (
+            <div className="household-redesign-empty">
+              <div className="household-redesign-empty-icon">
+                ⌂
+              </div>
+
+              <strong>
+                No household yet
+              </strong>
+
+              <span>
+                Create your first
+                household using the form.
+              </span>
+            </div>
           ) : (
-            <div style={styles.list}>
-              {households.map((household) => (
-                <div
-                  key={household.householdId}
-                  style={styles.householdItem}
-                >
-                  <div>
-                    <h3 style={styles.householdName}>
-                      {household.householdName}
-                    </h3>
+            <div className="household-redesign-list">
+              {households.map(
+                (
+                  household,
+                  index
+                ) => (
+                  <article
+                    key={
+                      household.householdId
+                    }
+                    className={`household-redesign-item ${
+                      index === 0
+                        ? "household-redesign-item-featured"
+                        : ""
+                    }`}
+                  >
+                    <div className="household-redesign-item-top">
+                      <div className="household-redesign-item-icon">
+                        ⌂
+                      </div>
 
-                    <p style={styles.detail}>
-                      <strong>Location:</strong> {household.location}
-                    </p>
+                      <div className="household-redesign-item-title">
+                        <span>
+                          Household
+                        </span>
 
-                    <p style={styles.detail}>
-                      <strong>House type:</strong> {household.houseType}
-                    </p>
+                        <h3>
+                          {
+                            household.householdName
+                          }
+                        </h3>
 
-                    <p style={styles.detail}>
-                      <strong>Residents:</strong>{" "}
-                      {household.numberOfResidents}
-                    </p>
+                        <p>
+                          {
+                            household.location
+                          }
+                        </p>
+                      </div>
 
-                    <p style={styles.detail}>
-                      <strong>Household ID:</strong>{" "}
-                      {household.householdId}
-                    </p>
-                  </div>
+                      {index === 0 && (
+                        <span className="household-redesign-primary-badge">
+                          Primary
+                        </span>
+                      )}
+                    </div>
 
-                  <div style={styles.itemActions}>
-                    <button
-                      type="button"
-                      onClick={() => startEdit(household)}
-                      style={styles.editButton}
-                    >
-                      Edit
-                    </button>
+                    <div className="household-redesign-item-values">
+                      <div>
+                        <span>
+                          Home type
+                        </span>
 
-                    <button
-                      type="button"
-                      onClick={() =>
-                        handleDelete(household.householdId)
-                      }
-                      style={styles.deleteButton}
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </div>
-              ))}
+                        <strong>
+                          {formatHouseType(
+                            household.houseType
+                          )}
+                        </strong>
+                      </div>
+
+                      <div>
+                        <span>
+                          Residents
+                        </span>
+
+                        <strong>
+                          {
+                            household.numberOfResidents
+                          }
+                        </strong>
+                      </div>
+
+                      <div>
+                        <span>
+                          Household ID
+                        </span>
+
+                        <strong>
+                          #
+                          {
+                            household.householdId
+                          }
+                        </strong>
+                      </div>
+                    </div>
+
+                    <div className="household-redesign-item-actions">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          startEdit(
+                            household
+                          )
+                        }
+                      >
+                        Edit
+                      </button>
+
+                      <button
+                        type="button"
+                        className="household-redesign-delete"
+                        onClick={() =>
+                          handleDelete(
+                            household.householdId
+                          )
+                        }
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </article>
+                )
+              )}
             </div>
           )}
-        </section>
-      </div>
+        </article>
+      </section>
     </div>
   );
 }
-
-const styles = {
-  page: {
-    padding: "32px",
-    maxWidth: "1200px",
-    margin: "0 auto",
-  },
-
-  header: {
-    marginBottom: "24px",
-  },
-
-  eyebrow: {
-    fontSize: "12px",
-    letterSpacing: "0.14em",
-    marginBottom: "8px",
-    color: "#7a5c5c",
-  },
-
-  title: {
-    fontSize: "34px",
-    margin: "0 0 10px 0",
-  },
-
-  lead: {
-    maxWidth: "700px",
-    lineHeight: 1.6,
-    color: "#765f5f",
-  },
-
-  error: {
-    padding: "14px 16px",
-    marginBottom: "20px",
-    border: "1px solid #e5b4b4",
-    borderRadius: "10px",
-    background: "#fff0f0",
-    color: "#9a1f1f",
-  },
-
-  grid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))",
-    gap: "22px",
-  },
-
-  card: {
-    background: "#ffffff",
-    border: "1px solid #e6dcdc",
-    borderRadius: "14px",
-    padding: "24px",
-    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.04)",
-  },
-
-  cardTitle: {
-    marginTop: 0,
-    marginBottom: "20px",
-  },
-
-  field: {
-    marginBottom: "16px",
-  },
-
-  label: {
-    display: "block",
-    fontWeight: 600,
-    marginBottom: "7px",
-  },
-
-  input: {
-    width: "100%",
-    boxSizing: "border-box",
-    padding: "11px 12px",
-    border: "1px solid #d8caca",
-    borderRadius: "8px",
-    fontSize: "15px",
-  },
-
-  actions: {
-    display: "flex",
-    gap: "10px",
-    marginTop: "18px",
-  },
-
-  primaryButton: {
-    padding: "11px 18px",
-    border: "none",
-    borderRadius: "8px",
-    background: "#7f0000",
-    color: "#ffffff",
-    fontWeight: 600,
-    cursor: "pointer",
-  },
-
-  secondaryButton: {
-    padding: "11px 18px",
-    border: "1px solid #cbbbbb",
-    borderRadius: "8px",
-    background: "#ffffff",
-    cursor: "pointer",
-  },
-
-  list: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "14px",
-  },
-
-  householdItem: {
-    display: "flex",
-    justifyContent: "space-between",
-    gap: "20px",
-    padding: "18px",
-    border: "1px solid #eadede",
-    borderRadius: "10px",
-    background: "#fffafa",
-  },
-
-  householdName: {
-    marginTop: 0,
-    marginBottom: "12px",
-  },
-
-  detail: {
-    margin: "6px 0",
-    color: "#5f5050",
-  },
-
-  itemActions: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "8px",
-  },
-
-  editButton: {
-    padding: "8px 14px",
-    border: "1px solid #a88",
-    borderRadius: "7px",
-    background: "#ffffff",
-    cursor: "pointer",
-  },
-
-  deleteButton: {
-    padding: "8px 14px",
-    border: "none",
-    borderRadius: "7px",
-    background: "#a22323",
-    color: "#ffffff",
-    cursor: "pointer",
-  },
-
-  muted: {
-    color: "#806d6d",
-  },
-};

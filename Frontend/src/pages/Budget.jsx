@@ -69,36 +69,25 @@ function statusLabel(status) {
   }
 }
 
-function statusStyle(status) {
+function statusClass(status) {
   switch (status) {
     case "WITHIN_BUDGET":
-      return {
-        background: "#e9f7e9",
-        color: "#286428",
-      };
+      return "budget-status-good";
 
     case "WARNING":
-      return {
-        background: "#fff4d7",
-        color: "#795d12",
-      };
+      return "budget-status-warning";
 
     case "OVER_BUDGET":
-      return {
-        background: "#fff0f0",
-        color: "#9a1f1f",
-      };
+      return "budget-status-danger";
 
     default:
-      return {
-        background: "#f1eaea",
-        color: "#765f5f",
-      };
+      return "budget-status-neutral";
   }
 }
 
 export default function Budget() {
-  const today = new Date();
+  const today =
+    new Date();
 
   const [
     households,
@@ -125,33 +114,39 @@ export default function Budget() {
     setSaving,
   ] = useState(false);
 
-  const [error, setError] =
-    useState("");
+  const [
+    error,
+    setError,
+  ] = useState("");
 
-  const [success, setSuccess] =
-    useState("");
+  const [
+    success,
+    setSuccess,
+  ] = useState("");
 
   const [
     editingId,
     setEditingId,
   ] = useState(null);
 
-  const [formData, setFormData] =
-    useState({
-      budgetMonth:
-        String(
-          today.getMonth() + 1
-        ),
+  const [
+    formData,
+    setFormData,
+  ] = useState({
+    budgetMonth:
+      String(
+        today.getMonth() + 1
+      ),
 
-      budgetYear:
-        String(
-          today.getFullYear()
-        ),
+    budgetYear:
+      String(
+        today.getFullYear()
+      ),
 
-      budgetAmount: "",
+    budgetAmount: "",
 
-      warningThreshold: "80",
-    });
+    warningThreshold: "80",
+  });
 
   useEffect(() => {
     initialise();
@@ -178,7 +173,9 @@ export default function Budget() {
           : [];
 
       const budgetList =
-        Array.isArray(budgetData)
+        Array.isArray(
+          budgetData
+        )
           ? budgetData
           : [];
 
@@ -270,21 +267,25 @@ export default function Budget() {
       return false;
     }
 
-    const month = Number(
-      formData.budgetMonth
-    );
+    const month =
+      Number(
+        formData.budgetMonth
+      );
 
-    const year = Number(
-      formData.budgetYear
-    );
+    const year =
+      Number(
+        formData.budgetYear
+      );
 
-    const amount = Number(
-      formData.budgetAmount
-    );
+    const amount =
+      Number(
+        formData.budgetAmount
+      );
 
-    const threshold = Number(
-      formData.warningThreshold
-    );
+    const threshold =
+      Number(
+        formData.warningThreshold
+      );
 
     if (
       month < 1 ||
@@ -356,37 +357,32 @@ export default function Budget() {
 
     const payload = {
       household: {
-        householdId: Number(
-          selectedHouseholdId
-        ),
+        householdId:
+          Number(
+            selectedHouseholdId
+          ),
       },
 
-      budgetMonth: Number(
-        formData.budgetMonth
-      ),
+      budgetMonth:
+        Number(
+          formData.budgetMonth
+        ),
 
-      budgetYear: Number(
-        formData.budgetYear
-      ),
+      budgetYear:
+        Number(
+          formData.budgetYear
+        ),
 
-      budgetAmount: Number(
-        formData.budgetAmount
-      ),
+      budgetAmount:
+        Number(
+          formData.budgetAmount
+        ),
 
-      warningThreshold: Number(
-        formData.warningThreshold
-      ),
+      warningThreshold:
+        Number(
+          formData.warningThreshold
+        ),
 
-      /*
-       * These values are owned by the backend.
-       *
-       * On create the service defaults:
-       * currentEstimatedAmount = 0
-       * status = ACTIVE
-       *
-       * We include valid values because the
-       * entity validation requires status.
-       */
       currentEstimatedAmount:
         existingBudget
           ?.currentEstimatedAmount ??
@@ -453,13 +449,15 @@ export default function Budget() {
     );
 
     setFormData({
-      budgetMonth: String(
-        budget.budgetMonth
-      ),
+      budgetMonth:
+        String(
+          budget.budgetMonth
+        ),
 
-      budgetYear: String(
-        budget.budgetYear
-      ),
+      budgetYear:
+        String(
+          budget.budgetYear
+        ),
 
       budgetAmount:
         budget.budgetAmount !==
@@ -490,13 +488,15 @@ export default function Budget() {
     setEditingId(null);
 
     setFormData({
-      budgetMonth: String(
-        today.getMonth() + 1
-      ),
+      budgetMonth:
+        String(
+          today.getMonth() + 1
+        ),
 
-      budgetYear: String(
-        today.getFullYear()
-      ),
+      budgetYear:
+        String(
+          today.getFullYear()
+        ),
 
       budgetAmount: "",
 
@@ -608,279 +608,267 @@ export default function Budget() {
   }
 
   return (
-    <div style={styles.page}>
-      <div
-        style={styles.header}
-      >
-        <p
-          style={styles.eyebrow}
-        >
-          TARGETS
-        </p>
+    <div className="budget-redesign">
+      <section className="budget-redesign-hero">
+        <div className="budget-redesign-orb budget-redesign-orb-one" />
+        <div className="budget-redesign-orb budget-redesign-orb-two" />
 
-        <h1
-          style={styles.title}
-        >
-          Budget
-        </h1>
+        <div className="budget-redesign-hero-copy">
+          <p className="dashboard-kicker dashboard-kicker-light">
+            Monthly spending target
+          </p>
 
-        <p style={styles.lead}>
-          Set a monthly electricity
-          spending limit and warning
-          threshold. When a prediction
-          is generated for the same
-          month, the backend updates
-          the estimated amount and
-          budget status automatically.
-        </p>
-      </div>
+          <h1>
+            Keep your electricity bill
+            within your plan.
+          </h1>
+
+          <p>
+            Set a monthly spending limit
+            and warning threshold, then
+            compare it automatically with
+            your predicted electricity
+            cost.
+          </p>
+        </div>
+
+        <div className="budget-redesign-hero-badge">
+          <span>
+            ₨
+          </span>
+
+          <div>
+            <small>
+              Budget control
+            </small>
+
+            <strong>
+              Monthly target
+            </strong>
+          </div>
+        </div>
+
+        <div className="budget-redesign-household">
+          <label>
+            <span>
+              Household
+            </span>
+
+            <select
+              value={
+                selectedHouseholdId
+              }
+              onChange={(event) => {
+                setSelectedHouseholdId(
+                  event.target.value
+                );
+
+                resetForm();
+
+                setError("");
+                setSuccess("");
+              }}
+            >
+              <option value="">
+                Select household
+              </option>
+
+              {households.map(
+                (household) => (
+                  <option
+                    key={
+                      household.householdId
+                    }
+                    value={
+                      household.householdId
+                    }
+                  >
+                    {
+                      household.householdName
+                    }
+                  </option>
+                )
+              )}
+            </select>
+          </label>
+        </div>
+      </section>
 
       {error && (
-        <div
-          style={styles.error}
-        >
+        <div className="dashboard-error">
           {error}
         </div>
       )}
 
       {success && (
-        <div
-          style={styles.success}
-        >
+        <div className="prediction-redesign-success">
+          <span>
+            ✓
+          </span>
+
           {success}
         </div>
       )}
 
-      <section
-        style={
-          styles.selectorCard
-        }
-      >
-        <label
-          style={styles.label}
-        >
-          Household
-        </label>
-
-        <select
-          value={
-            selectedHouseholdId
-          }
-          onChange={(event) => {
-            setSelectedHouseholdId(
-              event.target.value
-            );
-
-            resetForm();
-
-            setError("");
-            setSuccess("");
-          }}
-          style={styles.input}
-        >
-          <option value="">
-            Select household
-          </option>
-
-          {households.map(
-            (household) => (
-              <option
-                key={
-                  household.householdId
-                }
-                value={
-                  household.householdId
-                }
-              >
-                {
-                  household.householdName
-                }
-              </option>
-            )
-          )}
-        </select>
-      </section>
-
       {latestBudget && (
-        <section
-          style={
-            styles.overviewCard
-          }
-        >
-          <div
-            style={
-              styles.overviewHeader
-            }
-          >
-            <div>
-              <p
-                style={
-                  styles.cardEyebrow
-                }
-              >
-                LATEST BUDGET
-              </p>
+        <section className="budget-redesign-overview">
+          <div className="budget-redesign-overview-main">
+            <div className="budget-redesign-overview-head">
+              <div>
+                <p className="dashboard-kicker dashboard-kicker-light">
+                  Latest budget
+                </p>
 
-              <h2
-                style={
-                  styles.cardTitle
-                }
+                <h2>
+                  {getMonthName(
+                    latestBudget.budgetMonth
+                  )}{" "}
+                  {
+                    latestBudget.budgetYear
+                  }
+                </h2>
+              </div>
+
+              <span
+                className={`budget-redesign-status ${statusClass(
+                  latestBudget.status
+                )}`}
               >
-                {getMonthName(
-                  latestBudget.budgetMonth
-                )}{" "}
-                {
-                  latestBudget.budgetYear
-                }
-              </h2>
+                {statusLabel(
+                  latestBudget.status
+                )}
+              </span>
             </div>
 
-            <span
+            <div className="budget-redesign-overview-values">
+              <div>
+                <span>
+                  Monthly budget
+                </span>
+
+                <strong>
+                  {formatCurrency(
+                    latestBudget.budgetAmount
+                  )}
+                </strong>
+              </div>
+
+              <div>
+                <span>
+                  Current estimate
+                </span>
+
+                <strong>
+                  {formatCurrency(
+                    latestBudget.currentEstimatedAmount
+                  )}
+                </strong>
+              </div>
+
+              <div>
+                <span>
+                  Warning threshold
+                </span>
+
+                <strong>
+                  {
+                    latestBudget.warningThreshold
+                  }
+                  %
+                </strong>
+              </div>
+            </div>
+
+            <div className="budget-redesign-progress">
+              <div className="budget-redesign-progress-track">
+                <div
+                  className="budget-redesign-progress-fill"
+                  style={{
+                    width: `${progressPercent(
+                      latestBudget
+                    )}%`,
+                  }}
+                />
+              </div>
+
+              <div className="budget-redesign-progress-foot">
+                <span>
+                  {progressPercent(
+                    latestBudget
+                  ).toFixed(1)}
+                  % estimated
+                </span>
+
+                <strong>
+                  {statusLabel(
+                    latestBudget.status
+                  )}
+                </strong>
+              </div>
+            </div>
+          </div>
+
+          <div className="budget-redesign-gauge">
+            <div
+              className="budget-redesign-gauge-ring"
               style={{
-                ...styles.statusBadge,
-                ...statusStyle(
-                  latestBudget.status
-                ),
+                "--budget-progress":
+                  `${Math.min(
+                    100,
+                    progressPercent(
+                      latestBudget
+                    )
+                  ) * 3.6}deg`,
               }}
             >
-              {statusLabel(
-                latestBudget.status
-              )}
-            </span>
-          </div>
+              <div>
+                <strong>
+                  {progressPercent(
+                    latestBudget
+                  ).toFixed(0)}
+                  %
+                </strong>
 
-          <div
-            style={
-              styles.overviewGrid
-            }
-          >
-            <div>
-              <p
-                style={
-                  styles.summaryLabel
-                }
-              >
-                Monthly budget
-              </p>
-
-              <h3
-                style={
-                  styles.summaryValue
-                }
-              >
-                {formatCurrency(
-                  latestBudget.budgetAmount
-                )}
-              </h3>
-            </div>
-
-            <div>
-              <p
-                style={
-                  styles.summaryLabel
-                }
-              >
-                Current estimate
-              </p>
-
-              <h3
-                style={
-                  styles.summaryValue
-                }
-              >
-                {formatCurrency(
-                  latestBudget.currentEstimatedAmount
-                )}
-              </h3>
-            </div>
-
-            <div>
-              <p
-                style={
-                  styles.summaryLabel
-                }
-              >
-                Warning threshold
-              </p>
-
-              <h3
-                style={
-                  styles.summaryValue
-                }
-              >
-                {
-                  latestBudget.warningThreshold
-                }
-                %
-              </h3>
+                <span>
+                  budget used
+                </span>
+              </div>
             </div>
           </div>
-
-          <div
-            style={
-              styles.meterTrack
-            }
-          >
-            <div
-              style={{
-                ...styles.meterFill,
-                width: `${progressPercent(
-                  latestBudget
-                )}%`,
-              }}
-            />
-          </div>
-
-          <p
-            style={
-              styles.meterText
-            }
-          >
-            {progressPercent(
-              latestBudget
-            ).toFixed(1)}
-            % of budget currently
-            estimated
-          </p>
         </section>
       )}
 
-      <div style={styles.grid}>
-        <section
-          style={styles.card}
-        >
-          <h2
-            style={
-              styles.cardTitle
-            }
-          >
-            {editingId
-              ? "Edit budget"
-              : "Create budget"}
-          </h2>
+      <section className="budget-redesign-grid">
+        <article className="budget-redesign-form-card">
+          <div className="budget-redesign-card-head">
+            <div>
+              <p className="dashboard-kicker">
+                Budget setup
+              </p>
+
+              <h2>
+                {editingId
+                  ? "Edit monthly budget"
+                  : "Create monthly budget"}
+              </h2>
+            </div>
+
+            <span className="budget-redesign-form-icon">
+              ₨
+            </span>
+          </div>
 
           <form
             onSubmit={
               handleSubmit
             }
+            className="budget-redesign-form"
           >
-            <div
-              style={
-                styles.twoColumn
-              }
-            >
-              <div
-                style={
-                  styles.field
-                }
-              >
-                <label
-                  style={
-                    styles.label
-                  }
-                >
+            <div className="budget-redesign-two-column">
+              <label>
+                <span>
                   Month
-                </label>
+                </span>
 
                 <select
                   name="budgetMonth"
@@ -890,41 +878,30 @@ export default function Budget() {
                   onChange={
                     handleChange
                   }
-                  style={
-                    styles.input
-                  }
                 >
                   {MONTHS.map(
-                    (month) => (
+                    (monthItem) => (
                       <option
                         key={
-                          month.value
+                          monthItem.value
                         }
                         value={
-                          month.value
+                          monthItem.value
                         }
                       >
                         {
-                          month.label
+                          monthItem.label
                         }
                       </option>
                     )
                   )}
                 </select>
-              </div>
+              </label>
 
-              <div
-                style={
-                  styles.field
-                }
-              >
-                <label
-                  style={
-                    styles.label
-                  }
-                >
+              <label>
+                <span>
                   Year
-                </label>
+                </span>
 
                 <input
                   type="number"
@@ -938,103 +915,76 @@ export default function Budget() {
                   min="2020"
                   max="2100"
                   required
-                  style={
-                    styles.input
+                />
+              </label>
+            </div>
+
+            <label>
+              <span>
+                Monthly budget
+              </span>
+
+              <div className="budget-redesign-money-input">
+                <span>
+                  LKR
+                </span>
+
+                <input
+                  type="number"
+                  name="budgetAmount"
+                  value={
+                    formData.budgetAmount
                   }
+                  onChange={
+                    handleChange
+                  }
+                  min="0"
+                  step="0.01"
+                  required
+                  placeholder="7500"
                 />
               </div>
-            </div>
+            </label>
 
-            <div
-              style={
-                styles.field
-              }
-            >
-              <label
-                style={
-                  styles.label
-                }
-              >
-                Monthly budget
-                (LKR)
-              </label>
-
-              <input
-                type="number"
-                name="budgetAmount"
-                value={
-                  formData.budgetAmount
-                }
-                onChange={
-                  handleChange
-                }
-                min="0"
-                step="0.01"
-                required
-                placeholder="Example: 7500"
-                style={
-                  styles.input
-                }
-              />
-            </div>
-
-            <div
-              style={
-                styles.field
-              }
-            >
-              <label
-                style={
-                  styles.label
-                }
-              >
+            <label>
+              <span>
                 Warning threshold
-                (%)
-              </label>
+              </span>
 
-              <input
-                type="number"
-                name="warningThreshold"
-                value={
-                  formData.warningThreshold
-                }
-                onChange={
-                  handleChange
-                }
-                min="0"
-                max="100"
-                step="1"
-                required
-                style={
-                  styles.input
-                }
-              />
+              <div className="budget-redesign-threshold-input">
+                <input
+                  type="number"
+                  name="warningThreshold"
+                  value={
+                    formData.warningThreshold
+                  }
+                  onChange={
+                    handleChange
+                  }
+                  min="0"
+                  max="100"
+                  step="1"
+                  required
+                />
 
-              <p
-                style={
-                  styles.hint
-                }
-              >
-                Example: 80 means
-                the backend changes
-                the status to WARNING
-                when the predicted
-                bill reaches at least
-                80% of the monthly
-                budget.
-              </p>
-            </div>
+                <span>
+                  %
+                </span>
+              </div>
 
-            <div
-              style={
-                styles.actions
-              }
-            >
+              <small>
+                A threshold of 80% means
+                you will enter the warning
+                state once your predicted
+                bill reaches 80% of the
+                monthly budget.
+              </small>
+            </label>
+
+            <div className="budget-redesign-actions">
               <button
                 type="submit"
-                style={
-                  styles.primaryButton
-                }
+                className="budget-redesign-primary"
                 disabled={
                   saving ||
                   !selectedHouseholdId
@@ -1053,86 +1003,76 @@ export default function Budget() {
                   onClick={
                     resetForm
                   }
-                  style={
-                    styles.secondaryButton
-                  }
+                  className="budget-redesign-secondary"
                 >
                   Cancel
                 </button>
               )}
             </div>
           </form>
-        </section>
+        </article>
 
-        <section
-          style={styles.card}
-        >
-          <h2
-            style={
-              styles.cardTitle
-            }
-          >
-            Budget history
-          </h2>
+        <article className="budget-redesign-history">
+          <div className="budget-redesign-card-head">
+            <div>
+              <p className="dashboard-kicker">
+                History
+              </p>
+
+              <h2>
+                Previous budgets
+              </h2>
+            </div>
+
+            <span className="budget-redesign-count">
+              {
+                filteredBudgets.length
+              }
+            </span>
+          </div>
 
           {!selectedHouseholdId ? (
-            <p
-              style={
-                styles.muted
-              }
-            >
-              Select a household
-              to view budgets.
-            </p>
+            <div className="budget-redesign-empty">
+              Select a household to view
+              budgets.
+            </div>
           ) : loading ? (
-            <p
-              style={
-                styles.muted
-              }
-            >
+            <div className="budget-redesign-empty">
               Loading budgets...
-            </p>
+            </div>
           ) : filteredBudgets.length ===
             0 ? (
-            <p
-              style={
-                styles.muted
-              }
-            >
-              No budgets found
-              for this household.
-            </p>
+            <div className="budget-redesign-empty">
+              <div className="budget-redesign-empty-icon">
+                ₨
+              </div>
+
+              <strong>
+                No budgets yet
+              </strong>
+
+              <span>
+                Create your first monthly
+                budget using the form.
+              </span>
+            </div>
           ) : (
-            <div
-              style={
-                styles.list
-              }
-            >
+            <div className="budget-redesign-list">
               {filteredBudgets.map(
                 (budget) => (
-                  <div
+                  <article
                     key={
                       budget.budgetId
                     }
-                    style={
-                      styles.budgetItem
-                    }
+                    className="budget-redesign-item"
                   >
-                    <div
-                      style={{
-                        flex: 1,
-                      }}
-                    >
-                      <div
-                        style={
-                          styles.itemHeading
-                        }
-                      >
-                        <h3
-                          style={
-                            styles.itemTitle
-                          }
-                        >
+                    <div className="budget-redesign-item-top">
+                      <div>
+                        <span>
+                          Monthly budget
+                        </span>
+
+                        <h3>
                           {getMonthName(
                             budget.budgetMonth
                           )}{" "}
@@ -1140,67 +1080,59 @@ export default function Budget() {
                             budget.budgetYear
                           }
                         </h3>
-
-                        <span
-                          style={{
-                            ...styles.statusBadge,
-                            ...statusStyle(
-                              budget.status
-                            ),
-                          }}
-                        >
-                          {statusLabel(
-                            budget.status
-                          )}
-                        </span>
                       </div>
 
-                      <p
-                        style={
-                          styles.detail
-                        }
+                      <span
+                        className={`budget-redesign-status ${statusClass(
+                          budget.status
+                        )}`}
                       >
-                        <strong>
-                          Budget:
-                        </strong>{" "}
-                        {formatCurrency(
-                          budget.budgetAmount
+                        {statusLabel(
+                          budget.status
                         )}
-                      </p>
-
-                      <p
-                        style={
-                          styles.detail
-                        }
-                      >
-                        <strong>
-                          Estimated:
-                        </strong>{" "}
-                        {formatCurrency(
-                          budget.currentEstimatedAmount
-                        )}
-                      </p>
-
-                      <p
-                        style={
-                          styles.detail
-                        }
-                      >
-                        <strong>
-                          Warning:
-                        </strong>{" "}
-                        {
-                          budget.warningThreshold
-                        }
-                        %
-                      </p>
+                      </span>
                     </div>
 
-                    <div
-                      style={
-                        styles.itemActions
-                      }
-                    >
+                    <div className="budget-redesign-item-values">
+                      <div>
+                        <span>
+                          Budget
+                        </span>
+
+                        <strong>
+                          {formatCurrency(
+                            budget.budgetAmount
+                          )}
+                        </strong>
+                      </div>
+
+                      <div>
+                        <span>
+                          Estimated
+                        </span>
+
+                        <strong>
+                          {formatCurrency(
+                            budget.currentEstimatedAmount
+                          )}
+                        </strong>
+                      </div>
+
+                      <div>
+                        <span>
+                          Warning
+                        </span>
+
+                        <strong>
+                          {
+                            budget.warningThreshold
+                          }
+                          %
+                        </strong>
+                      </div>
+                    </div>
+
+                    <div className="budget-redesign-item-actions">
                       <button
                         type="button"
                         onClick={() =>
@@ -1208,310 +1140,29 @@ export default function Budget() {
                             budget
                           )
                         }
-                        style={
-                          styles.editButton
-                        }
                       >
                         Edit
                       </button>
 
                       <button
                         type="button"
+                        className="budget-redesign-delete"
                         onClick={() =>
                           handleDelete(
                             budget.budgetId
                           )
                         }
-                        style={
-                          styles.deleteButton
-                        }
                       >
                         Delete
                       </button>
                     </div>
-                  </div>
+                  </article>
                 )
               )}
             </div>
           )}
-        </section>
-      </div>
+        </article>
+      </section>
     </div>
   );
 }
-
-const styles = {
-  page: {
-    padding: "32px",
-    maxWidth: "1200px",
-    margin: "0 auto",
-  },
-
-  header: {
-    marginBottom: "24px",
-  },
-
-  eyebrow: {
-    fontSize: "12px",
-    letterSpacing: "0.14em",
-    marginBottom: "8px",
-    color: "#7a5c5c",
-  },
-
-  title: {
-    fontSize: "34px",
-    margin: "0 0 10px 0",
-  },
-
-  lead: {
-    maxWidth: "800px",
-    lineHeight: 1.6,
-    color: "#765f5f",
-  },
-
-  error: {
-    padding: "14px 16px",
-    marginBottom: "20px",
-    border:
-      "1px solid #e5b4b4",
-    borderRadius: "10px",
-    background: "#fff0f0",
-    color: "#9a1f1f",
-  },
-
-  success: {
-    padding: "14px 16px",
-    marginBottom: "20px",
-    border:
-      "1px solid #b9d8b9",
-    borderRadius: "10px",
-    background: "#effbef",
-    color: "#286428",
-  },
-
-  selectorCard: {
-    background: "#ffffff",
-    border:
-      "1px solid #e6dcdc",
-    borderRadius: "12px",
-    padding: "18px",
-    marginBottom: "22px",
-  },
-
-  overviewCard: {
-    background: "#ffffff",
-    border:
-      "1px solid #e6dcdc",
-    borderRadius: "14px",
-    padding: "24px",
-    marginBottom: "22px",
-    boxShadow:
-      "0 2px 8px rgba(0,0,0,0.04)",
-  },
-
-  overviewHeader: {
-    display: "flex",
-    justifyContent:
-      "space-between",
-    alignItems: "center",
-    gap: "16px",
-    marginBottom: "20px",
-  },
-
-  overviewGrid: {
-    display: "grid",
-    gridTemplateColumns:
-      "repeat(auto-fit, minmax(180px, 1fr))",
-    gap: "16px",
-    marginBottom: "18px",
-  },
-
-  summaryLabel: {
-    margin: "0 0 6px",
-    color: "#806d6d",
-    fontSize: "13px",
-  },
-
-  summaryValue: {
-    margin: 0,
-    color: "#3f1515",
-  },
-
-  meterTrack: {
-    width: "100%",
-    height: "12px",
-    borderRadius: "999px",
-    overflow: "hidden",
-    background: "#eee4e4",
-  },
-
-  meterFill: {
-    height: "100%",
-    borderRadius: "999px",
-    background: "#7f0000",
-  },
-
-  meterText: {
-    margin: "8px 0 0",
-    color: "#806d6d",
-    fontSize: "13px",
-  },
-
-  grid: {
-    display: "grid",
-    gridTemplateColumns:
-      "repeat(auto-fit, minmax(380px, 1fr))",
-    gap: "22px",
-  },
-
-  card: {
-    background: "#ffffff",
-    border:
-      "1px solid #e6dcdc",
-    borderRadius: "14px",
-    padding: "24px",
-    boxShadow:
-      "0 2px 8px rgba(0,0,0,0.04)",
-  },
-
-  cardEyebrow: {
-    margin: "0 0 5px",
-    fontSize: "11px",
-    letterSpacing: "0.12em",
-    color: "#8a6e6e",
-  },
-
-  cardTitle: {
-    margin: 0,
-    marginBottom: "20px",
-  },
-
-  field: {
-    marginBottom: "16px",
-  },
-
-  label: {
-    display: "block",
-    fontWeight: 600,
-    marginBottom: "7px",
-  },
-
-  input: {
-    width: "100%",
-    boxSizing: "border-box",
-    padding: "11px 12px",
-    border:
-      "1px solid #d8caca",
-    borderRadius: "8px",
-    fontSize: "15px",
-  },
-
-  twoColumn: {
-    display: "grid",
-    gridTemplateColumns:
-      "repeat(auto-fit, minmax(160px, 1fr))",
-    gap: "14px",
-  },
-
-  hint: {
-    margin: "7px 0 0",
-    fontSize: "13px",
-    lineHeight: 1.5,
-    color: "#806d6d",
-  },
-
-  actions: {
-    display: "flex",
-    gap: "10px",
-    marginTop: "18px",
-  },
-
-  primaryButton: {
-    padding: "11px 18px",
-    border: "none",
-    borderRadius: "8px",
-    background: "#7f0000",
-    color: "#ffffff",
-    fontWeight: 600,
-    cursor: "pointer",
-  },
-
-  secondaryButton: {
-    padding: "11px 18px",
-    border:
-      "1px solid #cbbbbb",
-    borderRadius: "8px",
-    background: "#ffffff",
-    cursor: "pointer",
-  },
-
-  list: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "14px",
-  },
-
-  budgetItem: {
-    display: "flex",
-    justifyContent:
-      "space-between",
-    gap: "20px",
-    padding: "18px",
-    border:
-      "1px solid #eadede",
-    borderRadius: "10px",
-    background: "#fffafa",
-  },
-
-  itemHeading: {
-    display: "flex",
-    alignItems: "center",
-    gap: "10px",
-    flexWrap: "wrap",
-  },
-
-  itemTitle: {
-    margin:
-      "0 0 10px 0",
-  },
-
-  statusBadge: {
-    borderRadius: "999px",
-    padding: "5px 10px",
-    fontSize: "11px",
-    fontWeight: 700,
-  },
-
-  detail: {
-    margin: "6px 0",
-    color: "#5f5050",
-  },
-
-  itemActions: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "8px",
-  },
-
-  editButton: {
-    padding: "8px 14px",
-    border:
-      "1px solid #a88",
-    borderRadius: "7px",
-    background: "#ffffff",
-    cursor: "pointer",
-  },
-
-  deleteButton: {
-    padding: "8px 14px",
-    border: "none",
-    borderRadius: "7px",
-    background: "#a22323",
-    color: "#ffffff",
-    cursor: "pointer",
-  },
-
-  muted: {
-    color: "#806d6d",
-  },
-};

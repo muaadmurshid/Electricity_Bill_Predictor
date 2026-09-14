@@ -4,9 +4,6 @@ import {
   useState,
 } from "react";
 
-import PageHeader from "../components/common/PageHeader";
-import Card from "../components/common/Card";
-
 import adminTariffService from "../services/adminTariffService";
 
 const EMPTY_TARIFF = {
@@ -28,34 +25,57 @@ const EMPTY_RATE = {
 };
 
 function money(value) {
-  if (value === null || value === undefined) {
+  if (
+    value === null ||
+    value === undefined
+  ) {
     return "—";
   }
 
-  return new Intl.NumberFormat("en-LK", {
-    style: "currency",
-    currency: "LKR",
-    minimumFractionDigits: 2,
-  }).format(Number(value));
+  return new Intl.NumberFormat(
+    "en-LK",
+    {
+      style: "currency",
+      currency: "LKR",
+      minimumFractionDigits: 2,
+    }
+  ).format(Number(value));
 }
 
-function statusStyle(status) {
-  if (status === "ACTIVE") {
-    return {
-      background: "#e9f7e9",
-      color: "#286428",
-    };
+function formatDate(value) {
+  if (!value) {
+    return "Open ended";
   }
 
-  return {
-    background: "#eeeeee",
-    color: "#665555",
-  };
+  const date =
+    new Date(`${value}T00:00:00`);
+
+  if (
+    Number.isNaN(
+      date.getTime()
+    )
+  ) {
+    return value;
+  }
+
+  return new Intl.DateTimeFormat(
+    "en-LK",
+    {
+      dateStyle: "medium",
+    }
+  ).format(date);
 }
 
 export default function AdminTariffs() {
-  const [tariffs, setTariffs] = useState([]);
-  const [rates, setRates] = useState([]);
+  const [
+    tariffs,
+    setTariffs,
+  ] = useState([]);
+
+  const [
+    rates,
+    setRates,
+  ] = useState([]);
 
   const [
     selectedTariffId,
@@ -65,12 +85,16 @@ export default function AdminTariffs() {
   const [
     tariffForm,
     setTariffForm,
-  ] = useState(EMPTY_TARIFF);
+  ] = useState(
+    EMPTY_TARIFF
+  );
 
   const [
     rateForm,
     setRateForm,
-  ] = useState(EMPTY_RATE);
+  ] = useState(
+    EMPTY_RATE
+  );
 
   const [
     editingTariffId,
@@ -82,20 +106,42 @@ export default function AdminTariffs() {
     setEditingRateId,
   ] = useState(null);
 
-  const [loading, setLoading] = useState(true);
-  const [savingTariff, setSavingTariff] = useState(false);
-  const [savingRate, setSavingRate] = useState(false);
+  const [
+    loading,
+    setLoading,
+  ] = useState(true);
 
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+  const [
+    savingTariff,
+    setSavingTariff,
+  ] = useState(false);
+
+  const [
+    savingRate,
+    setSavingRate,
+  ] = useState(false);
+
+  const [
+    error,
+    setError,
+  ] = useState("");
+
+  const [
+    success,
+    setSuccess,
+  ] = useState("");
 
   useEffect(() => {
     loadTariffs();
   }, []);
 
   useEffect(() => {
-    if (selectedTariffId) {
-      loadRates(selectedTariffId);
+    if (
+      selectedTariffId
+    ) {
+      loadRates(
+        selectedTariffId
+      );
     } else {
       setRates([]);
     }
@@ -109,21 +155,34 @@ export default function AdminTariffs() {
       const data =
         await adminTariffService.listTariffs();
 
-      const list = Array.isArray(data) ? data : [];
+      const list =
+        Array.isArray(data)
+          ? data
+          : [];
 
       setTariffs(list);
 
-      if (list.length > 0 && !selectedTariffId) {
+      if (
+        list.length > 0 &&
+        !selectedTariffId
+      ) {
         setSelectedTariffId(
-          String(list[0].tariffId)
+          String(
+            list[0].tariffId
+          )
         );
       }
     } catch (err) {
-      console.error("Failed to load tariffs:", err);
+      console.error(
+        "Failed to load tariffs:",
+        err
+      );
 
       setError(
-        err?.response?.data?.error ||
-          err?.response?.data?.message ||
+        err?.response?.data
+          ?.error ||
+          err?.response?.data
+            ?.message ||
           "Failed to load tariffs."
       );
     } finally {
@@ -131,51 +190,86 @@ export default function AdminTariffs() {
     }
   }
 
-  async function loadRates(tariffId) {
+  async function loadRates(
+    tariffId
+  ) {
     try {
       const data =
         await adminTariffService.listRatesByTariff(
           tariffId
         );
 
-      setRates(Array.isArray(data) ? data : []);
+      setRates(
+        Array.isArray(data)
+          ? data
+          : []
+      );
     } catch (err) {
-      console.error("Failed to load tariff rates:", err);
+      console.error(
+        "Failed to load tariff rates:",
+        err
+      );
 
       setError(
-        err?.response?.data?.error ||
-          err?.response?.data?.message ||
+        err?.response?.data
+          ?.error ||
+          err?.response?.data
+            ?.message ||
           "Failed to load tariff rates."
       );
     }
   }
 
-  function handleTariffChange(event) {
-    const { name, value } = event.target;
+  function handleTariffChange(
+    event
+  ) {
+    const {
+      name,
+      value,
+    } = event.target;
 
-    setTariffForm((previous) => ({
-      ...previous,
-      [name]: value,
-    }));
+    setTariffForm(
+      (previous) => ({
+        ...previous,
+        [name]: value,
+      })
+    );
   }
 
-  function handleRateChange(event) {
-    const { name, value } = event.target;
+  function handleRateChange(
+    event
+  ) {
+    const {
+      name,
+      value,
+    } = event.target;
 
-    setRateForm((previous) => ({
-      ...previous,
-      [name]: value,
-    }));
+    setRateForm(
+      (previous) => ({
+        ...previous,
+        [name]: value,
+      })
+    );
   }
 
   function validateTariff() {
-    if (!tariffForm.tariffName.trim()) {
-      setError("Tariff name is required.");
+    if (
+      !tariffForm.tariffName.trim()
+    ) {
+      setError(
+        "Tariff name is required."
+      );
+
       return false;
     }
 
-    if (!tariffForm.effectiveFrom) {
-      setError("Effective from date is required.");
+    if (
+      !tariffForm.effectiveFrom
+    ) {
+      setError(
+        "Effective from date is required."
+      );
+
       return false;
     }
 
@@ -187,31 +281,50 @@ export default function AdminTariffs() {
       setError(
         "Effective to date cannot be before effective from date."
       );
+
       return false;
     }
 
     if (
-      tariffForm.ratePerUnit === "" ||
-      Number(tariffForm.ratePerUnit) < 0
+      tariffForm.ratePerUnit ===
+        "" ||
+      Number(
+        tariffForm.ratePerUnit
+      ) < 0
     ) {
-      setError("Rate per unit cannot be negative.");
-      return false;
-    }
-
-    if (
-      tariffForm.fixedCharge === "" ||
-      Number(tariffForm.fixedCharge) < 0
-    ) {
-      setError("Fixed charge cannot be negative.");
-      return false;
-    }
-
-    if (tariffForm.status === "ACTIVE") {
-      const anotherActive = tariffs.some(
-        (tariff) =>
-          tariff.status === "ACTIVE" &&
-          tariff.tariffId !== editingTariffId
+      setError(
+        "Rate per unit cannot be negative."
       );
+
+      return false;
+    }
+
+    if (
+      tariffForm.fixedCharge ===
+        "" ||
+      Number(
+        tariffForm.fixedCharge
+      ) < 0
+    ) {
+      setError(
+        "Fixed charge cannot be negative."
+      );
+
+      return false;
+    }
+
+    if (
+      tariffForm.status ===
+      "ACTIVE"
+    ) {
+      const anotherActive =
+        tariffs.some(
+          (tariff) =>
+            tariff.status ===
+              "ACTIVE" &&
+            tariff.tariffId !==
+              editingTariffId
+        );
 
       if (anotherActive) {
         setError(
@@ -225,7 +338,9 @@ export default function AdminTariffs() {
     return true;
   }
 
-  async function saveTariff(event) {
+  async function saveTariff(
+    event
+  ) {
     event.preventDefault();
 
     setError("");
@@ -236,19 +351,25 @@ export default function AdminTariffs() {
     }
 
     const payload = {
-      tariffName: tariffForm.tariffName.trim(),
+      tariffName:
+        tariffForm.tariffName.trim(),
 
       effectiveFrom:
         tariffForm.effectiveFrom,
 
       effectiveTo:
-        tariffForm.effectiveTo || null,
+        tariffForm.effectiveTo ||
+        null,
 
       ratePerUnit:
-        Number(tariffForm.ratePerUnit),
+        Number(
+          tariffForm.ratePerUnit
+        ),
 
       fixedCharge:
-        Number(tariffForm.fixedCharge),
+        Number(
+          tariffForm.fixedCharge
+        ),
 
       status:
         tariffForm.status,
@@ -257,29 +378,41 @@ export default function AdminTariffs() {
     try {
       setSavingTariff(true);
 
-      if (editingTariffId) {
+      if (
+        editingTariffId
+      ) {
         await adminTariffService.updateTariff(
           editingTariffId,
           payload
         );
 
-        setSuccess("Tariff updated successfully.");
+        setSuccess(
+          "Tariff updated successfully."
+        );
       } else {
         await adminTariffService.createTariff(
           payload
         );
 
-        setSuccess("Tariff created successfully.");
+        setSuccess(
+          "Tariff created successfully."
+        );
       }
 
       cancelTariffEdit();
+
       await loadTariffs();
     } catch (err) {
-      console.error("Failed to save tariff:", err);
+      console.error(
+        "Failed to save tariff:",
+        err
+      );
 
       setError(
-        err?.response?.data?.error ||
-          err?.response?.data?.message ||
+        err?.response?.data
+          ?.error ||
+          err?.response?.data
+            ?.message ||
           "Failed to save tariff."
       );
     } finally {
@@ -287,46 +420,75 @@ export default function AdminTariffs() {
     }
   }
 
-  function editTariff(tariff) {
-    setEditingTariffId(tariff.tariffId);
+  function editTariff(
+    tariff
+  ) {
+    setEditingTariffId(
+      tariff.tariffId
+    );
 
     setTariffForm({
       tariffName:
-        tariff.tariffName || "",
+        tariff.tariffName ||
+        "",
 
       effectiveFrom:
-        tariff.effectiveFrom || "",
+        tariff.effectiveFrom ||
+        "",
 
       effectiveTo:
-        tariff.effectiveTo || "",
+        tariff.effectiveTo ||
+        "",
 
       ratePerUnit:
-        tariff.ratePerUnit != null
-          ? String(tariff.ratePerUnit)
+        tariff.ratePerUnit !==
+          null &&
+        tariff.ratePerUnit !==
+          undefined
+          ? String(
+              tariff.ratePerUnit
+            )
           : "",
 
       fixedCharge:
-        tariff.fixedCharge != null
-          ? String(tariff.fixedCharge)
+        tariff.fixedCharge !==
+          null &&
+        tariff.fixedCharge !==
+          undefined
+          ? String(
+              tariff.fixedCharge
+            )
           : "",
 
       status:
-        tariff.status || "INACTIVE",
+        tariff.status ||
+        "INACTIVE",
     });
 
     setError("");
     setSuccess("");
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
   }
 
   function cancelTariffEdit() {
     setEditingTariffId(null);
-    setTariffForm(EMPTY_TARIFF);
+
+    setTariffForm(
+      EMPTY_TARIFF
+    );
   }
 
-  async function deleteTariff(tariff) {
-    const confirmed = window.confirm(
-      `Delete tariff "${tariff.tariffName}"?\n\nDelete its tariff-rate blocks first if they are still linked.`
-    );
+  async function deleteTariff(
+    tariff
+  ) {
+    const confirmed =
+      window.confirm(
+        `Delete tariff "${tariff.tariffName}"?\n\nDelete its tariff-rate blocks first if they are still linked.`
+      );
 
     if (!confirmed) {
       return;
@@ -341,18 +503,27 @@ export default function AdminTariffs() {
       );
 
       if (
-        String(selectedTariffId) ===
-        String(tariff.tariffId)
+        String(
+          selectedTariffId
+        ) ===
+        String(
+          tariff.tariffId
+        )
       ) {
         setSelectedTariffId("");
         setRates([]);
       }
 
-      setSuccess("Tariff deleted successfully.");
+      setSuccess(
+        "Tariff deleted successfully."
+      );
 
       await loadTariffs();
     } catch (err) {
-      console.error("Failed to delete tariff:", err);
+      console.error(
+        "Failed to delete tariff:",
+        err
+      );
 
       setError(
         "Unable to delete this tariff. It may still have tariff rates or prediction records linked to it."
@@ -361,81 +532,119 @@ export default function AdminTariffs() {
   }
 
   function validateRate() {
-    if (!selectedTariffId) {
-      setError("Select a tariff first.");
+    if (
+      !selectedTariffId
+    ) {
+      setError(
+        "Select a tariff first."
+      );
+
       return false;
     }
 
     if (
-      rateForm.minUnits === "" ||
-      Number(rateForm.minUnits) < 0
+      rateForm.minUnits ===
+        "" ||
+      Number(
+        rateForm.minUnits
+      ) < 0
     ) {
       setError(
         "Minimum units must be zero or greater."
       );
+
       return false;
     }
 
     if (
-      rateForm.maxUnits !== "" &&
-      Number(rateForm.maxUnits) < 0
+      rateForm.maxUnits !==
+        "" &&
+      Number(
+        rateForm.maxUnits
+      ) < 0
     ) {
       setError(
         "Maximum units cannot be negative."
       );
+
       return false;
     }
 
     if (
-      rateForm.maxUnits !== "" &&
-      Number(rateForm.maxUnits) <
-        Number(rateForm.minUnits)
+      rateForm.maxUnits !==
+        "" &&
+      Number(
+        rateForm.maxUnits
+      ) <
+        Number(
+          rateForm.minUnits
+        )
     ) {
       setError(
         "Maximum units cannot be below minimum units."
       );
+
       return false;
     }
 
     if (
-      rateForm.ratePerUnit === "" ||
-      Number(rateForm.ratePerUnit) < 0
+      rateForm.ratePerUnit ===
+        "" ||
+      Number(
+        rateForm.ratePerUnit
+      ) < 0
     ) {
       setError(
         "Rate per unit cannot be negative."
       );
+
       return false;
     }
 
     if (
-      rateForm.fixedCharge === "" ||
-      Number(rateForm.fixedCharge) < 0
+      rateForm.fixedCharge ===
+        "" ||
+      Number(
+        rateForm.fixedCharge
+      ) < 0
     ) {
       setError(
         "Fixed charge cannot be negative."
       );
-      return false;
-    }
 
-    if (!rateForm.consumerGroup.trim()) {
-      setError("Consumer group is required.");
       return false;
     }
 
     if (
-      rateForm.blockOrder === "" ||
-      Number(rateForm.blockOrder) < 1
+      !rateForm.consumerGroup.trim()
+    ) {
+      setError(
+        "Consumer group is required."
+      );
+
+      return false;
+    }
+
+    if (
+      rateForm.blockOrder ===
+        "" ||
+      Number(
+        rateForm.blockOrder
+      ) < 1
     ) {
       setError(
         "Block order must be at least 1."
       );
+
       return false;
     }
 
     return true;
   }
 
-  async function saveRate(event) {
+  async function saveRate(
+    event
+  ) {
     event.preventDefault();
 
     setError("");
@@ -448,34 +657,49 @@ export default function AdminTariffs() {
     const payload = {
       tariff: {
         tariffId:
-          Number(selectedTariffId),
+          Number(
+            selectedTariffId
+          ),
       },
 
       minUnits:
-        Number(rateForm.minUnits),
+        Number(
+          rateForm.minUnits
+        ),
 
       maxUnits:
-        rateForm.maxUnits === ""
+        rateForm.maxUnits ===
+        ""
           ? null
-          : Number(rateForm.maxUnits),
+          : Number(
+              rateForm.maxUnits
+            ),
 
       ratePerUnit:
-        Number(rateForm.ratePerUnit),
+        Number(
+          rateForm.ratePerUnit
+        ),
 
       fixedCharge:
-        Number(rateForm.fixedCharge),
+        Number(
+          rateForm.fixedCharge
+        ),
 
       consumerGroup:
         rateForm.consumerGroup.trim(),
 
       blockOrder:
-        Number(rateForm.blockOrder),
+        Number(
+          rateForm.blockOrder
+        ),
     };
 
     try {
       setSavingRate(true);
 
-      if (editingRateId) {
+      if (
+        editingRateId
+      ) {
         await adminTariffService.updateRate(
           editingRateId,
           payload
@@ -500,11 +724,16 @@ export default function AdminTariffs() {
         selectedTariffId
       );
     } catch (err) {
-      console.error("Failed to save tariff rate:", err);
+      console.error(
+        "Failed to save tariff rate:",
+        err
+      );
 
       setError(
-        err?.response?.data?.error ||
-          err?.response?.data?.message ||
+        err?.response?.data
+          ?.error ||
+          err?.response?.data
+            ?.message ||
           "Failed to save tariff rate."
       );
     } finally {
@@ -512,31 +741,45 @@ export default function AdminTariffs() {
     }
   }
 
-  function editRate(rate) {
+  function editRate(
+    rate
+  ) {
     setEditingRateId(
       rate.tariffRateId
     );
 
     setRateForm({
       minUnits:
-        String(rate.minUnits),
+        String(
+          rate.minUnits
+        ),
 
       maxUnits:
-        rate.maxUnits == null
+        rate.maxUnits ===
+        null
           ? ""
-          : String(rate.maxUnits),
+          : String(
+              rate.maxUnits
+            ),
 
       ratePerUnit:
-        String(rate.ratePerUnit),
+        String(
+          rate.ratePerUnit
+        ),
 
       fixedCharge:
-        String(rate.fixedCharge),
+        String(
+          rate.fixedCharge
+        ),
 
       consumerGroup:
-        rate.consumerGroup || "",
+        rate.consumerGroup ||
+        "",
 
       blockOrder:
-        String(rate.blockOrder),
+        String(
+          rate.blockOrder
+        ),
     });
 
     setError("");
@@ -545,10 +788,15 @@ export default function AdminTariffs() {
 
   function cancelRateEdit() {
     setEditingRateId(null);
-    setRateForm(EMPTY_RATE);
+
+    setRateForm(
+      EMPTY_RATE
+    );
   }
 
-  async function deleteRate(rate) {
+  async function deleteRate(
+    rate
+  ) {
     const confirmed =
       window.confirm(
         `Delete tariff block ${rate.blockOrder}?`
@@ -574,11 +822,16 @@ export default function AdminTariffs() {
         selectedTariffId
       );
     } catch (err) {
-      console.error("Failed to delete tariff rate:", err);
+      console.error(
+        "Failed to delete tariff rate:",
+        err
+      );
 
       setError(
-        err?.response?.data?.error ||
-          err?.response?.data?.message ||
+        err?.response?.data
+          ?.error ||
+          err?.response?.data
+            ?.message ||
           "Failed to delete tariff rate."
       );
     }
@@ -589,8 +842,12 @@ export default function AdminTariffs() {
       () =>
         tariffs.find(
           (tariff) =>
-            String(tariff.tariffId) ===
-            String(selectedTariffId)
+            String(
+              tariff.tariffId
+            ) ===
+            String(
+              selectedTariffId
+            )
         ) || null,
       [
         tariffs,
@@ -603,85 +860,305 @@ export default function AdminTariffs() {
       () =>
         [...rates].sort(
           (a, b) =>
-            Number(a.blockOrder) -
-            Number(b.blockOrder)
+            Number(
+              a.blockOrder
+            ) -
+            Number(
+              b.blockOrder
+            )
         ),
       [rates]
     );
 
+  const activeTariff =
+    useMemo(
+      () =>
+        tariffs.find(
+          (tariff) =>
+            tariff.status ===
+            "ACTIVE"
+        ) || null,
+      [tariffs]
+    );
+
+  const activeCount =
+    useMemo(
+      () =>
+        tariffs.filter(
+          (tariff) =>
+            tariff.status ===
+            "ACTIVE"
+        ).length,
+      [tariffs]
+    );
+
+  const totalRateBlocks =
+    rates.length;
+
   return (
-    <>
-      <PageHeader
-        eyebrow="Administration"
-        title="Tariff management"
-        lead="Manage electricity tariffs and the consumption blocks used by the Sri Lankan residential bill calculation workflow."
-      />
+    <div className="admin-tariffs-redesign">
+      <section className="admin-tariffs-hero">
+        <div className="admin-tariffs-orb admin-tariffs-orb-one" />
+        <div className="admin-tariffs-orb admin-tariffs-orb-two" />
 
-      <div className="stack">
-        {error && (
-          <div style={styles.error}>
-            {error}
+        <div className="admin-tariffs-hero-copy">
+          <p className="dashboard-kicker dashboard-kicker-light">
+            Administration
+          </p>
+
+          <h1>
+            Control the electricity
+            tariff structure.
+          </h1>
+
+          <p>
+            Manage tariff periods,
+            activation status and the
+            consumption blocks used by
+            the Sri Lankan residential
+            electricity bill calculation
+            workflow.
+          </p>
+        </div>
+
+        <div className="admin-tariffs-hero-badge">
+          <span>
+            Rs
+          </span>
+
+          <div>
+            <small>
+              Billing configuration
+            </small>
+
+            <strong>
+              Tariff management
+            </strong>
           </div>
-        )}
+        </div>
 
-        {success && (
-          <div style={styles.success}>
-            {success}
+        <div className="admin-tariffs-hero-strip">
+          <div>
+            <span>
+              Tariffs
+            </span>
+
+            <strong>
+              {tariffs.length}
+            </strong>
           </div>
-        )}
 
-        <div className="grid grid-2">
-          <Card
-            title={
-              editingTariffId
-                ? "Edit tariff"
-                : "Create tariff"
+          <div>
+            <span>
+              Active tariffs
+            </span>
+
+            <strong>
+              {activeCount}
+            </strong>
+          </div>
+
+          <div>
+            <span>
+              Selected tariff
+            </span>
+
+            <strong>
+              {selectedTariff
+                ?.tariffName ||
+                "None"}
+            </strong>
+          </div>
+        </div>
+      </section>
+
+      {error && (
+        <div className="dashboard-error">
+          {error}
+        </div>
+      )}
+
+      {success && (
+        <div className="prediction-redesign-success">
+          <span>
+            ✓
+          </span>
+
+          {success}
+        </div>
+      )}
+
+      <section className="admin-tariffs-summary">
+        <article className="admin-tariffs-stat admin-tariffs-stat-feature">
+          <div className="admin-tariffs-stat-icon">
+            Rs
+          </div>
+
+          <span>
+            Total tariffs
+          </span>
+
+          <strong>
+            {tariffs.length}
+          </strong>
+
+          <p>
+            Saved tariff configurations.
+          </p>
+        </article>
+
+        <article className="admin-tariffs-stat">
+          <div className="admin-tariffs-stat-icon admin-tariffs-stat-icon-green">
+            ✓
+          </div>
+
+          <span>
+            Active tariff
+          </span>
+
+          <strong className="admin-tariffs-stat-text">
+            {activeTariff
+              ?.tariffName ||
+              "None"}
+          </strong>
+
+          <p>
+            Tariff currently used by the
+            system.
+          </p>
+        </article>
+
+        <article className="admin-tariffs-stat">
+          <div className="admin-tariffs-stat-icon">
+            ▦
+          </div>
+
+          <span>
+            Rate blocks
+          </span>
+
+          <strong>
+            {
+              totalRateBlocks
+            }
+          </strong>
+
+          <p>
+            Blocks in the selected
+            tariff.
+          </p>
+        </article>
+
+        <article className="admin-tariffs-stat">
+          <div className="admin-tariffs-stat-icon">
+            ◈
+          </div>
+
+          <span>
+            Selected tariff
+          </span>
+
+          <strong className="admin-tariffs-stat-text">
+            {selectedTariff
+              ?.tariffName ||
+              "None"}
+          </strong>
+
+          <p>
+            Tariff currently being
+            configured.
+          </p>
+        </article>
+      </section>
+
+      <section className="admin-tariffs-top-grid">
+        <article className="admin-tariffs-form-card">
+          <div className="admin-tariffs-card-head">
+            <div>
+              <p className="dashboard-kicker">
+                Tariff setup
+              </p>
+
+              <h2>
+                {editingTariffId
+                  ? "Edit tariff"
+                  : "Create tariff"}
+              </h2>
+            </div>
+
+            <span className="admin-tariffs-card-icon">
+              Rs
+            </span>
+          </div>
+
+          <form
+            className="admin-tariffs-form"
+            onSubmit={
+              saveTariff
             }
           >
-            <form onSubmit={saveTariff}>
-              <Field label="Tariff name">
+            <label>
+              <span>
+                Tariff name
+              </span>
+
+              <input
+                name="tariffName"
+                value={
+                  tariffForm.tariffName
+                }
+                onChange={
+                  handleTariffChange
+                }
+                required
+                placeholder="Example: Development Tariff"
+              />
+            </label>
+
+            <div className="admin-tariffs-two-column">
+              <label>
+                <span>
+                  Effective from
+                </span>
+
                 <input
-                  name="tariffName"
-                  value={tariffForm.tariffName}
-                  onChange={handleTariffChange}
-                  style={styles.input}
+                  type="date"
+                  name="effectiveFrom"
+                  value={
+                    tariffForm.effectiveFrom
+                  }
+                  onChange={
+                    handleTariffChange
+                  }
                   required
                 />
-              </Field>
+              </label>
 
-              <div className="grid grid-2">
-                <Field label="Effective from">
-                  <input
-                    type="date"
-                    name="effectiveFrom"
-                    value={
-                      tariffForm.effectiveFrom
-                    }
-                    onChange={
-                      handleTariffChange
-                    }
-                    style={styles.input}
-                    required
-                  />
-                </Field>
+              <label>
+                <span>
+                  Effective to
+                </span>
 
-                <Field label="Effective to">
-                  <input
-                    type="date"
-                    name="effectiveTo"
-                    value={
-                      tariffForm.effectiveTo
-                    }
-                    onChange={
-                      handleTariffChange
-                    }
-                    style={styles.input}
-                  />
-                </Field>
-              </div>
+                <input
+                  type="date"
+                  name="effectiveTo"
+                  value={
+                    tariffForm.effectiveTo
+                  }
+                  onChange={
+                    handleTariffChange
+                  }
+                />
+              </label>
+            </div>
 
-              <div className="grid grid-2">
-                <Field label="Rate per unit">
+            <div className="admin-tariffs-two-column">
+              <label>
+                <span>
+                  Base rate per unit
+                </span>
+
+                <div className="admin-tariffs-unit-input">
                   <input
                     type="number"
                     min="0"
@@ -693,12 +1170,21 @@ export default function AdminTariffs() {
                     onChange={
                       handleTariffChange
                     }
-                    style={styles.input}
                     required
                   />
-                </Field>
 
-                <Field label="Fixed charge">
+                  <span>
+                    LKR
+                  </span>
+                </div>
+              </label>
+
+              <label>
+                <span>
+                  Base fixed charge
+                </span>
+
+                <div className="admin-tariffs-unit-input">
                   <input
                     type="number"
                     min="0"
@@ -710,151 +1196,235 @@ export default function AdminTariffs() {
                     onChange={
                       handleTariffChange
                     }
-                    style={styles.input}
                     required
                   />
-                </Field>
+
+                  <span>
+                    LKR
+                  </span>
+                </div>
+              </label>
+            </div>
+
+            <label>
+              <span>
+                Status
+              </span>
+
+              <select
+                name="status"
+                value={
+                  tariffForm.status
+                }
+                onChange={
+                  handleTariffChange
+                }
+              >
+                <option value="ACTIVE">
+                  Active
+                </option>
+
+                <option value="INACTIVE">
+                  Inactive
+                </option>
+              </select>
+            </label>
+
+            <div className="admin-tariffs-info-box">
+              <span>
+                i
+              </span>
+
+              <div>
+                <strong>
+                  Only one active tariff
+                </strong>
+
+                <p>
+                  The system prevents more
+                  than one tariff from
+                  being active at the same
+                  time.
+                </p>
               </div>
+            </div>
 
-              <Field label="Status">
-                <select
-                  name="status"
-                  value={tariffForm.status}
-                  onChange={
-                    handleTariffChange
-                  }
-                  style={styles.input}
-                >
-                  <option value="ACTIVE">
-                    Active
-                  </option>
+            <div className="admin-tariffs-actions">
+              <button
+                type="submit"
+                className="admin-tariffs-primary"
+                disabled={
+                  savingTariff
+                }
+              >
+                {savingTariff
+                  ? "Saving..."
+                  : editingTariffId
+                    ? "Update tariff"
+                    : "Create tariff"}
+              </button>
 
-                  <option value="INACTIVE">
-                    Inactive
-                  </option>
-                </select>
-              </Field>
-
-              <div style={styles.actions}>
+              {editingTariffId && (
                 <button
-                  type="submit"
-                  disabled={savingTariff}
-                  style={styles.primaryButton}
+                  type="button"
+                  className="admin-tariffs-secondary"
+                  onClick={
+                    cancelTariffEdit
+                  }
                 >
-                  {savingTariff
-                    ? "Saving..."
-                    : editingTariffId
-                      ? "Update tariff"
-                      : "Create tariff"}
+                  Cancel
                 </button>
+              )}
+            </div>
+          </form>
+        </article>
 
-                {editingTariffId && (
-                  <button
-                    type="button"
-                    onClick={
-                      cancelTariffEdit
-                    }
-                    style={
-                      styles.secondaryButton
-                    }
-                  >
-                    Cancel
-                  </button>
-                )}
-              </div>
-            </form>
-          </Card>
-
-          <Card title="Existing tariffs">
-            {loading ? (
-              <p className="muted">
-                Loading tariffs...
+        <article className="admin-tariffs-list-card">
+          <div className="admin-tariffs-card-head">
+            <div>
+              <p className="dashboard-kicker">
+                Tariff library
               </p>
-            ) : tariffs.length === 0 ? (
-              <p className="muted">
-                No tariffs found.
-              </p>
-            ) : (
-              <div style={styles.list}>
-                {tariffs.map(
-                  (tariff) => (
-                    <div
-                      key={tariff.tariffId}
-                      style={{
-                        ...styles.tariffItem,
 
-                        ...(String(
-                          selectedTariffId
-                        ) ===
-                        String(
-                          tariff.tariffId
-                        )
-                          ? styles.selectedItem
-                          : {}),
-                      }}
+              <h2>
+                Existing tariffs
+              </h2>
+            </div>
+
+            <span className="admin-tariffs-count">
+              {
+                tariffs.length
+              }
+            </span>
+          </div>
+
+          {loading ? (
+            <div className="admin-tariffs-empty">
+              Loading tariffs...
+            </div>
+          ) : tariffs.length ===
+            0 ? (
+            <div className="admin-tariffs-empty">
+              <strong>
+                No tariffs found
+              </strong>
+
+              <span>
+                Create the first tariff
+                configuration.
+              </span>
+            </div>
+          ) : (
+            <div className="admin-tariffs-list">
+              {tariffs.map(
+                (tariff) => {
+                  const selected =
+                    String(
+                      selectedTariffId
+                    ) ===
+                    String(
+                      tariff.tariffId
+                    );
+
+                  return (
+                    <article
+                      key={
+                        tariff.tariffId
+                      }
+                      className={`admin-tariffs-item ${
+                        selected
+                          ? "admin-tariffs-item-selected"
+                          : ""
+                      }`}
                     >
-                      <div style={{ flex: 1 }}>
-                        <div
-                          style={
-                            styles.headingRow
-                          }
-                        >
-                          <strong>
+                      <div className="admin-tariffs-item-top">
+                        <div className="admin-tariffs-item-icon">
+                          Rs
+                        </div>
+
+                        <div className="admin-tariffs-item-title">
+                          <div className="admin-tariffs-item-badges">
+                            <span
+                              className={`admin-tariffs-status ${
+                                tariff.status ===
+                                "ACTIVE"
+                                  ? "admin-tariffs-status-active"
+                                  : "admin-tariffs-status-inactive"
+                              }`}
+                            >
+                              {
+                                tariff.status
+                              }
+                            </span>
+
+                            {selected && (
+                              <span className="admin-tariffs-selected-badge">
+                                SELECTED
+                              </span>
+                            )}
+                          </div>
+
+                          <h3>
                             {
                               tariff.tariffName
                             }
-                          </strong>
+                          </h3>
 
-                          <span
-                            style={{
-                              ...styles.badge,
-                              ...statusStyle(
-                                tariff.status
-                              ),
-                            }}
-                          >
-                            {tariff.status}
-                          </span>
+                          <p>
+                            {formatDate(
+                              tariff.effectiveFrom
+                            )}
+                            {" → "}
+                            {formatDate(
+                              tariff.effectiveTo
+                            )}
+                          </p>
                         </div>
-
-                        <p
-                          className="text-sm muted"
-                          style={{
-                            margin:
-                              "7px 0",
-                          }}
-                        >
-                          {tariff.effectiveFrom}
-                          {" → "}
-                          {tariff.effectiveTo ||
-                            "Open ended"}
-                        </p>
-
-                        <p
-                          className="text-sm muted"
-                          style={{
-                            margin: 0,
-                          }}
-                        >
-                          Rate:{" "}
-                          {money(
-                            tariff.ratePerUnit
-                          )}
-                          {" · "}
-                          Fixed:{" "}
-                          {money(
-                            tariff.fixedCharge
-                          )}
-                        </p>
                       </div>
 
-                      <div
-                        style={
-                          styles.itemActions
-                        }
-                      >
+                      <div className="admin-tariffs-item-values">
+                        <div>
+                          <span>
+                            Base rate
+                          </span>
+
+                          <strong>
+                            {money(
+                              tariff.ratePerUnit
+                            )}
+                          </strong>
+                        </div>
+
+                        <div>
+                          <span>
+                            Fixed charge
+                          </span>
+
+                          <strong>
+                            {money(
+                              tariff.fixedCharge
+                            )}
+                          </strong>
+                        </div>
+
+                        <div>
+                          <span>
+                            Tariff ID
+                          </span>
+
+                          <strong>
+                            #
+                            {
+                              tariff.tariffId
+                            }
+                          </strong>
+                        </div>
+                      </div>
+
+                      <div className="admin-tariffs-item-actions">
                         <button
                           type="button"
+                          className="admin-tariffs-select"
                           onClick={() =>
                             setSelectedTariffId(
                               String(
@@ -862,22 +1432,19 @@ export default function AdminTariffs() {
                               )
                             )
                           }
-                          style={
-                            styles.secondaryButton
-                          }
                         >
-                          Rates
+                          {selected
+                            ? "Selected"
+                            : "Manage blocks"}
                         </button>
 
                         <button
                           type="button"
+                          className="admin-tariffs-secondary"
                           onClick={() =>
                             editTariff(
                               tariff
                             )
-                          }
-                          style={
-                            styles.secondaryButton
                           }
                         >
                           Edit
@@ -885,99 +1452,161 @@ export default function AdminTariffs() {
 
                         <button
                           type="button"
+                          className="admin-tariffs-delete"
                           onClick={() =>
                             deleteTariff(
                               tariff
                             )
                           }
-                          style={
-                            styles.deleteButton
-                          }
                         >
                           Delete
                         </button>
                       </div>
-                    </div>
-                  )
-                )}
-              </div>
-            )}
-          </Card>
+                    </article>
+                  );
+                }
+              )}
+            </div>
+          )}
+        </article>
+      </section>
+
+      <section className="admin-tariffs-block-section">
+        <div className="admin-tariffs-block-header">
+          <div>
+            <p className="dashboard-kicker dashboard-kicker-light">
+              Consumption blocks
+            </p>
+
+            <h2>
+              Configure tariff rate
+              blocks.
+            </h2>
+
+            <p>
+              {selectedTariff
+                ? `Currently managing ${selectedTariff.tariffName}.`
+                : "Select a tariff before managing its consumption blocks."}
+            </p>
+          </div>
+
+          <div className="admin-tariffs-block-summary">
+            <span>
+              Selected
+            </span>
+
+            <strong>
+              {selectedTariff
+                ?.tariffName ||
+                "None"}
+            </strong>
+
+            <small>
+              {
+                sortedRates.length
+              }{" "}
+              rate blocks
+            </small>
+          </div>
         </div>
 
-        <Card
-          title="Tariff rate blocks"
-          subtitle={
-            selectedTariff
-              ? `Editing blocks for ${selectedTariff.tariffName}`
-              : "Select a tariff first"
-          }
-        >
-          {!selectedTariff ? (
-            <p className="muted">
-              Select a tariff to manage its rate blocks.
-            </p>
-          ) : (
-            <div className="grid grid-2">
-              <div>
-                <h3>
-                  {editingRateId
-                    ? "Edit rate block"
-                    : "Add rate block"}
-                </h3>
+        {!selectedTariff ? (
+          <div className="admin-tariffs-block-empty">
+            Select a tariff above to
+            manage its rate blocks.
+          </div>
+        ) : (
+          <div className="admin-tariffs-block-grid">
+            <article className="admin-tariffs-rate-form">
+              <div className="admin-tariffs-inner-head">
+                <div>
+                  <span>
+                    Block editor
+                  </span>
 
-                <form onSubmit={saveRate}>
-                  <Field label="Consumer group">
+                  <h3>
+                    {editingRateId
+                      ? "Edit rate block"
+                      : "Add rate block"}
+                  </h3>
+                </div>
+
+                <span className="admin-tariffs-block-icon">
+                  ▦
+                </span>
+              </div>
+
+              <form
+                className="admin-tariffs-form"
+                onSubmit={
+                  saveRate
+                }
+              >
+                <label>
+                  <span>
+                    Consumer group
+                  </span>
+
+                  <input
+                    name="consumerGroup"
+                    value={
+                      rateForm.consumerGroup
+                    }
+                    onChange={
+                      handleRateChange
+                    }
+                    placeholder="Example: LOW_USAGE"
+                    required
+                  />
+                </label>
+
+                <div className="admin-tariffs-two-column">
+                  <label>
+                    <span>
+                      Minimum units
+                    </span>
+
                     <input
-                      name="consumerGroup"
+                      type="number"
+                      min="0"
+                      name="minUnits"
                       value={
-                        rateForm.consumerGroup
+                        rateForm.minUnits
                       }
                       onChange={
                         handleRateChange
                       }
-                      style={styles.input}
-                      placeholder="Example: LOW_USAGE"
                       required
                     />
-                  </Field>
+                  </label>
 
-                  <div className="grid grid-2">
-                    <Field label="Minimum units">
-                      <input
-                        type="number"
-                        min="0"
-                        name="minUnits"
-                        value={
-                          rateForm.minUnits
-                        }
-                        onChange={
-                          handleRateChange
-                        }
-                        style={styles.input}
-                        required
-                      />
-                    </Field>
+                  <label>
+                    <span>
+                      Maximum units
+                    </span>
 
-                    <Field label="Maximum units">
-                      <input
-                        type="number"
-                        min="0"
-                        name="maxUnits"
-                        value={
-                          rateForm.maxUnits
-                        }
-                        onChange={
-                          handleRateChange
-                        }
-                        style={styles.input}
-                        placeholder="Leave blank if open-ended"
-                      />
-                    </Field>
-                  </div>
+                    <input
+                      type="number"
+                      min="0"
+                      name="maxUnits"
+                      value={
+                        rateForm.maxUnits
+                      }
+                      onChange={
+                        handleRateChange
+                      }
+                      placeholder="Blank = open ended"
+                    />
+                  </label>
+                </div>
 
-                  <div className="grid grid-2">
-                    <Field label="Rate per unit">
+                <div className="admin-tariffs-two-column">
+                  <label>
+                    <span>
+                      Rate per unit
+                    </span>
+
+                    <div className="admin-tariffs-unit-input">
                       <input
                         type="number"
                         min="0"
@@ -989,12 +1618,21 @@ export default function AdminTariffs() {
                         onChange={
                           handleRateChange
                         }
-                        style={styles.input}
                         required
                       />
-                    </Field>
 
-                    <Field label="Fixed charge">
+                      <span>
+                        LKR
+                      </span>
+                    </div>
+                  </label>
+
+                  <label>
+                    <span>
+                      Fixed charge
+                    </span>
+
+                    <div className="admin-tariffs-unit-input">
                       <input
                         type="number"
                         min="0"
@@ -1006,156 +1644,184 @@ export default function AdminTariffs() {
                         onChange={
                           handleRateChange
                         }
-                        style={styles.input}
                         required
                       />
-                    </Field>
-                  </div>
 
-                  <Field label="Block order">
-                    <input
-                      type="number"
-                      min="1"
-                      name="blockOrder"
-                      value={
-                        rateForm.blockOrder
-                      }
-                      onChange={
-                        handleRateChange
-                      }
-                      style={styles.input}
-                      required
-                    />
-                  </Field>
+                      <span>
+                        LKR
+                      </span>
+                    </div>
+                  </label>
+                </div>
 
-                  <div style={styles.actions}>
+                <label>
+                  <span>
+                    Block order
+                  </span>
+
+                  <input
+                    type="number"
+                    min="1"
+                    name="blockOrder"
+                    value={
+                      rateForm.blockOrder
+                    }
+                    onChange={
+                      handleRateChange
+                    }
+                    required
+                  />
+                </label>
+
+                <div className="admin-tariffs-actions">
+                  <button
+                    type="submit"
+                    className="admin-tariffs-primary"
+                    disabled={
+                      savingRate
+                    }
+                  >
+                    {savingRate
+                      ? "Saving..."
+                      : editingRateId
+                        ? "Update block"
+                        : "Add block"}
+                  </button>
+
+                  {editingRateId && (
                     <button
-                      type="submit"
-                      disabled={savingRate}
-                      style={
-                        styles.primaryButton
+                      type="button"
+                      className="admin-tariffs-secondary"
+                      onClick={
+                        cancelRateEdit
                       }
                     >
-                      {savingRate
-                        ? "Saving..."
-                        : editingRateId
-                          ? "Update block"
-                          : "Add block"}
+                      Cancel
                     </button>
+                  )}
+                </div>
+              </form>
+            </article>
 
-                    {editingRateId && (
-                      <button
-                        type="button"
-                        onClick={
-                          cancelRateEdit
-                        }
-                        style={
-                          styles.secondaryButton
-                        }
-                      >
-                        Cancel
-                      </button>
-                    )}
-                  </div>
-                </form>
+            <article className="admin-tariffs-rate-list">
+              <div className="admin-tariffs-inner-head">
+                <div>
+                  <span>
+                    Block structure
+                  </span>
+
+                  <h3>
+                    Existing blocks
+                  </h3>
+                </div>
+
+                <span className="admin-tariffs-count">
+                  {
+                    sortedRates.length
+                  }
+                </span>
               </div>
 
-              <div>
-                <h3>
-                  Existing blocks
-                </h3>
+              {sortedRates.length ===
+              0 ? (
+                <div className="admin-tariffs-empty">
+                  <strong>
+                    No rate blocks
+                  </strong>
 
-                {sortedRates.length ===
-                0 ? (
-                  <p className="muted">
-                    No rate blocks for this tariff.
-                  </p>
-                ) : (
-                  <div style={styles.list}>
-                    {sortedRates.map(
-                      (rate) => (
-                        <div
-                          key={
-                            rate.tariffRateId
+                  <span>
+                    Add the first block
+                    for this tariff.
+                  </span>
+                </div>
+              ) : (
+                <div className="admin-tariffs-rate-items">
+                  {sortedRates.map(
+                    (rate) => (
+                      <article
+                        key={
+                          rate.tariffRateId
+                        }
+                        className="admin-tariffs-rate-item"
+                      >
+                        <div className="admin-tariffs-rate-order">
+                          {
+                            rate.blockOrder
                           }
-                          style={
-                            styles.rateItem
-                          }
-                        >
-                          <div>
-                            <div
-                              style={
-                                styles.headingRow
-                              }
-                            >
-                              <strong>
-                                Block{" "}
-                                {
-                                  rate.blockOrder
-                                }
-                              </strong>
+                        </div>
 
-                              <span
-                                style={
-                                  styles.groupBadge
-                                }
-                              >
+                        <div className="admin-tariffs-rate-main">
+                          <div className="admin-tariffs-rate-top">
+                            <div>
+                              <span>
+                                Consumer group
+                              </span>
+
+                              <h4>
                                 {
                                   rate.consumerGroup
                                 }
-                              </span>
+                              </h4>
                             </div>
 
-                            <p
-                              className="text-sm muted"
-                              style={{
-                                margin:
-                                  "7px 0",
-                              }}
-                            >
-                              Units:{" "}
-                              {
-                                rate.minUnits
-                              }
-                              {" – "}
-                              {rate.maxUnits ==
+                            <span className="admin-tariffs-group-badge">
+                              {rate.minUnits}
+                              {"–"}
+                              {rate.maxUnits ===
                               null
                                 ? "∞"
-                                : rate.maxUnits}
-                            </p>
-
-                            <p
-                              className="text-sm muted"
-                              style={{
-                                margin: 0,
-                              }}
-                            >
-                              {money(
-                                rate.ratePerUnit
-                              )}
-                              /unit
-                              {" · "}
-                              Fixed{" "}
-                              {money(
-                                rate.fixedCharge
-                              )}
-                            </p>
+                                : rate.maxUnits}{" "}
+                              kWh
+                            </span>
                           </div>
 
-                          <div
-                            style={
-                              styles.itemActions
-                            }
-                          >
+                          <div className="admin-tariffs-rate-values">
+                            <div>
+                              <span>
+                                Unit rate
+                              </span>
+
+                              <strong>
+                                {money(
+                                  rate.ratePerUnit
+                                )}
+                              </strong>
+                            </div>
+
+                            <div>
+                              <span>
+                                Fixed charge
+                              </span>
+
+                              <strong>
+                                {money(
+                                  rate.fixedCharge
+                                )}
+                              </strong>
+                            </div>
+
+                            <div>
+                              <span>
+                                Rate ID
+                              </span>
+
+                              <strong>
+                                #
+                                {
+                                  rate.tariffRateId
+                                }
+                              </strong>
+                            </div>
+                          </div>
+
+                          <div className="admin-tariffs-rate-actions">
                             <button
                               type="button"
+                              className="admin-tariffs-secondary"
                               onClick={() =>
                                 editRate(
                                   rate
                                 )
-                              }
-                              style={
-                                styles.secondaryButton
                               }
                             >
                               Edit
@@ -1163,172 +1829,26 @@ export default function AdminTariffs() {
 
                             <button
                               type="button"
+                              className="admin-tariffs-delete"
                               onClick={() =>
                                 deleteRate(
                                   rate
                                 )
-                              }
-                              style={
-                                styles.deleteButton
                               }
                             >
                               Delete
                             </button>
                           </div>
                         </div>
-                      )
-                    )}
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-        </Card>
-      </div>
-    </>
-  );
-}
-
-function Field({
-  label,
-  children,
-}) {
-  return (
-    <div style={styles.field}>
-      <label style={styles.label}>
-        {label}
-      </label>
-
-      {children}
+                      </article>
+                    )
+                  )}
+                </div>
+              )}
+            </article>
+          </div>
+        )}
+      </section>
     </div>
   );
 }
-
-const styles = {
-  error: {
-    padding: "14px 16px",
-    border: "1px solid #e5b4b4",
-    borderRadius: "10px",
-    background: "#fff0f0",
-    color: "#9a1f1f",
-  },
-
-  success: {
-    padding: "14px 16px",
-    border: "1px solid #b9d8b9",
-    borderRadius: "10px",
-    background: "#effbef",
-    color: "#286428",
-  },
-
-  field: {
-    marginBottom: "15px",
-  },
-
-  label: {
-    display: "block",
-    marginBottom: "6px",
-    fontWeight: 600,
-  },
-
-  input: {
-    boxSizing: "border-box",
-    width: "100%",
-    padding: "10px 11px",
-    border: "1px solid #d8caca",
-    borderRadius: "8px",
-    background: "#fff",
-  },
-
-  actions: {
-    display: "flex",
-    gap: "9px",
-    marginTop: "16px",
-  },
-
-  primaryButton: {
-    padding: "10px 15px",
-    border: "none",
-    borderRadius: "8px",
-    background: "#7f0000",
-    color: "#fff",
-    fontWeight: 600,
-    cursor: "pointer",
-  },
-
-  secondaryButton: {
-    padding: "8px 11px",
-    border: "1px solid #cbbbbb",
-    borderRadius: "7px",
-    background: "#fff",
-    cursor: "pointer",
-  },
-
-  deleteButton: {
-    padding: "8px 11px",
-    border: "none",
-    borderRadius: "7px",
-    background: "#a22323",
-    color: "#fff",
-    cursor: "pointer",
-  },
-
-  list: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "12px",
-  },
-
-  tariffItem: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    gap: "15px",
-    padding: "15px",
-    border: "1px solid #eadede",
-    borderRadius: "10px",
-    background: "#fffafa",
-  },
-
-  selectedItem: {
-    borderLeft: "4px solid #7f0000",
-  },
-
-  rateItem: {
-    display: "flex",
-    justifyContent: "space-between",
-    gap: "15px",
-    padding: "14px",
-    border: "1px solid #eadede",
-    borderRadius: "10px",
-  },
-
-  headingRow: {
-    display: "flex",
-    alignItems: "center",
-    gap: "8px",
-    flexWrap: "wrap",
-  },
-
-  badge: {
-    padding: "5px 8px",
-    borderRadius: "999px",
-    fontSize: "10px",
-    fontWeight: 700,
-  },
-
-  groupBadge: {
-    padding: "5px 8px",
-    borderRadius: "999px",
-    background: "#f5e8e8",
-    color: "#7f0000",
-    fontSize: "10px",
-    fontWeight: 700,
-  },
-
-  itemActions: {
-    display: "flex",
-    gap: "7px",
-    flexWrap: "wrap",
-  },
-};

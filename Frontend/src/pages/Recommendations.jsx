@@ -88,31 +88,19 @@ function formatDateTime(value) {
   ).format(date);
 }
 
-function priorityStyle(priority) {
+function priorityClass(priority) {
   switch (priority) {
     case "HIGH":
-      return {
-        background: "#fff0f0",
-        color: "#9a1f1f",
-      };
+      return "recommendation-priority-high";
 
     case "MEDIUM":
-      return {
-        background: "#fff4d7",
-        color: "#795d12",
-      };
+      return "recommendation-priority-medium";
 
     case "LOW":
-      return {
-        background: "#e9f7e9",
-        color: "#286428",
-      };
+      return "recommendation-priority-low";
 
     default:
-      return {
-        background: "#f1eaea",
-        color: "#765f5f",
-      };
+      return "recommendation-priority-neutral";
   }
 }
 
@@ -648,19 +636,10 @@ export default function Recommendations() {
       );
     } catch (err) {
       console.error(
-        "AI recommendation generation failed:",
+        "Recommendation generation failed:",
         err
       );
 
-      /*
-       * The OpenAI API may currently
-       * reject the request because of
-       * unavailable quota/credits.
-       *
-       * Saved recommendations must
-       * remain usable even when AI
-       * generation is unavailable.
-       */
       setAiError(
         "Energy recommendation service is temporarily unavailable."
       );
@@ -740,771 +719,413 @@ export default function Recommendations() {
     }, [recommendations]);
 
   return (
-    <div style={styles.page}>
-      <div style={styles.header}>
-        <p style={styles.eyebrow}>
-          INSIGHT
-        </p>
+    <div className="recommendation-redesign">
+      <section className="recommendation-redesign-hero">
+        <div className="recommendation-redesign-orb recommendation-redesign-orb-one" />
+        <div className="recommendation-redesign-orb recommendation-redesign-orb-two" />
 
-        <h1 style={styles.title}>
-          Recommendations
-        </h1>
+        <div className="recommendation-redesign-hero-copy">
+          <p className="dashboard-kicker dashboard-kicker-light">
+            Intelligent energy advisor
+          </p>
 
-        <p style={styles.lead}>
-          Generate personalized
-          electricity-saving advice
-          using your household
-          consumption, prediction and
-          appliance analytics. Saved
-          recommendations remain
-          available even when the AI
-          service is temporarily
-          unavailable.
-        </p>
-      </div>
+          <h1>
+            Turn your energy data into
+            practical advice.
+          </h1>
+
+          <p>
+            Our trained recommendation
+            model analyses your household
+            consumption, prediction and
+            appliance usage to choose the
+            right energy-saving strategy,
+            while AI turns that decision
+            into clear household advice.
+          </p>
+        </div>
+
+        <div className="recommendation-redesign-engine">
+          <div className="recommendation-redesign-engine-icon">
+            ML
+          </div>
+
+          <div>
+            <small>
+              Decision engine
+            </small>
+
+            <strong>
+              ML + AI Advisor
+            </strong>
+          </div>
+        </div>
+
+        <div className="recommendation-redesign-generator">
+          <div className="recommendation-redesign-controls">
+            <label>
+              <span>
+                Household
+              </span>
+
+              <select
+                value={
+                  selectedHouseholdId
+                }
+                onChange={(event) => {
+                  setSelectedHouseholdId(
+                    event.target.value
+                  );
+
+                  setError("");
+                  setAiError("");
+                  setSuccess("");
+                }}
+              >
+                <option value="">
+                  Select household
+                </option>
+
+                {households.map(
+                  (household) => (
+                    <option
+                      key={
+                        household.householdId
+                      }
+                      value={
+                        household.householdId
+                      }
+                    >
+                      {
+                        household.householdName
+                      }
+                    </option>
+                  )
+                )}
+              </select>
+            </label>
+
+            <label>
+              <span>
+                Year
+              </span>
+
+              <input
+                type="number"
+                value={year}
+                min="2020"
+                max="2100"
+                onChange={(event) =>
+                  setYear(
+                    Number(
+                      event.target.value
+                    )
+                  )
+                }
+              />
+            </label>
+
+            <label>
+              <span>
+                Month
+              </span>
+
+              <select
+                value={month}
+                onChange={(event) =>
+                  setMonth(
+                    Number(
+                      event.target.value
+                    )
+                  )
+                }
+              >
+                {MONTHS.map(
+                  (item) => (
+                    <option
+                      key={
+                        item.value
+                      }
+                      value={
+                        item.value
+                      }
+                    >
+                      {item.label}
+                    </option>
+                  )
+                )}
+              </select>
+            </label>
+
+            <button
+              type="button"
+              className="recommendation-redesign-primary"
+              onClick={
+                handleGenerate
+              }
+              disabled={
+                generating ||
+                !selectedHouseholdId ||
+                !matchingPrediction
+              }
+            >
+              {generating
+                ? "Generating..."
+                : "Generate advice"}
+            </button>
+          </div>
+
+          <div
+            className={`recommendation-redesign-prediction ${
+              matchingPrediction
+                ? "recommendation-redesign-prediction-ready"
+                : ""
+            }`}
+          >
+            {matchingPrediction ? (
+              <>
+                <div className="recommendation-redesign-prediction-status">
+                  <span>
+                    ✓
+                  </span>
+
+                  Prediction ready
+                </div>
+
+                <div>
+                  <span>
+                    Consumption forecast
+                  </span>
+
+                  <strong>
+                    {formatKwh(
+                      matchingPrediction.predictedConsumptionKwh
+                    )}
+                  </strong>
+                </div>
+
+                <div>
+                  <span>
+                    Predicted bill
+                  </span>
+
+                  <strong>
+                    {formatCurrency(
+                      matchingPrediction.predictedBillAmount
+                    )}
+                  </strong>
+                </div>
+              </>
+            ) : (
+              <div className="recommendation-redesign-prediction-empty">
+                No saved prediction for{" "}
+                {getMonthName(month)}{" "}
+                {year}. Run a prediction
+                first.
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
 
       {error && (
-        <div style={styles.error}>
+        <div className="dashboard-error">
           {error}
         </div>
       )}
 
       {aiError && (
-        <div style={styles.warning}>
+        <div className="recommendation-redesign-warning">
+          <span>
+            !
+          </span>
+
           {aiError}
         </div>
       )}
 
       {success && (
-        <div style={styles.success}>
+        <div className="prediction-redesign-success">
+          <span>
+            ✓
+          </span>
+
           {success}
         </div>
       )}
 
-      <section
-        style={
-          styles.generatorCard
-        }
-      >
-        <div
-          style={
-            styles.generatorHeader
-          }
-        >
-          <div>
-            <p
-              style={
-                styles.cardEyebrow
-              }
-            >
-              AI ENERGY ADVISOR
-            </p>
+      <section className="recommendation-redesign-intro">
+        <div>
+          <p className="dashboard-kicker">
+            Saved advice
+          </p>
 
-            <h2
-              style={
-                styles.cardTitle
-              }
-            >
-              Generate recommendation
-            </h2>
-          </div>
+          <h2>
+            Recommendation history
+          </h2>
+
+          <p>
+            Review personalized
+            energy-saving guidance
+            generated for this household.
+          </p>
         </div>
 
-        <div
-          style={
-            styles.filterGrid
-          }
-        >
-          <div>
-            <label
-              style={styles.label}
-            >
-              Household
-            </label>
-
-            <select
-              value={
-                selectedHouseholdId
-              }
-              onChange={(event) => {
-                setSelectedHouseholdId(
-                  event.target.value
-                );
-
-                setError("");
-                setAiError("");
-                setSuccess("");
-              }}
-              style={styles.input}
-            >
-              <option value="">
-                Select household
-              </option>
-
-              {households.map(
-                (household) => (
-                  <option
-                    key={
-                      household.householdId
-                    }
-                    value={
-                      household.householdId
-                    }
-                  >
-                    {
-                      household.householdName
-                    }
-                  </option>
-                )
-              )}
-            </select>
-          </div>
-
-          <div>
-            <label
-              style={styles.label}
-            >
-              Year
-            </label>
-
-            <input
-              type="number"
-              value={year}
-              min="2020"
-              max="2100"
-              onChange={(event) =>
-                setYear(
-                  Number(
-                    event.target.value
-                  )
-                )
-              }
-              style={styles.input}
-            />
-          </div>
-
-          <div>
-            <label
-              style={styles.label}
-            >
-              Month
-            </label>
-
-            <select
-              value={month}
-              onChange={(event) =>
-                setMonth(
-                  Number(
-                    event.target.value
-                  )
-                )
-              }
-              style={styles.input}
-            >
-              {MONTHS.map(
-                (item) => (
-                  <option
-                    key={
-                      item.value
-                    }
-                    value={
-                      item.value
-                    }
-                  >
-                    {item.label}
-                  </option>
-                )
-              )}
-            </select>
-          </div>
-        </div>
-
-        <div
-          style={
-            styles.predictionStatus
-          }
-        >
-          {matchingPrediction ? (
-            <>
-              <div>
-                <p
-                  style={
-                    styles.summaryLabel
-                  }
-                >
-                  Prediction available
-                </p>
-
-                <strong>
-                  {formatKwh(
-                    matchingPrediction.predictedConsumptionKwh
-                  )}
-                </strong>
-              </div>
-
-              <div>
-                <p
-                  style={
-                    styles.summaryLabel
-                  }
-                >
-                  Predicted bill
-                </p>
-
-                <strong>
-                  {formatCurrency(
-                    matchingPrediction.predictedBillAmount
-                  )}
-                </strong>
-              </div>
-            </>
-          ) : (
-            <p
-              style={
-                styles.muted
-              }
-            >
-              No saved prediction
-              found for{" "}
-              {getMonthName(month)}{" "}
-              {year}.
-            </p>
-          )}
-        </div>
-
-        <button
-          type="button"
-          onClick={
-            handleGenerate
-          }
-          disabled={
-            generating ||
-            !selectedHouseholdId ||
-            !matchingPrediction
-          }
-          style={{
-            ...styles.primaryButton,
-
-            ...(generating ||
-            !selectedHouseholdId ||
-            !matchingPrediction
-              ? styles.disabledButton
-              : {}),
-          }}
-        >
-          {generating
-            ? "Generating recommendation..."
-            : "Generate recommendation"}
-        </button>
-      </section>
-
-      <section style={styles.card}>
-        <div
-          style={
-            styles.cardHeader
-          }
-        >
-          <div>
-            <p
-              style={
-                styles.cardEyebrow
-              }
-            >
-              SAVED ADVICE
-            </p>
-
-            <h2
-              style={
-                styles.cardTitle
-              }
-            >
-              Recommendation history
-            </h2>
-          </div>
-
-          <span
-            style={
-              styles.countBadge
-            }
-          >
+        <div className="recommendation-redesign-count">
+          <strong>
             {
               sortedRecommendations.length
-            }{" "}
+            }
+          </strong>
+
+          <span>
             saved
           </span>
         </div>
+      </section>
 
-        {!selectedHouseholdId ? (
-          <p style={styles.muted}>
-            Select a household to
-            view recommendations.
-          </p>
-        ) : loading ? (
-          <p style={styles.muted}>
-            Loading recommendations...
-          </p>
-        ) : sortedRecommendations.length ===
-          0 ? (
-          <div
-            style={
-              styles.emptyState
-            }
-          >
-            <h3
-              style={{
-                marginTop: 0,
-              }}
-            >
-              No recommendations yet
-            </h3>
-
-            <p style={styles.muted}>
-              Generate a recommendation
-              after creating a successful
-              bill prediction for this
-              household.
-            </p>
+      {!selectedHouseholdId ? (
+        <div className="recommendation-redesign-empty">
+          Select a household to view
+          recommendations.
+        </div>
+      ) : loading ? (
+        <div className="recommendation-redesign-empty">
+          Loading recommendations...
+        </div>
+      ) : sortedRecommendations.length ===
+        0 ? (
+        <div className="recommendation-redesign-empty">
+          <div className="recommendation-redesign-empty-icon">
+            ✦
           </div>
-        ) : (
-          <div style={styles.list}>
-            {sortedRecommendations.map(
-              (recommendation) => (
-                <article
-                  key={
-                    recommendation.recommendationId
-                  }
-                  style={
-                    styles.recommendationCard
-                  }
-                >
-                  <div
-                    style={
-                      styles.recommendationTop
-                    }
-                  >
-                    <div>
-                      <div
-                        style={
-                          styles.badges
-                        }
-                      >
-                        <span
-                          style={
-                            styles.typeBadge
-                          }
-                        >
-                          {typeLabel(
-                            recommendation.recommendationType
-                          )}
-                        </span>
 
-                        <span
-                          style={{
-                            ...styles.priorityBadge,
-                            ...priorityStyle(
-                              recommendation.priority
-                            ),
-                          }}
-                        >
-                          {recommendation.priority ||
-                            "—"}{" "}
-                          priority
-                        </span>
+          <h3>
+            No recommendations yet
+          </h3>
 
-                        <span
-                          style={
-                            styles.statusBadge
-                          }
-                        >
-                          {recommendation.status ||
-                            "—"}
-                        </span>
-                      </div>
+          <p>
+            Generate your first energy
+            recommendation after creating
+            a successful bill prediction.
+          </p>
+        </div>
+      ) : (
+        <div className="recommendation-redesign-grid">
+          {sortedRecommendations.map(
+            (
+              recommendation,
+              index
+            ) => (
+              <article
+                key={
+                  recommendation.recommendationId
+                }
+                className={`recommendation-redesign-card ${
+                  index === 0
+                    ? "recommendation-redesign-card-featured"
+                    : ""
+                }`}
+              >
+                <div className="recommendation-redesign-card-top">
+                  <div className="recommendation-redesign-badges">
+                    <span className="recommendation-redesign-type">
+                      {typeLabel(
+                        recommendation.recommendationType
+                      )}
+                    </span>
 
-                      <h3
-                        style={
-                          styles.recommendationTitle
-                        }
-                      >
-                        {
-                          recommendation.recommendationTitle
-                        }
-                      </h3>
-
-                      <p
-                        style={
-                          styles.date
-                        }
-                      >
-                        {formatDateTime(
-                          recommendation.createdDate
-                        )}
-                      </p>
-                    </div>
-
-                    <button
-                      type="button"
-                      onClick={() =>
-                        handleDelete(
-                          recommendation.recommendationId
-                        )
-                      }
-                      disabled={
-                        deletingId ===
-                        recommendation.recommendationId
-                      }
-                      style={
-                        styles.deleteButton
-                      }
+                    <span
+                      className={`recommendation-redesign-priority ${priorityClass(
+                        recommendation.priority
+                      )}`}
                     >
-                      {deletingId ===
-                      recommendation.recommendationId
-                        ? "Deleting..."
-                        : "Delete"}
-                    </button>
+                      {recommendation.priority ||
+                        "—"}{" "}
+                      priority
+                    </span>
+
+                    <span className="recommendation-redesign-status">
+                      {recommendation.status ||
+                        "—"}
+                    </span>
                   </div>
 
-                  <p
-                    style={
-                      styles.description
+                  <button
+                    type="button"
+                    className="recommendation-redesign-delete"
+                    onClick={() =>
+                      handleDelete(
+                        recommendation.recommendationId
+                      )
+                    }
+                    disabled={
+                      deletingId ===
+                      recommendation.recommendationId
                     }
                   >
+                    {deletingId ===
+                    recommendation.recommendationId
+                      ? "Deleting..."
+                      : "Delete"}
+                  </button>
+                </div>
+
+                <div className="recommendation-redesign-card-copy">
+                  <p className="dashboard-kicker">
+                    Energy recommendation
+                  </p>
+
+                  <h3>
+                    {
+                      recommendation.recommendationTitle
+                    }
+                  </h3>
+
+                  <span className="recommendation-redesign-date">
+                    {formatDateTime(
+                      recommendation.createdDate
+                    )}
+                  </span>
+
+                  <p className="recommendation-redesign-description">
                     {recommendation.recommendationDescription ||
                       "No description provided."}
                   </p>
+                </div>
 
-                  <div
-                    style={
-                      styles.savingsGrid
-                    }
-                  >
-                    <div
-                      style={
-                        styles.savingBox
-                      }
-                    >
-                      <p
-                        style={
-                          styles.summaryLabel
-                        }
-                      >
-                        Estimated energy
-                        saving
-                      </p>
+                <div className="recommendation-redesign-savings">
+                  <div>
+                    <span>
+                      Estimated energy
+                      saving
+                    </span>
 
-                      <strong
-                        style={
-                          styles.savingValue
-                        }
-                      >
-                        {formatKwh(
-                          recommendation.estimatedSavingKwh
-                        )}
-                      </strong>
-                    </div>
-
-                    <div
-                      style={
-                        styles.savingBox
-                      }
-                    >
-                      <p
-                        style={
-                          styles.summaryLabel
-                        }
-                      >
-                        Estimated bill
-                        saving
-                      </p>
-
-                      <strong
-                        style={
-                          styles.savingValue
-                        }
-                      >
-                        {formatCurrency(
-                          recommendation.estimatedSavingAmount
-                        )}
-                      </strong>
-                    </div>
+                    <strong>
+                      {formatKwh(
+                        recommendation.estimatedSavingKwh
+                      )}
+                    </strong>
                   </div>
-                </article>
-              )
-            )}
-          </div>
-        )}
-      </section>
+
+                  <div>
+                    <span>
+                      Estimated bill
+                      saving
+                    </span>
+
+                    <strong>
+                      {formatCurrency(
+                        recommendation.estimatedSavingAmount
+                      )}
+                    </strong>
+                  </div>
+                </div>
+              </article>
+            )
+          )}
+        </div>
+      )}
     </div>
   );
 }
-
-const styles = {
-  page: {
-    padding: "32px",
-    maxWidth: "1200px",
-    margin: "0 auto",
-  },
-
-  header: {
-    marginBottom: "24px",
-  },
-
-  eyebrow: {
-    fontSize: "12px",
-    letterSpacing: "0.14em",
-    marginBottom: "8px",
-    color: "#7a5c5c",
-  },
-
-  title: {
-    fontSize: "34px",
-    margin: "0 0 10px",
-  },
-
-  lead: {
-    maxWidth: "850px",
-    lineHeight: 1.6,
-    color: "#765f5f",
-  },
-
-  error: {
-    padding: "14px 16px",
-    marginBottom: "20px",
-    border: "1px solid #e5b4b4",
-    borderRadius: "10px",
-    background: "#fff0f0",
-    color: "#9a1f1f",
-  },
-
-  warning: {
-    padding: "14px 16px",
-    marginBottom: "20px",
-    border: "1px solid #e6cf91",
-    borderRadius: "10px",
-    background: "#fff8e3",
-    color: "#765711",
-  },
-
-  success: {
-    padding: "14px 16px",
-    marginBottom: "20px",
-    border: "1px solid #b9d8b9",
-    borderRadius: "10px",
-    background: "#effbef",
-    color: "#286428",
-  },
-
-  generatorCard: {
-    background: "#ffffff",
-    border: "1px solid #e6dcdc",
-    borderRadius: "14px",
-    padding: "24px",
-    marginBottom: "22px",
-    boxShadow:
-      "0 2px 8px rgba(0,0,0,0.04)",
-  },
-
-  generatorHeader: {
-    marginBottom: "18px",
-  },
-
-  cardEyebrow: {
-    margin: "0 0 5px",
-    fontSize: "11px",
-    letterSpacing: "0.12em",
-    color: "#8a6e6e",
-  },
-
-  cardTitle: {
-    margin: 0,
-    fontSize: "21px",
-  },
-
-  filterGrid: {
-    display: "grid",
-    gridTemplateColumns:
-      "repeat(auto-fit, minmax(190px, 1fr))",
-    gap: "16px",
-    marginBottom: "18px",
-  },
-
-  label: {
-    display: "block",
-    fontWeight: 600,
-    marginBottom: "7px",
-  },
-
-  input: {
-    width: "100%",
-    boxSizing: "border-box",
-    padding: "11px 12px",
-    border: "1px solid #d8caca",
-    borderRadius: "8px",
-    fontSize: "15px",
-  },
-
-  predictionStatus: {
-    display: "flex",
-    flexWrap: "wrap",
-    gap: "30px",
-    marginBottom: "18px",
-    padding: "16px",
-    borderRadius: "10px",
-    background: "#fffafa",
-    border: "1px solid #eadede",
-  },
-
-  summaryLabel: {
-    margin: "0 0 5px",
-    color: "#806d6d",
-    fontSize: "12px",
-  },
-
-  primaryButton: {
-    padding: "11px 18px",
-    border: "none",
-    borderRadius: "8px",
-    background: "#7f0000",
-    color: "#ffffff",
-    fontWeight: 600,
-    cursor: "pointer",
-  },
-
-  disabledButton: {
-    opacity: 0.55,
-    cursor: "not-allowed",
-  },
-
-  card: {
-    background: "#ffffff",
-    border: "1px solid #e6dcdc",
-    borderRadius: "14px",
-    padding: "24px",
-    boxShadow:
-      "0 2px 8px rgba(0,0,0,0.04)",
-  },
-
-  cardHeader: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    gap: "16px",
-    marginBottom: "20px",
-  },
-
-  countBadge: {
-    padding: "6px 11px",
-    borderRadius: "999px",
-    background: "#f5e8e8",
-    color: "#7f0000",
-    fontSize: "11px",
-    fontWeight: 700,
-  },
-
-  list: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "16px",
-  },
-
-  recommendationCard: {
-    padding: "20px",
-    border: "1px solid #eadede",
-    borderRadius: "12px",
-    background: "#fffafa",
-  },
-
-  recommendationTop: {
-    display: "flex",
-    justifyContent: "space-between",
-    gap: "20px",
-    alignItems: "flex-start",
-  },
-
-  badges: {
-    display: "flex",
-    flexWrap: "wrap",
-    gap: "7px",
-    marginBottom: "10px",
-  },
-
-  typeBadge: {
-    padding: "5px 9px",
-    borderRadius: "999px",
-    background: "#f5e8e8",
-    color: "#7f0000",
-    fontSize: "11px",
-    fontWeight: 700,
-  },
-
-  priorityBadge: {
-    padding: "5px 9px",
-    borderRadius: "999px",
-    fontSize: "11px",
-    fontWeight: 700,
-  },
-
-  statusBadge: {
-    padding: "5px 9px",
-    borderRadius: "999px",
-    background: "#eeeeee",
-    color: "#5f5050",
-    fontSize: "11px",
-    fontWeight: 700,
-  },
-
-  recommendationTitle: {
-    margin: "0 0 5px",
-    color: "#351414",
-  },
-
-  date: {
-    margin: 0,
-    color: "#8a7474",
-    fontSize: "12px",
-  },
-
-  description: {
-    margin: "18px 0",
-    color: "#5f5050",
-    lineHeight: 1.65,
-  },
-
-  savingsGrid: {
-    display: "grid",
-    gridTemplateColumns:
-      "repeat(auto-fit, minmax(190px, 1fr))",
-    gap: "12px",
-  },
-
-  savingBox: {
-    padding: "14px",
-    borderRadius: "9px",
-    background: "#ffffff",
-    border: "1px solid #eee3e3",
-  },
-
-  savingValue: {
-    color: "#3f1515",
-  },
-
-  deleteButton: {
-    padding: "8px 13px",
-    border: "none",
-    borderRadius: "7px",
-    background: "#a22323",
-    color: "#ffffff",
-    cursor: "pointer",
-  },
-
-  emptyState: {
-    padding: "20px",
-    borderRadius: "10px",
-    background: "#fffafa",
-    border: "1px dashed #dbcaca",
-  },
-
-  muted: {
-    color: "#806d6d",
-  },
-};
