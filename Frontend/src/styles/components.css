@@ -15440,3 +15440,26 @@ input:checked
     flex: 1;
   }
 }
+@media (max-width: 640px) {
+  .dashboard-metric-card {
+    min-height: 185px;
+    padding-bottom: 52px;
+  }
+
+  .dashboard-metric-card p {
+    left: 20px;
+    right: 20px;
+    bottom: 18px;
+    line-height: 1.45;
+  }
+
+  .dashboard-metric-value {
+    margin-top: 8px;
+    line-height: 1.08;
+  }
+
+  .dashboard-metric-value span {
+    display: inline-block;
+    margin-left: 4px;
+  }
+}
